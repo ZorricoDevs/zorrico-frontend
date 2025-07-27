@@ -1,0 +1,15 @@
+# Ignore artifacts:
+build
+coverage
+node_modules
+
+# Ignore all JS files:
+*.js
+!*.config.js
+
+# Ignore specific files:
+public/index.html
+src/react-app-env.d.ts
+build/static/
+build/static/js/
+public/
