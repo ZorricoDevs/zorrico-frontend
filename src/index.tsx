@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import './theme.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
 
 // Global error handlers for chunk loading failures
 const safeReload = (): void => {
