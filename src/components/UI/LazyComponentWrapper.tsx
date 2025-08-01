@@ -16,7 +16,7 @@ interface LazyRetryState {
 // Higher-order component to wrap lazy-loaded components with retry logic
 function withLazyRetry<P extends object>(
   LazyComponent: LazyExoticComponent<ComponentType<P>>,
-  maxRetries: number = 3
+  maxRetries = 3
 ) {
   return function LazyComponentWrapper(props: P & LazyComponentWrapperProps) {
     const [state, setState] = React.useState<LazyRetryState>({
@@ -35,9 +35,6 @@ function withLazyRetry<P extends object>(
         setTimeout(() => {
           window.location.reload();
         }, 100);
-      } else {
-        // Max retries reached, force page refresh
-        window.location.href = window.location.href;
       }
     }, [state.retryCount]);
 
@@ -100,7 +97,7 @@ function withLazyRetry<P extends object>(
 // Custom hook for handling dynamic imports with retry logic
 export function useLazyImport<T extends ComponentType<any>>(
   importFunc: () => Promise<{ default: T }>,
-  maxRetries: number = 3
+  maxRetries = 3
 ): [LazyExoticComponent<T> | null, boolean, Error | null] {
   const [component, setComponent] = React.useState<LazyExoticComponent<T> | null>(null);
   const [loading, setLoading] = React.useState(false);

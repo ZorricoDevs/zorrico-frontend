@@ -73,29 +73,6 @@ export interface BrokerAnalytics {
 }
 
 class BrokerApiService {
-  // Send message to admin
-  async sendAdminMessage({ message, leadId, leadName, brokerId, brokerName, brokerEmail }: {
-    message: string;
-    leadId?: string;
-    leadName?: string;
-    brokerId: string;
-    brokerName: string;
-    brokerEmail: string;
-  }): Promise<void> {
-    try {
-      await api.post('/broker/contact-admin', {
-        message,
-        leadId,
-        leadName,
-        brokerId,
-        brokerName,
-        brokerEmail
-      });
-    } catch (error) {
-      console.error('Failed to send message to admin:', error);
-      throw error;
-    }
-  }
   // Dashboard Stats
   async getBrokerStats(): Promise<BrokerStats> {
     try {

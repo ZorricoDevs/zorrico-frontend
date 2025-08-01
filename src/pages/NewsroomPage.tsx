@@ -64,18 +64,6 @@ const NewsroomPage: React.FC = () => {
     }
   ];
 
-  const getCategoryColor = (category: string) => {
-    const colors: { [key: string]: 'primary' | 'success' | 'warning' | 'error' | 'info' } = {
-      'Funding': 'success',
-      'Partnership': 'primary',
-      'Milestone': 'warning',
-      'Technology': 'info',
-      'Awards': 'error',
-      'Product': 'primary'
-    };
-    return colors[category] || 'primary';
-  };
-
   const content = (
     <Stack spacing={4}>
       <Typography variant="h5" component="h2" sx={{ color: '#304FFE', fontWeight: 600 }}>
@@ -347,7 +335,7 @@ const NewsroomPage: React.FC = () => {
         </Typography>
 
         <Typography variant="body1" paragraph>
-          Stay connected with HomeLoanMittra's growth story and get the latest updates on our social media channels:
+          Stay connected with HomeLoanMittra&apos;s growth story and get the latest updates on our social media channels:
         </Typography>
 
         <Stack spacing={2}>

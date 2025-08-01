@@ -103,7 +103,7 @@ const EligibilityFormsManagement: React.FC = () => {
 
   // Convert customer to client
   const handleConvertCustomer = async () => {
-    if (!selectedForm) return;
+    if (!selectedForm) {return;}
 
     try {
       setLoading(true);
@@ -136,7 +136,7 @@ const EligibilityFormsManagement: React.FC = () => {
   };
 
   // Update form status
-  const updateFormStatus = async (formId: string, status: string, notes: string = '') => {
+  const updateFormStatus = async (formId: string, status: string, notes = '') => {
     try {
       const response = await fetch(`http://localhost:5000/api/admin/eligibility-forms/${formId}/status`, {
         method: 'PUT',
@@ -174,8 +174,8 @@ const EligibilityFormsManagement: React.FC = () => {
   };
 
   const getLeadScoreColor = (score: number) => {
-    if (score >= 80) return 'success';
-    if (score >= 60) return 'warning';
+    if (score >= 80) {return 'success';}
+    if (score >= 60) {return 'warning';}
     return 'error';
   };
 

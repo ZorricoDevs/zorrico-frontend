@@ -1,11 +1,9 @@
 import React from 'react';
-import { Typography, Stack, Box, Paper, useTheme } from '@mui/material';
-import { Gavel, Article, Shield, Info } from '@mui/icons-material';
+import { Typography, Stack, Box, Paper } from '@mui/material';
+import { Gavel, Shield} from '@mui/icons-material';
 import GenericPage from '../components/UI/GenericPage';
 
 const TermsOfUsePage: React.FC = () => {
-  const theme = useTheme();
-  const isDarkMode = theme.palette.mode === 'dark';
 
   const content = (
     <Stack spacing={4}>
@@ -18,7 +16,7 @@ const TermsOfUsePage: React.FC = () => {
       </Typography>
 
       <Typography variant="body1" paragraph>
-        Welcome to HomeLoanMittra. These Terms of Use ("Terms") govern your use of our website, mobile application,
+        Welcome to HomeLoanMittra. These Terms of Use (&quot;Terms&quot;) govern your use of our website, mobile application,
         and services. By accessing or using our platform, you agree to be bound by these Terms.
       </Typography>
 
@@ -50,7 +48,7 @@ const TermsOfUsePage: React.FC = () => {
         </Typography>
 
         <Typography variant="body2" paragraph>
-          By using HomeLoanMittra's services, you acknowledge that you have read, understood, and agree to be bound by these Terms.
+          By using HomeLoanMittra&apos;s services, you acknowledge that you have read, understood, and agree to be bound by these Terms.
           If you do not agree to these Terms, please do not use our services.
         </Typography>
 

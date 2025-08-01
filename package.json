@@ -61,7 +61,7 @@
     "build:analyze": "npm run build && npx webpack-bundle-analyzer build/static/js/*.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint src --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
+    "lint": "eslint src --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0 --fix",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "format": "prettier --write src/**/*.{ts,tsx,js,jsx,json,css,md}",
     "format:check": "prettier --check src/**/*.{ts,tsx,js,jsx,json,css,md}",

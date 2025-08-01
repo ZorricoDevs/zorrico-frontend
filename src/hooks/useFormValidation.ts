@@ -42,7 +42,7 @@ export interface UseFormValidationReturn {
 }
 
 const validateValue = (value: any, rules?: ValidationRule): string | null => {
-  if (!rules) return null;
+  if (!rules) {return null;}
 
   // Required validation
   if (rules.required && (!value || (typeof value === 'string' && value.trim() === ''))) {
@@ -208,7 +208,7 @@ export const useFormValidation = (config: FormConfig): UseFormValidationReturn =
     return async (event: React.FormEvent) => {
       event.preventDefault();
 
-      if (isSubmitting) return;
+      if (isSubmitting) {return;}
 
       setIsSubmitting(true);
 

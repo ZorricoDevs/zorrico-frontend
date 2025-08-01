@@ -1,11 +1,9 @@
 import React from 'react';
-import { Typography, Stack, Box, Paper, Button, Chip, Divider, useTheme } from '@mui/material';
+import { Typography, Stack, Box, Paper, Button, Chip, useTheme } from '@mui/material';
 import { Home, TrendingDown, Speed, Verified, Calculate, CompareArrows } from '@mui/icons-material';
 import GenericPage from '../components/UI/GenericPage';
 
 const HomeLoansPage: React.FC = () => {
-  const theme = useTheme();
-  const isDarkMode = theme.palette.mode === 'dark';
 
   const loanTypes = [
     {
@@ -76,7 +74,7 @@ const HomeLoansPage: React.FC = () => {
       </Typography>
 
       <Typography variant="body1" paragraph>
-        Make your dream of homeownership a reality with HomeLoanMittra's comprehensive home loan solutions.
+        Make your dream of homeownership a reality with HomeLoanMittra&apos;s comprehensive home loan solutions.
         Compare offers from 50+ banks and NBFCs to find the best rates and terms that suit your needs.
       </Typography>
 

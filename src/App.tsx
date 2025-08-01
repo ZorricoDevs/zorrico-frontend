@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import AuthProvider from './context/AuthContext';
-import CustomThemeProvider from './context/ThemeContext';
+import { ThemeProvider as CustomThemeProvider } from './context/ThemeContext';
 import { useTheme } from './hooks/useTheme';
 import { Provider } from 'react-redux';
 import { store } from './store/store';
@@ -42,7 +42,6 @@ const lazyWithRetry = (importFunc: () => Promise<any>) => {
         window.localStorage.setItem('page-has-been-force-refreshed', 'true');
         console.log('Chunk loading failed, forcing page refresh...');
         window.location.reload();
-        return new Promise(() => {}); // Never resolve, let the refresh happen
       }
       // If refresh already happened and still failing, throw the error
       throw error;
@@ -88,20 +87,21 @@ const queryClient = new QueryClient({
 // Use FinanceLoader directly for all Suspense fallback loading screens
 
 const AppContent: React.FC = () => {
-  const { theme } = useTheme();
+  const themeContext = useTheme() as { theme: 'light' | 'dark' } | null;
+  const mode = themeContext?.theme || 'light';
 
   const muiTheme = createTheme({
     palette: {
-      mode: theme,
+      mode,
       primary: {
-        main: theme === 'dark' ? '#90caf9' : '#1976d2',
+        main: mode === 'dark' ? '#90caf9' : '#1976d2',
       },
       secondary: {
-        main: theme === 'dark' ? '#f48fb1' : '#dc004e',
+        main: mode === 'dark' ? '#f48fb1' : '#dc004e',
       },
       background: {
-        default: theme === 'dark' ? '#121212' : '#ffffff',
-        paper: theme === 'dark' ? '#1e1e1e' : '#ffffff',
+        default: mode === 'dark' ? '#121212' : '#ffffff',
+        paper: mode === 'dark' ? '#1e1e1e' : '#ffffff',
       },
     },
     typography: {
@@ -140,7 +140,7 @@ const AppContent: React.FC = () => {
         styleOverrides: {
           root: {
             borderRadius: '12px',
-            boxShadow: theme === 'dark'
+            boxShadow: mode === 'dark'
               ? '0 4px 8px rgba(0, 0, 0, 0.3)'
               : '0 4px 8px rgba(0, 0, 0, 0.1)',
           },
@@ -362,3 +362,4 @@ function App() {
 }
 
 export default App;
+

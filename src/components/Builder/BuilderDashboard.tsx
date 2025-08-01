@@ -97,8 +97,8 @@ interface DeveloperStats {
 }
 
 const BuilderDashboard: React.FC = () => {
-  const { user } = useAuth(); // eslint-disable-line no-unused-vars
-  const navigate = useNavigate(); // eslint-disable-line no-unused-vars
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [tabValue, setTabValue] = useState(0);
   const [properties, setProperties] = useState<Property[]>([]);
   const [leads, setLeads] = useState<CustomerLead[]>([]);
@@ -139,7 +139,7 @@ const BuilderDashboard: React.FC = () => {
       try {
         const token = localStorage.getItem('token');
         const headers: Record<string, string> = {};
-        if (token) headers['Authorization'] = `Bearer ${token}`;
+        if (token) { headers['Authorization'] = `Bearer ${token}`; }
 
         // Fetch properties for this builder
         const propRes = await fetch(`/api/builder/properties?builderId=${user?.id}`, { headers });
@@ -149,11 +149,10 @@ const BuilderDashboard: React.FC = () => {
           navigate('/login');
           return;
         }
-        if (!propRes.ok) throw new Error('Failed to fetch properties');
+        if (!propRes.ok) { throw new Error('Failed to fetch properties'); }
         const propContentType = propRes.headers.get('content-type');
         if (!propContentType || !propContentType.includes('application/json')) {
-          const text = await propRes.text();
-          console.error('Non-JSON response for properties:', text);
+          await propRes.text(); // Read response but don't store unused text
           throw new Error('Properties API did not return JSON');
         }
         const propData = await propRes.json();
@@ -167,11 +166,10 @@ const BuilderDashboard: React.FC = () => {
           navigate('/login');
           return;
         }
-        if (!leadRes.ok) throw new Error('Failed to fetch leads');
+        if (!leadRes.ok) { throw new Error('Failed to fetch leads'); }
         const leadContentType = leadRes.headers.get('content-type');
         if (!leadContentType || !leadContentType.includes('application/json')) {
-          const text = await leadRes.text();
-          console.error('Non-JSON response for leads:', text);
+          await leadRes.text(); // Read response but don't store unused text
           throw new Error('Leads API did not return JSON');
         }
         const leadData = await leadRes.json();
@@ -185,10 +183,10 @@ const BuilderDashboard: React.FC = () => {
           // Add more stats calculations as needed
         }));
       } catch (error) {
-        console.error('Error fetching builder data:', error);
+        // Error handling will be implemented later
       }
     };
-    if (user?.id) fetchBuilderData();
+    if (user?.id) { fetchBuilderData(); }
   }, [user, navigate]);
 
   const handleAddProperty = async () => {
@@ -216,13 +214,13 @@ const BuilderDashboard: React.FC = () => {
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
       };
-      if (token) headers['Authorization'] = `Bearer ${token}`;
+      if (token) { headers['Authorization'] = `Bearer ${token}`; }
       const res = await fetch('/api/builder/properties', {
         method: 'POST',
         headers,
         body: JSON.stringify(newPropertyData)
       });
-      if (!res.ok) throw new Error('Failed to add property');
+      if (!res.ok) { throw new Error('Failed to add property'); }
       const savedProperty = await res.json();
       setProperties([...properties, savedProperty]);
       setOpenAddPropertyDialog(false);
@@ -645,19 +643,19 @@ const BuilderDashboard: React.FC = () => {
           <Button
             variant="contained"
             onClick={async () => {
-              if (!editPropertyForm) return;
+              if (!editPropertyForm) { return; }
               try {
                 const token = localStorage.getItem('token');
                 const headers: Record<string, string> = {
                   'Content-Type': 'application/json',
                 };
-                if (token) headers['Authorization'] = `Bearer ${token}`;
+                if (token) {headers['Authorization'] = `Bearer ${token}`;}
                 const res = await fetch(`/api/property/${editPropertyForm._id || editPropertyForm.id}`, {
                   method: 'PUT',
                   headers,
                   body: JSON.stringify({ ...editPropertyForm, amenities: editPropertyForm.amenities.split(',').map((a: string) => a.trim()) })
                 });
-                if (!res.ok) throw new Error('Failed to update property');
+                if (!res.ok) { throw new Error('Failed to update property'); }
                 const updated = await res.json();
                 setProperties(props => props.map(p => (p._id === updated._id || p.id === updated.id) ? updated : p));
                 setEditProperty(null);

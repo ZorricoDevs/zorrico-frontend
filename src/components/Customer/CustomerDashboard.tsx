@@ -13,7 +13,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
   Alert,
   CircularProgress,
   Tabs,
@@ -23,10 +22,6 @@ import {
   Step,
   StepLabel,
   StepContent,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   IconButton,
   List,
   ListItem,
@@ -38,7 +33,6 @@ import {
   useTheme
 } from '@mui/material';
 import {
-  AccountBalance as AccountBalanceIcon,
   Assignment as AssignmentIcon,
   Timeline as TimelineIcon,
   CheckCircle as CheckCircleIcon,
@@ -47,17 +41,16 @@ import {
   Close,
   Refresh,
   TrendingUp,
-  Assessment
+  AccountBalance as AccountBalanceIcon
 } from '@mui/icons-material';
 import applicationApi, { Application } from '../../services/applicationApi';
 
-interface CustomerDashboardProps {}
-
-const CustomerDashboard: React.FC<CustomerDashboardProps> = () => {
+const CustomerDashboard: React.FC = () => {
   const [tabValue, setTabValue] = useState(0);
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
   const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [lastUpdateTime, setLastUpdateTime] = useState(new Date().toISOString());
@@ -72,7 +65,6 @@ const CustomerDashboard: React.FC<CustomerDashboardProps> = () => {
       setLastUpdateTime(new Date().toISOString());
     } catch (err) {
       setError('Failed to fetch applications');
-      console.error('Fetch applications error:', err);
     } finally {
       setLoading(false);
     }
@@ -86,7 +78,7 @@ const CustomerDashboard: React.FC<CustomerDashboardProps> = () => {
         fetchApplications();
       }
     } catch (err) {
-      console.error('Polling error:', err);
+      console.error('Failed to poll for updates:', err);
     }
   }, [lastUpdateTime, fetchApplications]);
 
@@ -104,19 +96,19 @@ const CustomerDashboard: React.FC<CustomerDashboardProps> = () => {
   // Get status configuration
   const getStatusConfig = (status: Application['status']) => {
     const configs = {
-      submitted: { color: '#304FFE', label: 'Submitted', icon: '📝', progress: 15 },
-      under_review: { color: '#304FFE', label: 'Under Review', icon: '👁️', progress: 25 },
-      documents_pending: { color: '#FFA726', label: 'Documents Pending', icon: '📄', progress: 35 },
-      documents_received: { color: '#00C8C8', label: 'Documents Received', icon: '✅', progress: 50 },
-      submitted_to_bank: { color: '#9C27B0', label: 'Submitted to Bank', icon: '🏦', progress: 65 },
-      under_bank_review: { color: '#673AB7', label: 'Under Bank Review', icon: '🔍', progress: 75 },
-      approved_by_bank: { color: '#4CAF50', label: 'Approved by Bank', icon: '✅', progress: 85 },
-      rejected_by_bank: { color: '#F44336', label: 'Rejected by Bank', icon: '❌', progress: 100 },
-      sanctioned: { color: '#2E7D32', label: 'Sanctioned', icon: '🎉', progress: 95 },
-      disbursed: { color: '#1B5E20', label: 'Disbursed', icon: '💰', progress: 100 },
-      rejected: { color: '#D32F2F', label: 'Rejected', icon: '❌', progress: 100 }
+      submitted: { color: '#304FFE', label: 'Submitted', icon: '', progress: 15 },
+      under_review: { color: '#304FFE', label: 'Under Review', icon: '', progress: 25 },
+      documents_pending: { color: '#FFA726', label: 'Documents Pending', icon: '', progress: 35 },
+      documents_received: { color: '#00C8C8', label: 'Documents Received', icon: '', progress: 50 },
+      submitted_to_bank: { color: '#9C27B0', label: 'Submitted to Bank', icon: '', progress: 65 },
+      under_bank_review: { color: '#673AB7', label: 'Under Bank Review', icon: '', progress: 75 },
+      approved_by_bank: { color: '#4CAF50', label: 'Approved by Bank', icon: '', progress: 85 },
+      rejected_by_bank: { color: '#F44336', label: 'Rejected by Bank', icon: '', progress: 100 },
+      sanctioned: { color: '#2E7D32', label: 'Sanctioned', icon: '', progress: 95 },
+      disbursed: { color: '#1B5E20', label: 'Disbursed', icon: '', progress: 100 },
+      rejected: { color: '#D32F2F', label: 'Rejected', icon: '', progress: 100 }
     };
-    return configs[status] || { color: '#757575', label: status, icon: '⏳', progress: 0 };
+    return configs[status] || { color: '#757575', label: status, icon: '', progress: 0 };
   };
 
   // Get application statistics
@@ -209,103 +201,103 @@ const CustomerDashboard: React.FC<CustomerDashboardProps> = () => {
               height: '100%',
               background: isDark
                 ? 'linear-gradient(135deg, #304FFE 0%, #222B45 100%)'
-          : 'linear-gradient(135deg, #304FFE 0%, #5C6FFF 100%)',
-        color: 'white',
-        borderRadius: 3,
-        boxShadow: isDark ? 6 : 2,
-        transition: 'box-shadow 0.2s',
-        '&:hover': { boxShadow: isDark ? 12 : 6 }
-      }}
-    >
-      <CardContent>
-        <Box display="flex" alignItems="center" gap={2}>
-          <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.14)', width: 48, height: 48 }}>
-            <AssignmentIcon sx={{ fontSize: 28, color: '#fff' }} />
-          </Avatar>
-          <Box>
-            <Typography variant="h4" fontWeight="bold" color="white">
-              {stats.totalApplications}
-            </Typography>
-            <Typography color="rgba(255,255,255,0.8)">Total Applications</Typography>
-          </Box>
+                : 'linear-gradient(135deg, #304FFE 0%, #5C6FFF 100%)',
+              color: 'white',
+              borderRadius: 3,
+              boxShadow: isDark ? 6 : 2,
+              transition: 'box-shadow 0.2s',
+              '&:hover': { boxShadow: isDark ? 12 : 6 }
+            }}
+          >
+            <CardContent>
+              <Box display="flex" alignItems="center" gap={2}>
+                <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.14)', width: 48, height: 48 }}>
+                  <AssignmentIcon sx={{ fontSize: 28, color: '#fff' }} />
+                </Avatar>
+                <Box>
+                  <Typography variant="h4" fontWeight="bold" color="white">
+                    {stats.totalApplications}
+                  </Typography>
+                  <Typography color="rgba(255,255,255,0.8)">Total Applications</Typography>
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
         </Box>
-      </CardContent>
-    </Card>
-  </Box>
-  <Box sx={{ flex: '1 1 100%', maxWidth: { xs: '100%', sm: '50%', md: '25%' } }}>
-    <Card
-      sx={{
-        height: '100%',
-        background: isDark
-          ? 'linear-gradient(135deg, #00C8C8 0%, #1e293b 100%)'
-          : 'linear-gradient(135deg, #00C8C8 0%, #4DD0E1 100%)',
-        color: 'white',
-        borderRadius: 3,
-        boxShadow: isDark ? 6 : 2,
-        transition: 'box-shadow 0.2s',
-        '&:hover': { boxShadow: isDark ? 12 : 6 }
-      }}
-    >
-      <CardContent>
-        <Box display="flex" alignItems="center" gap={2}>
-          <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.14)', width: 48, height: 48 }}>
-            <PendingIcon sx={{ fontSize: 28, color: '#fff' }} />
-          </Avatar>
-          <Box>
-            <Typography variant="h4" fontWeight="bold" color="white">
-              {stats.activeApplications}
-            </Typography>
-            <Typography color="rgba(255,255,255,0.8)">Active Applications</Typography>
-          </Box>
+        <Box sx={{ flex: '1 1 100%', maxWidth: { xs: '100%', sm: '50%', md: '25%' } }}>
+          <Card
+            sx={{
+              height: '100%',
+              background: isDark
+                ? 'linear-gradient(135deg, #00C8C8 0%, #1e293b 100%)'
+                : 'linear-gradient(135deg, #00C8C8 0%, #4DD0E1 100%)',
+              color: 'white',
+              borderRadius: 3,
+              boxShadow: isDark ? 6 : 2,
+              transition: 'box-shadow 0.2s',
+              '&:hover': { boxShadow: isDark ? 12 : 6 }
+            }}
+          >
+            <CardContent>
+              <Box display="flex" alignItems="center" gap={2}>
+                <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.14)', width: 48, height: 48 }}>
+                  <PendingIcon sx={{ fontSize: 28, color: '#fff' }} />
+                </Avatar>
+                <Box>
+                  <Typography variant="h4" fontWeight="bold" color="white">
+                    {stats.activeApplications}
+                  </Typography>
+                  <Typography color="rgba(255,255,255,0.8)">Active Applications</Typography>
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
         </Box>
-      </CardContent>
-    </Card>
-  </Box>
-  <Box sx={{ flex: '1 1 100%', maxWidth: { xs: '100%', sm: '50%', md: '25%' } }}>
-    <Card
-      sx={{
-        height: '100%',
-        background: isDark
-          ? 'linear-gradient(135deg, #4CAF50 0%, #1B5E20 100%)'
-          : 'linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%)',
-        color: 'white',
-        borderRadius: 3,
-        boxShadow: isDark ? 6 : 2,
-        transition: 'box-shadow 0.2s',
-        '&:hover': { boxShadow: isDark ? 12 : 6 }
-      }}
-    >
-      <CardContent>
-        <Box display="flex" alignItems="center" gap={2}>
-          <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.14)', width: 48, height: 48 }}>
-            <CheckCircleIcon sx={{ fontSize: 28, color: '#fff' }} />
-          </Avatar>
-          <Box>
-            <Typography variant="h4" fontWeight="bold" color="white">
-              {stats.completedApplications}
-            </Typography>
-            <Typography color="rgba(255,255,255,0.8)">Completed</Typography>
-          </Box>
+        <Box sx={{ flex: '1 1 100%', maxWidth: { xs: '100%', sm: '50%', md: '25%' } }}>
+          <Card
+            sx={{
+              height: '100%',
+              background: isDark
+                ? 'linear-gradient(135deg, #4CAF50 0%, #1B5E20 100%)'
+                : 'linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%)',
+              color: 'white',
+              borderRadius: 3,
+              boxShadow: isDark ? 6 : 2,
+              transition: 'box-shadow 0.2s',
+              '&:hover': { boxShadow: isDark ? 12 : 6 }
+            }}
+          >
+            <CardContent>
+              <Box display="flex" alignItems="center" gap={2}>
+                <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.14)', width: 48, height: 48 }}>
+                  <CheckCircleIcon sx={{ fontSize: 28, color: '#fff' }} />
+                </Avatar>
+                <Box>
+                  <Typography variant="h4" fontWeight="bold" color="white">
+                    {stats.completedApplications}
+                  </Typography>
+                  <Typography color="rgba(255,255,255,0.8)">Completed</Typography>
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
         </Box>
-      </CardContent>
-    </Card>
-  </Box>
-  <Box sx={{ flex: '1 1 100%', maxWidth: { xs: '100%', sm: '50%', md: '25%' } }}>
-    <Card sx={{ height: '100%', background: 'linear-gradient(135deg, #FFA726 0%, #FFB74D 100%)', color: 'white' }}>
-      <CardContent>
-        <Box display="flex" alignItems="center">
-          <TrendingUp sx={{ mr: 2, fontSize: 40, color: 'white' }} />
-          <Box>
-            <Typography variant="h4" fontWeight="bold" color="white">
-              ₹{(stats.totalLoanAmount / 100000).toFixed(1)}L
-            </Typography>
-            <Typography color="rgba(255,255,255,0.8)">Total Sanctioned</Typography>
-          </Box>
+        <Box sx={{ flex: '1 1 100%', maxWidth: { xs: '100%', sm: '50%', md: '25%' } }}>
+          <Card sx={{ height: '100%', background: 'linear-gradient(135deg, #FFA726 0%, #FFB74D 100%)', color: 'white' }}>
+            <CardContent>
+              <Box display="flex" alignItems="center">
+                <TrendingUp sx={{ mr: 2, fontSize: 40, color: 'white' }} />
+                <Box>
+                  <Typography variant="h4" fontWeight="bold" color="white">
+                    ₹{(stats.totalLoanAmount / 100000).toFixed(1)}L
+                  </Typography>
+                  <Typography color="rgba(255,255,255,0.8)">Total Sanctioned</Typography>
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
         </Box>
-      </CardContent>
-    </Card>
-  </Box>
-</Box>
+      </Box>
 
       {/* Main Content */}
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
@@ -332,7 +324,7 @@ const CustomerDashboard: React.FC<CustomerDashboardProps> = () => {
                   No applications found
                 </Typography>
                 <Typography variant="body2" color="#757575" mb={3}>
-                  You haven't submitted any loan applications yet.
+                  You haven&lsquo;t submitted any loan applications yet.
                 </Typography>
                 <Button variant="contained" sx={{ bgcolor: '#304FFE' }}>
                   Apply for Loan
@@ -598,7 +590,7 @@ const CustomerDashboard: React.FC<CustomerDashboardProps> = () => {
                   {selectedApplication.documents.submitted.length === 0 ? (
                     <Typography variant="body2" color="#999">No documents submitted</Typography>
                   ) : (
-                    selectedApplication.documents.submitted.map((doc, index) => (
+                                        selectedApplication.documents.submitted.map((doc: string, index: number) => (
                       <Chip key={index} label={doc} size="small" sx={{ mr: 1, mb: 1, bgcolor: '#E8F5E8' }} />
                     ))
                   )}
@@ -609,7 +601,7 @@ const CustomerDashboard: React.FC<CustomerDashboardProps> = () => {
                   {selectedApplication.documents.pending.length === 0 ? (
                     <Typography variant="body2" color="#999">No pending documents</Typography>
                   ) : (
-                    selectedApplication.documents.pending.map((doc, index) => (
+                                        selectedApplication.documents.pending.map((doc: string, index: number) => (
                       <Chip key={index} label={doc} size="small" sx={{ mr: 1, mb: 1, bgcolor: '#FFF3E0' }} />
                     ))
                   )}

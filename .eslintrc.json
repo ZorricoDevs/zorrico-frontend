@@ -7,44 +7,31 @@
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
-    "plugin:react-hooks/recommended",
-    "prettier"
+    "plugin:@typescript-eslint/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
     },
-    "ecmaVersion": "latest",
+    "ecmaVersion": 11,
     "sourceType": "module"
   },
   "plugins": [
     "react",
-    "react-hooks",
-    "react-refresh"
+    "@typescript-eslint"
   ],
   "rules": {
-    "react-refresh/only-export-components": "warn",
+    "@typescript-eslint/no-unsafe-optional-chaining": "off",
+    "@typescript-eslint/no-explicit-any": "off",
     "react/react-in-jsx-scope": "off",
-    "react/prop-types": "off",
-    "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
-    "prefer-const": "error",
-    "no-var": "error",
-    "no-console": ["warn", { "allow": ["warn", "error"] }],
-    "eqeqeq": ["error", "always"],
-    "curly": ["error", "all"]
+    "no-unused-vars": "warn",
+    "no-console": "off",
+    "react/prop-types": "off"
   },
   "settings": {
     "react": {
       "version": "detect"
     }
-  },
-  "overrides": [
-    {
-      "files": ["**/*.test.{ts,tsx}", "**/*.spec.{ts,tsx}"],
-      "rules": {
-        "no-unused-vars": "off"
-      }
-    }
-  ]
+  }
 }

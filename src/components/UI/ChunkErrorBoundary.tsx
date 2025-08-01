@@ -102,9 +102,6 @@ class ChunkErrorBoundary extends Component<Props, State> {
         });
       });
     }
-
-    // Force hard reload
-    window.location.href = window.location.href;
   };
 
   private handleGoHome = () => {
@@ -142,7 +139,7 @@ class ChunkErrorBoundary extends Component<Props, State> {
             {isChunkError ? (
               <Alert severity="info" sx={{ mb: 3, textAlign: 'left' }}>
                 <AlertTitle>Chunk Loading Error</AlertTitle>
-                This usually happens when the application is updated while you're using it.
+                This usually happens when the application is updated while you&apos;re using it.
                 Try refreshing the page to load the latest version.
                 <br /><br />
                 <strong>Technical Details:</strong><br />

@@ -1,16 +1,14 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
-import { useTheme, Theme, alpha } from '@mui/material/styles';
+import { useTheme, alpha } from '@mui/material/styles';
 import {
   Container, Grow, Box, Typography, Chip, Button, CircularProgress, Snackbar, Alert, Skeleton, Fade, Slide, Card, CardContent, Tabs, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, Stack, Tooltip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField, FormControl, InputLabel, Select, MenuItem, LinearProgress
 } from '@mui/material';
-import { People, Assignment, AttachMoney, TrendingUp, AccountBalance, BarChart, PieChart, Assessment, Visibility, Phone, Add, Refresh, ArrowUpward, ArrowDownward, Search, Work } from '@mui/icons-material';
+import { People, Assignment, AttachMoney, TrendingUp, AccountBalance, Assessment, Add, Refresh, ArrowUpward, ArrowDownward, Work, BarChart, Search, Visibility, Phone, PieChart } from '@mui/icons-material';
 import { brokerApi, Lead, BrokerApplication, BrokerStats, BrokerAnalytics } from '../../services/brokerApi';
 
 const BrokerDashboard: React.FC = () => {
   const { user } = useAuth();
-  const navigate = useNavigate();
   const theme = useTheme();
   const [tabValue, setTabValue] = useState(0);
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -42,35 +40,27 @@ const BrokerDashboard: React.FC = () => {
     priority: 'medium' as 'high' | 'medium' | 'low'
   });
 
-  // Enhanced state for filters and sorting
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
   const [sortField, setSortField] = useState<keyof Lead>('name');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const [retryCount, setRetryCount] = useState(0);
-  const [dataAge, setDataAge] = useState(0);
   const [viewLeadDialog, setViewLeadDialog] = useState(false);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [editLeadDialog, setEditLeadDialog] = useState(false);
   const [editLeadData, setEditLeadData] = useState<Partial<Lead>>({});
 
-  // Load dashboard data on component mount
   useEffect(() => {
     loadDashboardData();
   }, []);
 
   const loadDashboardData = useCallback(async (showLoading = true) => {
-    if (showLoading) setLoading(true);
+    if (showLoading) { setLoading(true); }
     setError(null);
 
     try {
-      // Load all data in parallel with timeout
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-
       const [statsData, leadsData, applicationsData, analyticsData] = await Promise.all([
         brokerApi.getBrokerStats(),
         brokerApi.getLeads(),
@@ -78,13 +68,10 @@ const BrokerDashboard: React.FC = () => {
         brokerApi.getBrokerAnalytics()
       ]);
 
-      clearTimeout(timeoutId);
-
       setStats(statsData);
       setLeads(leadsData);
       setApplications(applicationsData);
       setAnalytics(analyticsData);
-      setLastUpdated(new Date());
       setRetryCount(0);
 
       if (!showLoading) {
@@ -92,7 +79,6 @@ const BrokerDashboard: React.FC = () => {
         setSnackbarOpen(true);
       }
     } catch (error) {
-      console.error('Failed to load dashboard data:', error);
       const errorMessage = retryCount < 3
         ? `Failed to load dashboard data. Retrying... (${retryCount + 1}/3)`
         : 'Failed to load dashboard data. Please check your connection and try again.';
@@ -105,7 +91,7 @@ const BrokerDashboard: React.FC = () => {
         setTimeout(() => loadDashboardData(false), 2000 * (retryCount + 1));
       }
     } finally {
-      if (showLoading) setLoading(false);
+      if (showLoading) { setLoading(false); }
     }
   }, [retryCount]);
 
@@ -144,8 +130,8 @@ const BrokerDashboard: React.FC = () => {
 
   // Memoized filtered and sorted leads
   const filteredAndSortedLeads = useMemo(() => {
-    let filtered = leads.filter(lead => {
-      if (lead.deletedByBroker) return false;
+    const filtered = leads.filter(lead => {
+      if (lead.deletedByBroker) { return false; }
       const matchesSearch =
         lead.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         lead.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -172,15 +158,8 @@ const BrokerDashboard: React.FC = () => {
     });
   }, [leads, searchQuery, statusFilter, priorityFilter, sortField, sortDirection]);
 
-  // Format data age
-  const formatDataAge = (age: number) => {
-    if (age < 60000) return `${Math.floor(age / 1000)}s ago`;
-    if (age < 3600000) return `${Math.floor(age / 60000)}m ago`;
-    return `${Math.floor(age / 3600000)}h ago`;
-  };
-
   function formatCurrency(amount: number | undefined) {
-    if (typeof amount !== 'number') return '-';
+    if (typeof amount !== 'number') { return '-'; }
     return amount.toLocaleString('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
   }
 
@@ -213,7 +192,7 @@ const BrokerDashboard: React.FC = () => {
   }, []);
 
   const handleEditLead = useCallback(async () => {
-    if (!editLeadData || !editLeadData._id) return;
+    if (!editLeadData || !editLeadData._id) { return; }
     try {
       await brokerApi.updateLead(editLeadData._id, editLeadData);
       setEditLeadDialog(false);
@@ -268,17 +247,6 @@ const BrokerDashboard: React.FC = () => {
                 <Typography variant="body2" sx={{ opacity: 0.9 }}>
                   Welcome back, {user?.firstName || 'Broker'}!
                 </Typography>
-                {dataAge > 0 && (
-                  <Chip
-                    size="small"
-                    label={`Updated ${formatDataAge(dataAge)}`}
-                    sx={{
-                      backgroundColor: alpha(theme.palette.common.white, 0.2),
-                      color: 'white',
-                      fontSize: '0.7rem'
-                    }}
-                  />
-                )}
               </Box>
             </Box>
           </Box>

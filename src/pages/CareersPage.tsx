@@ -45,8 +45,8 @@ const CareersPage: React.FC = () => {
       </Typography>
 
       <Typography variant="body1" paragraph>
-        Be part of India's fastest-growing fintech platform that's revolutionizing the home loan industry.
-        We're looking for passionate individuals who want to make homeownership dreams accessible to millions.
+        Be part of India&apos;s fastest-growing fintech platform that&apos;s revolutionizing the home loan industry.
+        We&apos;re looking for passionate individuals who want to make homeownership dreams accessible to millions.
       </Typography>
 
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' }, gap: 3 }}>
@@ -192,10 +192,10 @@ const CareersPage: React.FC = () => {
         }}
       >
         <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: isDarkMode ? '#fff' : '#2E2E2E' }}>
-          Don't see the right role?
+          Don&apos;t see the right role?
         </Typography>
         <Typography variant="body1" sx={{ mb: 3, color: isDarkMode ? '#b0b0b0' : '#666' }}>
-          We're always looking for talented individuals. Send us your resume and let us know how you'd like to contribute.
+          We&apos;re always looking for talented individuals. Send us your resume and let us know how you&apos;d like to contribute.
         </Typography>
         <Button
           variant="outlined"

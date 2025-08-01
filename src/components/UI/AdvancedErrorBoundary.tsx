@@ -21,6 +21,7 @@ interface AdvancedErrorBoundaryState {
 interface AdvancedErrorBoundaryProps {
   children: React.ReactNode;
   fallback?: React.ComponentType<{ error: Error; retry: () => void }>;
+  // eslint-disable-next-line no-unused-vars
   onError?: (error: Error, errorInfo: ErrorInfo) => void;
   maxRetries?: number;
   resetOnPropsChange?: boolean;
@@ -80,9 +81,13 @@ class AdvancedErrorBoundary extends React.Component<
 
     // Log to console in development
     if (process.env.NODE_ENV === 'development') {
+       
       console.group('🚨 React Error Boundary');
+       
       console.error('Error:', error);
+       
       console.error('Error Info:', enhancedErrorInfo);
+       
       console.groupEnd();
     }
   }
@@ -137,6 +142,7 @@ class AdvancedErrorBoundary extends React.Component<
         });
       }
     } catch (reportingError) {
+       
       console.error('Failed to report error:', reportingError);
     }
   };

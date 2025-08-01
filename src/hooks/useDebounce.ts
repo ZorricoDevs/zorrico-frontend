@@ -69,7 +69,7 @@ export const useDebounceCallback = (
  */
 export const useDebounceSearch = <T>(
   searchFn: (query: string) => Promise<T[]>,
-  delay: number = 300
+  delay = 300
 ) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<T[]>([]);

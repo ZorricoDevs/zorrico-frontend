@@ -13,8 +13,8 @@ export const useAuth = (): AuthContextType => {
       isApproved: false,
       isLoading: false,
       login: async () => false,
-      logout: () => {},
-      setUser: () => {}
+      logout: () => { /* No auth context available */ },
+      setUser: () => { /* No auth context available */ }
     };
   }
   return context;

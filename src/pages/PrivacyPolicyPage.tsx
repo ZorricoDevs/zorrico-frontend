@@ -1,11 +1,9 @@
 import React from 'react';
-import { Typography, Stack, Box, Paper, Divider, useTheme } from '@mui/material';
-import { Security, Policy, DataUsage, VerifiedUser } from '@mui/icons-material';
+import { Typography, Stack, Box, Paper, useTheme } from '@mui/material';
+import { Security, VerifiedUser } from '@mui/icons-material';
 import GenericPage from '../components/UI/GenericPage';
 
 const PrivacyPolicyPage: React.FC = () => {
-  const theme = useTheme();
-  const isDarkMode = theme.palette.mode === 'dark';
 
   const content = (
     <Stack spacing={4}>

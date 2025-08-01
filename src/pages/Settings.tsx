@@ -3,7 +3,6 @@ import {
   Box,
   Container,
   Typography,
-  Paper,
   Switch,
   FormControl,
   FormControlLabel,
@@ -18,7 +17,7 @@ import {
   Alert,
   Snackbar
 } from '@mui/material';
-import { useTheme } from '../hooks/useTheme';
+import { useTheme } from '../context/ThemeContext';
 
 const Settings: React.FC = () => {
   const { theme, toggleTheme } = useTheme();

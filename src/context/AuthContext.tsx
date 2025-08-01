@@ -21,9 +21,9 @@ interface AuthContextType {
   isAdmin: boolean;
   isApproved: boolean;
   isLoading: boolean;
-  login: (_email: string, _password: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
-  setUser: (_user: User | null) => void;
+  setUser: (user: User | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);

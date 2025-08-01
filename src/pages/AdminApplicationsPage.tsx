@@ -44,7 +44,7 @@ const AdminApplicationsPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedApp, setSelectedApp] = useState<string | null>(null);
+  const [ setSelectedApp] = useState<string | null>(null);
 
   // Mock data - replace with actual API call
   const applications: Application[] = [
@@ -119,12 +119,10 @@ const AdminApplicationsPage: React.FC = () => {
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, appId: string) => {
     setAnchorEl(event.currentTarget);
-    setSelectedApp(appId);
   };
 
   const handleMenuClose = () => {
     setAnchorEl(null);
-    setSelectedApp(null);
   };
 
   const handleStatusUpdate = (newStatus: string) => {

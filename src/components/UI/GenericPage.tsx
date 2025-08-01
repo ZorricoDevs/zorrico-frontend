@@ -4,7 +4,6 @@ import {
   Container,
   Typography,
   Paper,
-  Stack,
   Breadcrumbs,
   Link,
   Divider,
@@ -20,7 +19,6 @@ interface GenericPageProps {
 }
 
 const GenericPage: React.FC<GenericPageProps> = ({ title, content, breadcrumb }) => {
-  const location = useLocation();
   const theme = useTheme();
   const isDarkMode = theme.palette.mode === 'dark';
 

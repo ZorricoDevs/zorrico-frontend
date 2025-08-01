@@ -27,7 +27,7 @@ const AboutUsPage: React.FC = () => {
           color: isDarkMode ? theme.palette.text.primary : '#2E2E2E'
         }}
       >
-        HomeLoanMittra is India's leading digital platform that simplifies the home loan journey
+        HomeLoanMittra is India&apos;s leading digital platform that simplifies the home loan journey
         for millions of customers. We connect borrowers with the best lenders, providing transparent
         comparisons, instant eligibility checks, and seamless application processes.
       </Typography>

@@ -1,8 +1,3 @@
-// Fetch all broker-to-admin messages
-export const getAdminMessages = async () => {
-  const response = await api.get('/admin/messages');
-  return response.data.data;
-};
 import api from './api';
 
 // Fetch dashboard statistics
