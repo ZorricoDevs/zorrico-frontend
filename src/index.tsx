@@ -10,6 +10,7 @@ const safeReload = (): void => {
     window.location.reload();
   } catch (error) {
     // Fallback: redirect to current page
+    // eslint-disable-next-line no-self-assign
     window.location.href = window.location.href;
   }
 };
@@ -73,11 +74,11 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
       .then((registration) => {
-         
+
         console.log('SW registered: ', registration);
       })
       .catch((registrationError) => {
-         
+
         console.log('SW registration failed: ', registrationError);
       });
   });

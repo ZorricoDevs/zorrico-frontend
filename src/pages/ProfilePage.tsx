@@ -94,11 +94,11 @@ const ProfilePage: React.FC = () => {
                     fontSize: '2rem'
                   }}
                 >
-                  {(user?.firstName || user?.name) ? (user?.firstName || user?.name).charAt(0).toUpperCase() : 'U'}
+                  {(user?.firstName || user?.name) ? (user?.firstName || user?.name || '').charAt(0).toUpperCase() : 'U'}
                 </Avatar>
 
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  {user?.firstName || user?.name?.split(' ')[0] || ''} {user?.lastName || user?.name?.split(' ')[1] || ''}
+                  {user?.firstName || (user?.name ? user.name.split(' ')[0] : '') || ''} {user?.lastName || (user?.name ? user.name.split(' ')[1] : '') || ''}
                 </Typography>
 
                 <Button variant="outlined" size="small">
