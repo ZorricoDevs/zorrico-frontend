@@ -307,6 +307,14 @@ const AdminDashboard: React.FC = () => {
       const statsData = await getDashboardStats();
       console.log('Dashboard Stats Received:', statsData);
       console.log('Total Builders:', statsData.totalBuilders);
+      console.log('Total Lenders:', statsData.totalLenders);
+
+      // Handle backward compatibility - if totalBuilders is undefined, use totalLenders
+      if (statsData.totalBuilders === undefined && statsData.totalLenders !== undefined) {
+        statsData.totalBuilders = statsData.totalLenders;
+        console.log('Using totalLenders as totalBuilders:', statsData.totalBuilders);
+      }
+
       setStats(statsData);
     } catch (err) {
       console.error('Error fetching dashboard stats:', err);
