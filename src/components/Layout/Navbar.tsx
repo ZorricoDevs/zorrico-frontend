@@ -18,7 +18,7 @@ import {
   ListItemButton,
   ListItemText,
   ListItemIcon,
-  Divider
+  Divider,
 } from '@mui/material';
 import ThemeToggle from '../UI/ThemeToggle';
 import {
@@ -30,7 +30,7 @@ import {
   Home,
   Apps,
   Settings,
-  Person
+  Person,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -73,18 +73,25 @@ const Navbar: React.FC = () => {
     { label: 'Eligibility Checker', path: '/eligibility-checker', icon: <Calculate /> },
   ];
 
-  const userMenuItems = user ? [
-    {
-      label: 'Dashboard',
-      path: user.role === 'admin' ? '/admin-dashboard' :
-            user.role === 'broker' ? '/broker-dashboard' :
-            user.role === 'builder' ? '/builder-dashboard' : '/customer-dashboard',
-      icon: <Dashboard />
-    },
-    { label: 'Applications', path: '/applications', icon: <Apps /> },
-    { label: 'Profile', path: '/profile', icon: <Person /> },
-    { label: 'Settings', path: '/settings', icon: <Settings /> },
-  ] : [];
+  const userMenuItems = user
+    ? [
+        {
+          label: 'Dashboard',
+          path:
+            user.role === 'admin'
+              ? '/admin-dashboard'
+              : user.role === 'broker'
+                ? '/broker-dashboard'
+                : user.role === 'builder'
+                  ? '/builder-dashboard'
+                  : '/customer-dashboard',
+          icon: <Dashboard />,
+        },
+        { label: 'Applications', path: '/applications', icon: <Apps /> },
+        { label: 'Profile', path: '/profile', icon: <Person /> },
+        { label: 'Settings', path: '/settings', icon: <Settings /> },
+      ]
+    : [];
 
   // Determine dashboard path based on user role
   const dashboardPath = user
@@ -106,21 +113,17 @@ const Navbar: React.FC = () => {
   }, []);
 
   const renderMobileDrawer = () => (
-    <Drawer
-      anchor="left"
-      open={mobileDrawerOpen}
-      onClose={() => setMobileDrawerOpen(false)}
-    >
-      <Box sx={{ width: 250 }} role="presentation">
+    <Drawer anchor='left' open={mobileDrawerOpen} onClose={() => setMobileDrawerOpen(false)}>
+      <Box sx={{ width: 250 }} role='presentation'>
         <List>
           <ListItem>
-            <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#1976d2' }}>
+            <Typography variant='h6' sx={{ fontWeight: 'bold', color: '#1976d2' }}>
               HomeLoanMittra
             </Typography>
           </ListItem>
           <Divider />
 
-          {menuItems.map((item) => (
+          {menuItems.map(item => (
             <ListItem key={item.label}>
               <ListItemButton
                 onClick={() => handleNavigation(item.path)}
@@ -135,7 +138,7 @@ const Navbar: React.FC = () => {
           {user && (
             <>
               <Divider />
-              {userMenuItems.map((item) => (
+              {userMenuItems.map(item => (
                 <ListItem key={item.label}>
                   <ListItemButton
                     onClick={() => handleNavigation(item.path)}
@@ -149,8 +152,10 @@ const Navbar: React.FC = () => {
               <Divider />
               <ListItem>
                 <ListItemButton onClick={handleLogout}>
-                  <ListItemIcon><Logout /></ListItemIcon>
-                  <ListItemText primary="Logout" />
+                  <ListItemIcon>
+                    <Logout />
+                  </ListItemIcon>
+                  <ListItemText primary='Logout' />
                 </ListItemButton>
               </ListItem>
             </>
@@ -161,8 +166,10 @@ const Navbar: React.FC = () => {
               <Divider />
               <ListItem>
                 <ListItemButton onClick={() => handleNavigation('/login')}>
-                  <ListItemIcon><Login /></ListItemIcon>
-                  <ListItemText primary="Login" />
+                  <ListItemIcon>
+                    <Login />
+                  </ListItemIcon>
+                  <ListItemText primary='Login' />
                 </ListItemButton>
               </ListItem>
             </>
@@ -175,13 +182,15 @@ const Navbar: React.FC = () => {
   return (
     <>
       <AppBar
-        position="sticky"
+        position='sticky'
         sx={{
           backgroundColor: scrolled
-            ? (isDark
-                ? 'rgba(15,22,43,0.85)'
-                : 'rgba(255,255,255,0.85)')
-            : (isDark ? '#0f162b' : '#fff'),
+            ? isDark
+              ? 'rgba(15,22,43,0.85)'
+              : 'rgba(255,255,255,0.85)'
+            : isDark
+              ? '#0f162b'
+              : '#fff',
           color: isDark ? '#fff' : '#222',
           boxShadow: '0 2px 12px 0 rgba(30,41,59,0.10)',
           transition: 'background-color 0.3s cubic-bezier(.4,0,.2,1)',
@@ -198,14 +207,14 @@ const Navbar: React.FC = () => {
               cursor: 'pointer',
               minWidth: 260,
               pl: 1,
-              flexShrink: 0
+              flexShrink: 0,
             }}
             onClick={() => navigate('/')}
           >
             <Box
-              component="img"
-              src="/logo.png"
-              alt="Home Loan Mittra Logo"
+              component='img'
+              src={`${process.env.PUBLIC_URL || ''}/logo.png`}
+              alt='Home Loan Mittra Logo'
               sx={{
                 height: 48,
                 width: 'auto',
@@ -213,14 +222,25 @@ const Navbar: React.FC = () => {
                 borderRadius: 2,
                 boxShadow: '0 2px 8px 0 rgba(30,41,59,0.10)',
                 objectFit: 'contain',
-                display: 'block'
+                display: 'block',
               }}
             />
             <Box>
-              <Typography variant="h6" sx={{ fontWeight: 700, color: isDark ? '#60a5fa' : '#1976d2', lineHeight: 1, fontSize: 24 }}>
+              <Typography
+                variant='h6'
+                sx={{
+                  fontWeight: 700,
+                  color: isDark ? '#60a5fa' : '#1976d2',
+                  lineHeight: 1,
+                  fontSize: 24,
+                }}
+              >
                 Home Loan Mittra
               </Typography>
-              <Typography variant="caption" sx={{ color: isDark ? '#CBD5E1' : '#64748B', fontWeight: 500, letterSpacing: 1 }}>
+              <Typography
+                variant='caption'
+                sx={{ color: isDark ? '#CBD5E1' : '#64748B', fontWeight: 500, letterSpacing: 1 }}
+              >
                 MAKING HOME LOANS EFFORTLESS
               </Typography>
             </Box>
@@ -232,13 +252,18 @@ const Navbar: React.FC = () => {
           {/* Desktop Navigation Headings to right */}
           {!isMobile && (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2, pr: 1 }}>
-              {menuItems.map((item) => (
+              {menuItems.map(item => (
                 <Button
                   key={item.label}
-                  color="inherit"
+                  color='inherit'
                   onClick={() => navigate(item.path)}
                   sx={{
-                    backgroundColor: location.pathname === item.path ? (isDark ? 'rgba(255,255,255,0.06)' : 'rgba(30,41,59,0.06)') : 'transparent',
+                    backgroundColor:
+                      location.pathname === item.path
+                        ? isDark
+                          ? 'rgba(255,255,255,0.06)'
+                          : 'rgba(30,41,59,0.06)'
+                        : 'transparent',
                     color: isDark ? '#fff' : '#222',
                     fontWeight: 500,
                     fontSize: 14,
@@ -248,8 +273,8 @@ const Navbar: React.FC = () => {
                     minWidth: 0,
                     textTransform: 'none',
                     '&:hover': {
-                      backgroundColor: isDark ? 'rgba(255,255,255,0.10)' : 'rgba(30,41,59,0.10)'
-                    }
+                      backgroundColor: isDark ? 'rgba(255,255,255,0.10)' : 'rgba(30,41,59,0.10)',
+                    },
                   }}
                 >
                   {item.label}
@@ -259,73 +284,103 @@ const Navbar: React.FC = () => {
               {/* User Menu (avatar) */}
               {user && (
                 <Box sx={{ ml: 1 }}>
-                  <Tooltip title="Account settings">
-  <IconButton
-    onClick={handleProfileMenuOpen}
-    size="small"
-    sx={{ ml: 1 }}
-    aria-controls={anchorEl ? 'account-menu' : undefined}
-    aria-haspopup="true"
-    aria-expanded={anchorEl ? 'true' : undefined}
-  >
-    <Avatar sx={{ width: 32, height: 32, backgroundColor: '#fff', color: '#1976d2', fontWeight: 700 }}>
-      {(user.firstName || user.name) ? (user.firstName || user.name).charAt(0).toUpperCase() : 'U'}
-    </Avatar>
-  </IconButton>
-</Tooltip>
-<Menu
-  anchorEl={anchorEl}
-  id="account-menu"
-  open={Boolean(anchorEl)}
-  onClose={handleMenuClose}
-  disableScrollLock
-  PaperProps={{
-    elevation: 2,
-    sx: {
-      mt: 1.5,
-      minWidth: 180,
-      borderRadius: 2,
-      boxShadow: '0 4px 24px 0 rgba(30,41,59,0.18)',
-      bgcolor: isDark ? '#232b3b' : '#fff',
-      color: isDark ? '#fff' : '#222',
-      p: 0,
-    },
-  }}
-  transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-  anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
->
-  <MenuItem onClick={() => { handleMenuClose(); navigate(dashboardPath); }}>
-    <ListItemIcon>
-      <Dashboard fontSize="small" />
-    </ListItemIcon>
-    <ListItemText primary="Dashboard" />
-  </MenuItem>
-  <MenuItem onClick={() => { handleMenuClose(); navigate('/profile'); }}>
-    <ListItemIcon>
-      <Person fontSize="small" />
-    </ListItemIcon>
-    <ListItemText primary="Profile" />
-  </MenuItem>
-  <MenuItem onClick={() => { handleMenuClose(); navigate('/settings'); }}>
-    <ListItemIcon>
-      <Settings fontSize="small" />
-    </ListItemIcon>
-    <ListItemText primary="Settings" />
-  </MenuItem>
-  <MenuItem onClick={() => { handleMenuClose(); navigate('/support'); }}>
-    <ListItemIcon>
-      <AccountCircle fontSize="small" />
-    </ListItemIcon>
-    <ListItemText primary="Support" />
-  </MenuItem>
-  <Divider sx={{ my: 1, bgcolor: isDark ? '#374151' : '#e0e0e0' }} />
-  <MenuItem onClick={handleLogout}>
-    <ListItemIcon>
-      <Logout fontSize="small" />
-    </ListItemIcon>
-    <ListItemText primary="Logout" />
-  </MenuItem>
-</Menu>
+                  <Tooltip title='Account settings'>
+                    <IconButton
+                      onClick={handleProfileMenuOpen}
+                      size='small'
+                      sx={{ ml: 1 }}
+                      aria-controls={anchorEl ? 'account-menu' : undefined}
+                      aria-haspopup='true'
+                      aria-expanded={anchorEl ? 'true' : undefined}
+                    >
+                      <Avatar
+                        sx={{
+                          width: 32,
+                          height: 32,
+                          backgroundColor: '#fff',
+                          color: '#1976d2',
+                          fontWeight: 700,
+                        }}
+                      >
+                        {user.firstName || user.name
+                          ? (user.firstName || user.name).charAt(0).toUpperCase()
+                          : 'U'}
+                      </Avatar>
+                    </IconButton>
+                  </Tooltip>
+                  <Menu
+                    anchorEl={anchorEl}
+                    id='account-menu'
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                    disableScrollLock
+                    PaperProps={{
+                      elevation: 2,
+                      sx: {
+                        mt: 1.5,
+                        minWidth: 180,
+                        borderRadius: 2,
+                        boxShadow: '0 4px 24px 0 rgba(30,41,59,0.18)',
+                        bgcolor: isDark ? '#232b3b' : '#fff',
+                        color: isDark ? '#fff' : '#222',
+                        p: 0,
+                      },
+                    }}
+                    transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                    anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                  >
+                    <MenuItem
+                      onClick={() => {
+                        handleMenuClose();
+                        navigate(dashboardPath);
+                      }}
+                    >
+                      <ListItemIcon>
+                        <Dashboard fontSize='small' />
+                      </ListItemIcon>
+                      <ListItemText primary='Dashboard' />
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleMenuClose();
+                        navigate('/profile');
+                      }}
+                    >
+                      <ListItemIcon>
+                        <Person fontSize='small' />
+                      </ListItemIcon>
+                      <ListItemText primary='Profile' />
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleMenuClose();
+                        navigate('/settings');
+                      }}
+                    >
+                      <ListItemIcon>
+                        <Settings fontSize='small' />
+                      </ListItemIcon>
+                      <ListItemText primary='Settings' />
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleMenuClose();
+                        navigate('/support');
+                      }}
+                    >
+                      <ListItemIcon>
+                        <AccountCircle fontSize='small' />
+                      </ListItemIcon>
+                      <ListItemText primary='Support' />
+                    </MenuItem>
+                    <Divider sx={{ my: 1, bgcolor: isDark ? '#374151' : '#e0e0e0' }} />
+                    <MenuItem onClick={handleLogout}>
+                      <ListItemIcon>
+                        <Logout fontSize='small' />
+                      </ListItemIcon>
+                      <ListItemText primary='Logout' />
+                    </MenuItem>
+                  </Menu>
                 </Box>
               )}
               {/* Theme Toggle at extreme right */}
@@ -336,7 +391,6 @@ const Navbar: React.FC = () => {
           )}
 
           {/* Remove Login button from Navbar */}
-
         </Toolbar>
       </AppBar>
 
