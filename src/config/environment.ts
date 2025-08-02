@@ -35,8 +35,8 @@ export const config = {
   }),
 };
 
-// Log environment info in development
-if (config.isDevelopment) {
+// Log environment info only in development mode (not production)
+if (config.isDevelopment && process.env.NODE_ENV === 'development') {
   console.log('🔧 Environment Configuration:', config.getEnvironmentInfo());
 }
 

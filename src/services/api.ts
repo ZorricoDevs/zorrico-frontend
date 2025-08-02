@@ -7,21 +7,21 @@ const getApiBaseUrl = (): string => {
   const defaultUrl = 'https://homeloanmittra-backend.onrender.com/api';
 
   if (envApiUrl) {
-    console.log(`🔧 API Mode: Using ${envApiUrl.includes('localhost') ? 'LOCAL' : 'LIVE'} backend`);
-    console.log(`🌐 API URL: ${envApiUrl}`);
+    // Only log in development mode
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`🔧 API Mode: ${envApiUrl.includes('localhost') ? 'LOCAL' : 'LIVE'} backend`);
+    }
     return envApiUrl;
   }
 
-  console.log('⚠️ No REACT_APP_API_URL found, using production URL');
   return defaultUrl;
 };
 
 const API_BASE_URL = getApiBaseUrl();
 
 // Development mode logging
-const isDevelopment =
-  process.env.REACT_APP_ENV === 'development' || process.env.NODE_ENV === 'development';
-const enableLogging = process.env.REACT_APP_ENABLE_LOGGING === 'true' || isDevelopment;
+const isDevelopment = process.env.NODE_ENV === 'development';
+const enableLogging = process.env.REACT_APP_ENABLE_LOGGING === 'true' && isDevelopment;
 
 // Create axios instance with default config
 const api = axios.create({
