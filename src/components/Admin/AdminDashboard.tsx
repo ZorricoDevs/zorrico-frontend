@@ -79,7 +79,11 @@ import {
   assignBrokerToLead,
   assignBuilderToLead,
 } from '../../services/adminApi';
-import applicationApi, { Application, ApplicationFilters } from '../../services/applicationApi';
+import applicationApi, {
+  Application,
+  ApplicationFilters,
+  Customer,
+} from '../../services/applicationApi';
 import { getAllProperties, createProperty, updateProperty } from '../../services/propertyApi';
 
 const AdminDashboard: React.FC = () => {
@@ -2539,19 +2543,62 @@ const AdminDashboard: React.FC = () => {
 };
 
 const ApplicationManagement: React.FC = () => {
-  // ... Implementation for Application Management ...
+  // Application Management State
   const [applications, setApplications] = useState<Application[]>([]);
-  const [filters] = useState<ApplicationFilters>({
-    page: 1,
+  const [filteredApplications, setFilteredApplications] = useState<Application[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  // Filters and Search
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [dateFromFilter, setDateFromFilter] = useState('');
+  const [dateToFilter, setDateToFilter] = useState('');
+
+  // Pagination
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalCount: 0,
+    hasNext: false,
+    hasPrev: false,
+  });
+
+  // Dialogs and Actions
+  const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
+  const [viewDialog, setViewDialog] = useState(false);
+  const [statusDialog, setStatusDialog] = useState(false);
+  const [newStatus, setNewStatus] = useState('');
+  const [statusNotes, setStatusNotes] = useState('');
+  const [deleteDialog, setDeleteDialog] = useState(false);
+  const [createDialog, setCreateDialog] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
+
+  // Create Application State
+  const [eligibleCustomers, setEligibleCustomers] = useState<Customer[]>([]);
+  const [newApplication, setNewApplication] = useState({
+    customerId: '',
+    loanAmount: '',
+    interestRate: '',
+    tenure: '',
+    selectedBank: '',
+    processingFee: '',
+  });
+
+  // Filters for applications
+  const filters: ApplicationFilters = {
+    status: statusFilter !== 'all' ? statusFilter : undefined,
+    customerName: searchQuery || undefined,
+    dateFrom: dateFromFilter || undefined,
+    dateTo: dateToFilter || undefined,
+    page: pagination.currentPage,
     limit: 10,
     sortBy: 'createdAt',
     sortOrder: 'desc',
-  });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [pagination, setPagination] = useState<any>(null);
-  // ... more state and logic
+  };
 
+  // Fetch Applications
   const fetchApplications = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -2559,59 +2606,729 @@ const ApplicationManagement: React.FC = () => {
       const response = await applicationApi.getAllApplications(filters);
       setApplications(response.applications);
       setPagination(response.pagination);
-    } catch (err) {
-      setError('Failed to fetch applications');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to fetch applications');
     } finally {
       setLoading(false);
     }
   }, [filters]);
 
+  // Fetch Eligible Customers for Create Dialog
+  const fetchEligibleCustomers = useCallback(async () => {
+    try {
+      const customers = await applicationApi.getEligibleCustomers();
+      setEligibleCustomers(customers);
+    } catch (err) {
+      console.error('Failed to fetch eligible customers:', err);
+    }
+  }, []);
+
+  // Filter applications based on search
+  useEffect(() => {
+    if (!searchQuery) {
+      setFilteredApplications(applications);
+    } else {
+      const filtered = applications.filter(
+        app =>
+          app.applicationNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          app.personalInfo.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          app.personalInfo.email.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredApplications(filtered);
+    }
+  }, [applications, searchQuery]);
+
   useEffect(() => {
     fetchApplications();
   }, [fetchApplications]);
 
-  if (loading)
+  useEffect(() => {
+    if (createDialog) {
+      fetchEligibleCustomers();
+    }
+  }, [createDialog, fetchEligibleCustomers]);
+
+  // Handle Status Update
+  const handleStatusUpdate = async () => {
+    if (!selectedApplication || !newStatus) return;
+
+    setActionLoading(true);
+    try {
+      await applicationApi.updateApplicationStatus(
+        selectedApplication._id,
+        newStatus as Application['status'],
+        statusNotes
+      );
+      setStatusDialog(false);
+      setSelectedApplication(null);
+      setNewStatus('');
+      setStatusNotes('');
+      fetchApplications();
+      setSuccess('Application status updated successfully!');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to update application status');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  // Handle Delete Application
+  const handleDeleteApplication = async () => {
+    if (!selectedApplication) return;
+
+    setActionLoading(true);
+    try {
+      await applicationApi.deleteApplication(selectedApplication._id);
+      setDeleteDialog(false);
+      setSelectedApplication(null);
+      fetchApplications();
+      setSuccess('Application deleted successfully!');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to delete application');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  // Handle Create Application
+  const handleCreateApplication = async () => {
+    setActionLoading(true);
+    try {
+      const applicationData = {
+        customerId: newApplication.customerId,
+        loanAmount: Number(newApplication.loanAmount),
+        interestRate: Number(newApplication.interestRate),
+        tenure: Number(newApplication.tenure),
+        selectedBank: newApplication.selectedBank,
+        processingFee: newApplication.processingFee
+          ? Number(newApplication.processingFee)
+          : undefined,
+      };
+
+      await applicationApi.createApplication(applicationData);
+      setCreateDialog(false);
+      setNewApplication({
+        customerId: '',
+        loanAmount: '',
+        interestRate: '',
+        tenure: '',
+        selectedBank: '',
+        processingFee: '',
+      });
+      fetchApplications();
+      setSuccess('Application created successfully!');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to create application');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  // Status color mapping
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'submitted':
+        return 'info';
+      case 'under_review':
+        return 'warning';
+      case 'documents_pending':
+        return 'error';
+      case 'documents_received':
+        return 'info';
+      case 'submitted_to_bank':
+        return 'primary';
+      case 'under_bank_review':
+        return 'warning';
+      case 'approved_by_bank':
+        return 'success';
+      case 'sanctioned':
+        return 'success';
+      case 'disbursed':
+        return 'success';
+      case 'rejected':
+        return 'error';
+      case 'rejected_by_bank':
+        return 'error';
+      default:
+        return 'default';
+    }
+  };
+
+  if (loading && applications.length === 0) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
-        <CircularProgress />
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
+        <CircularProgress size={60} />
       </Box>
     );
-  if (error) return <Alert severity='error'>{error}</Alert>;
+  }
 
   return (
-    <Box>
-      <Typography variant='h5' fontWeight='bold'>
-        Application Management
-      </Typography>
-      {/* Table and Drawer for applications */}
-      <TableContainer component={Card}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Application #</TableCell>
-              <TableCell>Customer</TableCell>
-              <TableCell>Amount</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Last Updated</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {applications.map(app => (
-              <TableRow key={app._id} hover>
-                <TableCell>{app.applicationNumber}</TableCell>
-                <TableCell>{app.personalInfo.fullName}</TableCell>
-                <TableCell>₹{app.loanDetails.requestedAmount.toLocaleString()}</TableCell>
-                <TableCell>
-                  <Chip label={app.status} size='small' />
-                </TableCell>
-                <TableCell>{new Date(app.updatedAt).toLocaleDateString()}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      {/* Drawer and other components */}
-    </Box>
+    <Card>
+      <CardContent>
+        {/* Header */}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Avatar sx={{ bgcolor: 'primary.main' }}>
+              <Assignment />
+            </Avatar>
+            <Box>
+              <Typography variant='h6' sx={{ fontWeight: 600 }}>
+                Application Management
+              </Typography>
+              <Typography variant='body2' color='text.secondary'>
+                {pagination.totalCount} total applications
+              </Typography>
+            </Box>
+          </Box>
+          <Button
+            variant='contained'
+            startIcon={<PersonAdd />}
+            onClick={() => setCreateDialog(true)}
+            sx={{ borderRadius: 2 }}
+          >
+            Create Application
+          </Button>
+        </Box>
+
+        {/* Filters */}
+        <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap', alignItems: 'center' }}>
+          <TextField
+            size='small'
+            placeholder='Search applications...'
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            sx={{ minWidth: 250 }}
+            InputProps={{
+              startAdornment: <Search sx={{ color: 'text.secondary', mr: 1 }} />,
+              endAdornment: searchQuery && (
+                <IconButton size='small' onClick={() => setSearchQuery('')}>
+                  <Close fontSize='small' />
+                </IconButton>
+              ),
+            }}
+          />
+          <FormControl size='small' sx={{ minWidth: 180 }}>
+            <InputLabel>Status</InputLabel>
+            <Select
+              value={statusFilter}
+              onChange={e => setStatusFilter(e.target.value)}
+              label='Status'
+            >
+              <MenuItem value='all'>All Status</MenuItem>
+              <MenuItem value='submitted'>Submitted</MenuItem>
+              <MenuItem value='under_review'>Under Review</MenuItem>
+              <MenuItem value='documents_pending'>Documents Pending</MenuItem>
+              <MenuItem value='documents_received'>Documents Received</MenuItem>
+              <MenuItem value='submitted_to_bank'>Submitted to Bank</MenuItem>
+              <MenuItem value='under_bank_review'>Under Bank Review</MenuItem>
+              <MenuItem value='approved_by_bank'>Approved by Bank</MenuItem>
+              <MenuItem value='sanctioned'>Sanctioned</MenuItem>
+              <MenuItem value='disbursed'>Disbursed</MenuItem>
+              <MenuItem value='rejected'>Rejected</MenuItem>
+              <MenuItem value='rejected_by_bank'>Rejected by Bank</MenuItem>
+            </Select>
+          </FormControl>
+          <TextField
+            size='small'
+            label='From Date'
+            type='date'
+            value={dateFromFilter}
+            onChange={e => setDateFromFilter(e.target.value)}
+            InputLabelProps={{ shrink: true }}
+          />
+          <TextField
+            size='small'
+            label='To Date'
+            type='date'
+            value={dateToFilter}
+            onChange={e => setDateToFilter(e.target.value)}
+            InputLabelProps={{ shrink: true }}
+          />
+          <Button
+            variant='outlined'
+            onClick={() => {
+              setSearchQuery('');
+              setStatusFilter('all');
+              setDateFromFilter('');
+              setDateToFilter('');
+            }}
+            startIcon={<Refresh />}
+          >
+            Clear Filters
+          </Button>
+        </Box>
+
+        {/* Error Display */}
+        {error && (
+          <Alert severity='error' sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        )}
+
+        {/* Applications Table */}
+        {filteredApplications.length === 0 ? (
+          <Box
+            sx={{
+              textAlign: 'center',
+              py: 6,
+              borderRadius: 2,
+              bgcolor: 'background.default',
+              border: '2px dashed',
+              borderColor: 'divider',
+            }}
+          >
+            <Assignment sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
+            <Typography variant='h6' color='text.secondary' gutterBottom>
+              No applications found
+            </Typography>
+            <Typography variant='body2' color='text.secondary'>
+              {searchQuery || statusFilter !== 'all' || dateFromFilter || dateToFilter
+                ? 'Try adjusting your search criteria'
+                : 'Create your first loan application'}
+            </Typography>
+          </Box>
+        ) : (
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Application #</TableCell>
+                  <TableCell>Customer</TableCell>
+                  <TableCell>Loan Amount</TableCell>
+                  <TableCell>Bank</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell>Created Date</TableCell>
+                  <TableCell align='center'>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {filteredApplications.map(app => (
+                  <TableRow key={app._id} sx={{ '&:hover': { backgroundColor: 'action.hover' } }}>
+                    <TableCell>
+                      <Typography variant='subtitle2' sx={{ fontWeight: 600 }}>
+                        {app.applicationNumber}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Box>
+                        <Typography variant='body2' sx={{ fontWeight: 500 }}>
+                          {app.personalInfo.fullName}
+                        </Typography>
+                        <Typography variant='caption' color='text.secondary'>
+                          {app.personalInfo.email}
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant='body2' sx={{ fontWeight: 600, color: 'success.main' }}>
+                        ₹{app.loanDetails.requestedAmount.toLocaleString()}
+                      </Typography>
+                      <Typography variant='caption' color='text.secondary'>
+                        {app.loanDetails.tenure} years @ {app.loanDetails.interestRate}%
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant='body2'>{app.loanDetails.selectedBank}</Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        label={app.status.replace(/_/g, ' ').toUpperCase()}
+                        size='small'
+                        color={getStatusColor(app.status) as any}
+                        sx={{ textTransform: 'capitalize', fontWeight: 500 }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant='body2'>
+                        {new Date(app.createdAt).toLocaleDateString()}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align='center'>
+                      <Stack direction='row' spacing={1} justifyContent='center'>
+                        <Tooltip title='View Details'>
+                          <IconButton
+                            size='small'
+                            onClick={() => {
+                              setSelectedApplication(app);
+                              setViewDialog(true);
+                            }}
+                          >
+                            <Visibility fontSize='small' />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title='Update Status'>
+                          <IconButton
+                            size='small'
+                            color='warning'
+                            onClick={() => {
+                              setSelectedApplication(app);
+                              setNewStatus(app.status);
+                              setStatusDialog(true);
+                            }}
+                          >
+                            <Edit fontSize='small' />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title='Delete Application'>
+                          <IconButton
+                            size='small'
+                            color='error'
+                            onClick={() => {
+                              setSelectedApplication(app);
+                              setDeleteDialog(true);
+                            }}
+                          >
+                            <Delete fontSize='small' />
+                          </IconButton>
+                        </Tooltip>
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+
+        {/* Success/Error Snackbars */}
+        <Snackbar
+          open={!!success}
+          autoHideDuration={4000}
+          onClose={() => setSuccess(null)}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        >
+          <Alert onClose={() => setSuccess(null)} severity='success'>
+            {success}
+          </Alert>
+        </Snackbar>
+
+        <Snackbar
+          open={!!error}
+          autoHideDuration={6000}
+          onClose={() => setError(null)}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        >
+          <Alert onClose={() => setError(null)} severity='error'>
+            {error}
+          </Alert>
+        </Snackbar>
+
+        {/* View Application Dialog */}
+        <Dialog open={viewDialog} onClose={() => setViewDialog(false)} maxWidth='md' fullWidth>
+          <DialogTitle>Application Details</DialogTitle>
+          <DialogContent>
+            {selectedApplication && (
+              <Box sx={{ pt: 2 }}>
+                <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3, mb: 3 }}>
+                  <TextField
+                    label='Application Number'
+                    value={selectedApplication.applicationNumber}
+                    InputProps={{ readOnly: true }}
+                  />
+                  <TextField
+                    label='Current Status'
+                    value={selectedApplication.status.replace(/_/g, ' ').toUpperCase()}
+                    InputProps={{ readOnly: true }}
+                  />
+                  <TextField
+                    label='Customer Name'
+                    value={selectedApplication.personalInfo.fullName}
+                    InputProps={{ readOnly: true }}
+                  />
+                  <TextField
+                    label='Customer Email'
+                    value={selectedApplication.personalInfo.email}
+                    InputProps={{ readOnly: true }}
+                  />
+                  <TextField
+                    label='Customer Phone'
+                    value={selectedApplication.personalInfo.phone}
+                    InputProps={{ readOnly: true }}
+                  />
+                  <TextField
+                    label='Loan Amount'
+                    value={`₹${selectedApplication.loanDetails.requestedAmount.toLocaleString()}`}
+                    InputProps={{ readOnly: true }}
+                  />
+                  <TextField
+                    label='Interest Rate'
+                    value={`${selectedApplication.loanDetails.interestRate}%`}
+                    InputProps={{ readOnly: true }}
+                  />
+                  <TextField
+                    label='Tenure'
+                    value={`${selectedApplication.loanDetails.tenure} years`}
+                    InputProps={{ readOnly: true }}
+                  />
+                  <TextField
+                    label='Monthly EMI'
+                    value={`₹${selectedApplication.loanDetails.monthlyEMI.toLocaleString()}`}
+                    InputProps={{ readOnly: true }}
+                  />
+                  <TextField
+                    label='Selected Bank'
+                    value={selectedApplication.loanDetails.selectedBank}
+                    InputProps={{ readOnly: true }}
+                  />
+                  <TextField
+                    label='Created Date'
+                    value={new Date(selectedApplication.createdAt).toLocaleDateString()}
+                    InputProps={{ readOnly: true }}
+                  />
+                  <TextField
+                    label='Last Updated'
+                    value={new Date(selectedApplication.updatedAt).toLocaleDateString()}
+                    InputProps={{ readOnly: true }}
+                  />
+                </Box>
+
+                {/* Documents Section */}
+                <Box sx={{ mb: 3 }}>
+                  <Typography variant='h6' sx={{ mb: 2 }}>
+                    Documents
+                  </Typography>
+                  <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+                    <Box>
+                      <Typography variant='subtitle2' color='success.main' sx={{ mb: 1 }}>
+                        Submitted ({selectedApplication.documents.submitted.length})
+                      </Typography>
+                      {selectedApplication.documents.submitted.map((doc, index) => (
+                        <Chip
+                          key={index}
+                          label={doc}
+                          size='small'
+                          color='success'
+                          sx={{ mr: 1, mb: 1 }}
+                        />
+                      ))}
+                    </Box>
+                    <Box>
+                      <Typography variant='subtitle2' color='warning.main' sx={{ mb: 1 }}>
+                        Pending ({selectedApplication.documents.pending.length})
+                      </Typography>
+                      {selectedApplication.documents.pending.map((doc, index) => (
+                        <Chip
+                          key={index}
+                          label={doc}
+                          size='small'
+                          color='warning'
+                          sx={{ mr: 1, mb: 1 }}
+                        />
+                      ))}
+                    </Box>
+                  </Box>
+                </Box>
+
+                {/* Timeline Section */}
+                {selectedApplication.timeline && selectedApplication.timeline.length > 0 && (
+                  <Box>
+                    <Typography variant='h6' sx={{ mb: 2 }}>
+                      Timeline
+                    </Typography>
+                    <Box sx={{ maxHeight: 200, overflowY: 'auto' }}>
+                      {selectedApplication.timeline.map((event, index) => (
+                        <Box
+                          key={index}
+                          sx={{ mb: 2, p: 2, bgcolor: 'background.default', borderRadius: 1 }}
+                        >
+                          <Typography variant='subtitle2'>{event.event}</Typography>
+                          <Typography variant='body2' color='text.secondary'>
+                            {event.description}
+                          </Typography>
+                          <Typography variant='caption' color='text.secondary'>
+                            {new Date(event.date).toLocaleDateString()} - {event.performedBy}
+                          </Typography>
+                        </Box>
+                      ))}
+                    </Box>
+                  </Box>
+                )}
+              </Box>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setViewDialog(false)}>Close</Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Update Status Dialog */}
+        <Dialog open={statusDialog} onClose={() => setStatusDialog(false)} maxWidth='sm' fullWidth>
+          <DialogTitle>Update Application Status</DialogTitle>
+          <DialogContent>
+            {selectedApplication && (
+              <Box sx={{ pt: 2 }}>
+                <Typography variant='body2' sx={{ mb: 2 }}>
+                  Update status for application:{' '}
+                  <strong>{selectedApplication.applicationNumber}</strong>
+                </Typography>
+                <FormControl fullWidth sx={{ mb: 2 }}>
+                  <InputLabel>Status</InputLabel>
+                  <Select
+                    value={newStatus}
+                    onChange={e => setNewStatus(e.target.value)}
+                    label='Status'
+                  >
+                    <MenuItem value='submitted'>Submitted</MenuItem>
+                    <MenuItem value='under_review'>Under Review</MenuItem>
+                    <MenuItem value='documents_pending'>Documents Pending</MenuItem>
+                    <MenuItem value='documents_received'>Documents Received</MenuItem>
+                    <MenuItem value='submitted_to_bank'>Submitted to Bank</MenuItem>
+                    <MenuItem value='under_bank_review'>Under Bank Review</MenuItem>
+                    <MenuItem value='approved_by_bank'>Approved by Bank</MenuItem>
+                    <MenuItem value='sanctioned'>Sanctioned</MenuItem>
+                    <MenuItem value='disbursed'>Disbursed</MenuItem>
+                    <MenuItem value='rejected'>Rejected</MenuItem>
+                    <MenuItem value='rejected_by_bank'>Rejected by Bank</MenuItem>
+                  </Select>
+                </FormControl>
+                <TextField
+                  fullWidth
+                  label='Notes (Optional)'
+                  multiline
+                  rows={3}
+                  value={statusNotes}
+                  onChange={e => setStatusNotes(e.target.value)}
+                  placeholder='Add any notes about this status change...'
+                />
+              </Box>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setStatusDialog(false)}>Cancel</Button>
+            <Button
+              onClick={handleStatusUpdate}
+              variant='contained'
+              disabled={actionLoading || !newStatus}
+              startIcon={actionLoading ? <CircularProgress size={20} /> : <Edit />}
+            >
+              Update Status
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Create Application Dialog */}
+        <Dialog open={createDialog} onClose={() => setCreateDialog(false)} maxWidth='md' fullWidth>
+          <DialogTitle>Create New Application</DialogTitle>
+          <DialogContent>
+            <Box sx={{ pt: 2, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+              <FormControl fullWidth>
+                <InputLabel>Select Customer</InputLabel>
+                <Select
+                  value={newApplication.customerId}
+                  onChange={e =>
+                    setNewApplication({ ...newApplication, customerId: e.target.value })
+                  }
+                  label='Select Customer'
+                >
+                  {eligibleCustomers.map(customer => (
+                    <MenuItem key={customer._id} value={customer._id}>
+                      {customer.fullName} ({customer.email})
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <TextField
+                fullWidth
+                label='Loan Amount (₹)'
+                type='number'
+                value={newApplication.loanAmount}
+                onChange={e => setNewApplication({ ...newApplication, loanAmount: e.target.value })}
+              />
+              <TextField
+                fullWidth
+                label='Interest Rate (%)'
+                type='number'
+                value={newApplication.interestRate}
+                onChange={e =>
+                  setNewApplication({ ...newApplication, interestRate: e.target.value })
+                }
+                inputProps={{ step: '0.01' }}
+              />
+              <TextField
+                fullWidth
+                label='Tenure (Years)'
+                type='number'
+                value={newApplication.tenure}
+                onChange={e => setNewApplication({ ...newApplication, tenure: e.target.value })}
+              />
+              <TextField
+                fullWidth
+                label='Selected Bank'
+                value={newApplication.selectedBank}
+                onChange={e =>
+                  setNewApplication({ ...newApplication, selectedBank: e.target.value })
+                }
+              />
+              <TextField
+                fullWidth
+                label='Processing Fee (₹) - Optional'
+                type='number'
+                value={newApplication.processingFee}
+                onChange={e =>
+                  setNewApplication({ ...newApplication, processingFee: e.target.value })
+                }
+              />
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setCreateDialog(false)}>Cancel</Button>
+            <Button
+              onClick={handleCreateApplication}
+              variant='contained'
+              disabled={
+                actionLoading ||
+                !newApplication.customerId ||
+                !newApplication.loanAmount ||
+                !newApplication.interestRate ||
+                !newApplication.tenure ||
+                !newApplication.selectedBank
+              }
+              startIcon={actionLoading ? <CircularProgress size={20} /> : <PersonAdd />}
+            >
+              Create Application
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Delete Confirmation Dialog */}
+        <Dialog open={deleteDialog} onClose={() => setDeleteDialog(false)} maxWidth='xs' fullWidth>
+          <DialogTitle sx={{ color: 'error.main' }}>Delete Application</DialogTitle>
+          <DialogContent>
+            {selectedApplication && (
+              <Box sx={{ pt: 2 }}>
+                <Typography variant='body1' sx={{ mb: 2 }}>
+                  Are you sure you want to delete this application?
+                </Typography>
+                <Box sx={{ p: 2, bgcolor: 'error.light', borderRadius: 1, mb: 2 }}>
+                  <Typography variant='subtitle2' color='error.contrastText'>
+                    <strong>{selectedApplication.applicationNumber}</strong>
+                  </Typography>
+                  <Typography variant='body2' color='error.contrastText'>
+                    {selectedApplication.personalInfo.fullName} - ₹
+                    {selectedApplication.loanDetails.requestedAmount.toLocaleString()}
+                  </Typography>
+                </Box>
+                <Alert severity='warning' sx={{ mb: 2 }}>
+                  This action cannot be undone. All application data will be permanently deleted.
+                </Alert>
+              </Box>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setDeleteDialog(false)}>Cancel</Button>
+            <Button
+              onClick={handleDeleteApplication}
+              variant='contained'
+              color='error'
+              disabled={actionLoading}
+              startIcon={actionLoading ? <CircularProgress size={20} /> : <Delete />}
+            >
+              Delete Application
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </CardContent>
+    </Card>
   );
 };
 
