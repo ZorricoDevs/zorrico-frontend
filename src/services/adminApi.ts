@@ -52,10 +52,16 @@ export const createUser = async (userData: any) => {
 // Fetch all leads for admin
 export const getAllLeads = async () => {
   try {
+    console.log('AdminAPI Debug - Fetching all leads for admin...');
     const response = await api.get('/admin/leads');
+    console.log('AdminAPI Debug - All leads response:', response.data);
+    console.log(
+      'AdminAPI Debug - Leads with deletedByBroker:',
+      response.data.filter((lead: any) => lead.deletedByBroker)
+    );
     return response.data; // Backend returns leads directly
   } catch (error) {
-    console.error('Failed to fetch leads:', error);
+    console.error('AdminAPI Debug - Failed to fetch leads:', error);
     throw error;
   }
 };
@@ -78,6 +84,19 @@ export const assignBuilderToLead = async (leadId: string, builderId: string) => 
     return response.data;
   } catch (error) {
     console.error('Failed to assign builder to lead:', error);
+    throw error;
+  }
+};
+
+// Restore lead (remove deletedByBroker flag)
+export const restoreLead = async (leadId: string) => {
+  try {
+    console.log('AdminAPI Debug - Restoring lead:', leadId);
+    const response = await api.patch(`/admin/leads/${leadId}/restore`);
+    console.log('AdminAPI Debug - Restore response:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('AdminAPI Debug - Failed to restore lead:', error);
     throw error;
   }
 };

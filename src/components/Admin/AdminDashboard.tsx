@@ -68,6 +68,7 @@ import {
   PieChart,
   Group,
   LockReset,
+  RestoreFromTrash,
 } from '@mui/icons-material';
 import Badge from '@mui/material/Badge';
 import {
@@ -84,6 +85,7 @@ import {
   deleteLead,
   assignBrokerToLead,
   assignBuilderToLead,
+  restoreLead,
 } from '../../services/adminApi';
 import applicationApi, {
   Application,
@@ -588,6 +590,19 @@ const AdminDashboard: React.FC = () => {
       setSuccess('Lead deleted successfully!');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to delete lead');
+    } finally {
+      setUserActionLoading(false);
+    }
+  };
+
+  const handleRestoreLead = async (leadId: string) => {
+    setUserActionLoading(true);
+    try {
+      await restoreLead(leadId);
+      fetchLeads();
+      setSuccess('Lead restored successfully! It will now be visible to the broker again.');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to restore lead');
     } finally {
       setUserActionLoading(false);
     }
@@ -2002,21 +2017,32 @@ const AdminDashboard: React.FC = () => {
                           </Box>
                         </TableCell>
                         <TableCell>
-                          <Chip
-                            label={lead.status.toUpperCase()}
-                            color={
-                              lead.status === 'converted'
-                                ? 'success'
-                                : lead.status === 'qualified'
-                                  ? 'info'
-                                  : lead.status === 'processing'
-                                    ? 'warning'
-                                    : lead.status === 'contacted'
-                                      ? 'secondary'
-                                      : 'default'
-                            }
-                            size='small'
-                          />
+                          <Stack direction='column' spacing={0.5}>
+                            <Chip
+                              label={lead.status.toUpperCase()}
+                              color={
+                                lead.status === 'converted'
+                                  ? 'success'
+                                  : lead.status === 'qualified'
+                                    ? 'info'
+                                    : lead.status === 'processing'
+                                      ? 'warning'
+                                      : lead.status === 'contacted'
+                                        ? 'secondary'
+                                        : 'default'
+                              }
+                              size='small'
+                            />
+                            {lead.deletedByBroker && (
+                              <Chip
+                                label='DELETED BY BROKER'
+                                color='error'
+                                variant='outlined'
+                                size='small'
+                                sx={{ fontSize: '0.7rem' }}
+                              />
+                            )}
+                          </Stack>
                         </TableCell>
                         <TableCell>
                           {lead.brokerId ? (
@@ -2085,6 +2111,17 @@ const AdminDashboard: React.FC = () => {
                                 <Delete fontSize='small' />
                               </IconButton>
                             </Tooltip>
+                            {lead.deletedByBroker && (
+                              <Tooltip title='Restore Lead (Make visible to broker again)'>
+                                <IconButton
+                                  size='small'
+                                  color='success'
+                                  onClick={() => handleRestoreLead(lead._id)}
+                                >
+                                  <RestoreFromTrash fontSize='small' />
+                                </IconButton>
+                              </Tooltip>
+                            )}
                           </Stack>
                         </TableCell>
                       </TableRow>

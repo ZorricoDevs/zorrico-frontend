@@ -170,10 +170,30 @@ const BrokerDashboard: React.FC = () => {
     [retryCount]
   );
 
+  // Helper function to refresh leads and stats only
+  const refreshLeadsAndStats = useCallback(async () => {
+    try {
+      const [statsData, leadsData] = await Promise.all([
+        brokerApi.getBrokerStats(),
+        brokerApi.getLeads(),
+      ]);
+
+      console.log('BrokerDashboard Debug - Refreshed Stats:', statsData);
+      console.log('BrokerDashboard Debug - Refreshed Leads:', leadsData);
+
+      // Ensure leadsData is an array
+      const validLeadsData = Array.isArray(leadsData) ? leadsData : [];
+
+      setStats(statsData);
+      setLeads(validLeadsData);
+    } catch (error) {
+      console.error('BrokerDashboard Debug - Failed to refresh leads and stats:', error);
+    }
+  }, []);
+
   const handleAddLead = async () => {
     try {
       const newLeadData = await brokerApi.createLead(newLead);
-      setLeads([...leads, newLeadData]);
       setOpenAddLeadDialog(false);
       setNewLead({
         name: '',
@@ -185,13 +205,13 @@ const BrokerDashboard: React.FC = () => {
         priority: 'medium',
       });
 
-      // Refresh stats after adding lead
-      const updatedStats = await brokerApi.getBrokerStats();
-      setStats(updatedStats);
+      // Refresh leads and stats after adding lead
+      await refreshLeadsAndStats();
       setSnackbarMessage('Lead added successfully!');
       setSnackbarOpen(true);
+      console.log('BrokerDashboard Debug - Data refreshed after adding lead');
     } catch (error) {
-      console.error('Failed to add lead:', error);
+      console.error('BrokerDashboard Debug - Failed to add lead:', error);
       setError('Failed to add lead. Please try again.');
     }
   };
@@ -272,15 +292,24 @@ const BrokerDashboard: React.FC = () => {
     }
   }
 
-  const handleDeleteLead = useCallback(async (leadId: string) => {
-    try {
-      await brokerApi.deleteLead(leadId);
-      // Optionally update local state to remove/soft-delete the lead from the UI
-      // e.g., setLeads(leads => leads.filter(l => l._id !== leadId));
-    } catch (error) {
-      // Handle error (show snackbar, etc.)
-    }
-  }, []);
+  const handleDeleteLead = useCallback(
+    async (leadId: string) => {
+      try {
+        console.log('BrokerDashboard Debug - Deleting lead:', leadId);
+        await brokerApi.deleteLead(leadId);
+        console.log('BrokerDashboard Debug - Lead deleted successfully, refreshing data...');
+
+        // Refresh the leads list and stats after deletion
+        await refreshLeadsAndStats();
+
+        console.log('BrokerDashboard Debug - Data refreshed after deletion');
+      } catch (error) {
+        console.error('BrokerDashboard Debug - Failed to delete lead:', error);
+        // Handle error (show snackbar, etc.)
+      }
+    },
+    [refreshLeadsAndStats]
+  );
 
   const handleEditLead = useCallback(async () => {
     if (!editLeadData || !editLeadData._id) {
@@ -289,11 +318,14 @@ const BrokerDashboard: React.FC = () => {
     try {
       await brokerApi.updateLead(editLeadData._id, editLeadData);
       setEditLeadDialog(false);
-      // Optionally update local state with the edited lead
+      // Refresh the leads list and stats after editing
+      await refreshLeadsAndStats();
+      console.log('BrokerDashboard Debug - Data refreshed after lead edit');
     } catch (error) {
+      console.error('BrokerDashboard Debug - Failed to edit lead:', error);
       // Handle error (show snackbar, etc.)
     }
-  }, [editLeadData]);
+  }, [editLeadData, refreshLeadsAndStats]);
 
   return (
     <Container maxWidth='xl' sx={{ py: { xs: 2, sm: 3, md: 4 } }}>

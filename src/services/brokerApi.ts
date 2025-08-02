@@ -158,9 +158,11 @@ class BrokerApiService {
 
   async deleteLead(leadId: string): Promise<void> {
     try {
-      await api.delete(`/broker/leads/${leadId}`);
+      console.log('BrokerAPI Debug - Soft deleting lead:', leadId);
+      const response = await api.delete(`/broker/leads/${leadId}`);
+      console.log('BrokerAPI Debug - Delete response:', response.data);
     } catch (error) {
-      console.error('Failed to delete lead:', error);
+      console.error('BrokerAPI Debug - Failed to delete lead:', error);
       throw error;
     }
   }
