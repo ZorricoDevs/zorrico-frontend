@@ -55,11 +55,41 @@ export const getAllLeads = async () => {
     console.log('AdminAPI Debug - Fetching all leads for admin...');
     const response = await api.get('/admin/leads');
     console.log('AdminAPI Debug - All leads response:', response.data);
+
+    // Handle new response format with success, data, totalCount, etc.
+    const leadsData = response.data.data || response.data; // Backward compatibility
+
     console.log(
       'AdminAPI Debug - Leads with deletedByBroker:',
-      response.data.filter((lead: any) => lead.deletedByBroker)
+      leadsData.filter((lead: any) => lead.deletedByBroker || lead.deletionStatus?.deletedByBroker)
     );
-    return response.data; // Backend returns leads directly
+
+    return {
+      leads: leadsData,
+      totalCount: response.data.totalCount || leadsData.length,
+      activeCount:
+        response.data.activeCount ||
+        leadsData.filter(
+          (lead: any) =>
+            !lead.isDeleted &&
+            !lead.deletedByAdmin &&
+            !lead.deletedByBroker &&
+            !lead.deletionStatus?.isDeleted &&
+            !lead.deletionStatus?.deletedByAdmin &&
+            !lead.deletionStatus?.deletedByBroker
+        ).length,
+      deletedCount:
+        response.data.deletedCount ||
+        leadsData.filter(
+          (lead: any) =>
+            lead.isDeleted ||
+            lead.deletedByAdmin ||
+            lead.deletedByBroker ||
+            lead.deletionStatus?.isDeleted ||
+            lead.deletionStatus?.deletedByAdmin ||
+            lead.deletionStatus?.deletedByBroker
+        ).length,
+    };
   } catch (error) {
     console.error('AdminAPI Debug - Failed to fetch leads:', error);
     throw error;

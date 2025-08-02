@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Box,
   Container,
@@ -164,6 +164,13 @@ const AdminDashboard: React.FC = () => {
   const [leadBrokerFilter, setLeadBrokerFilter] = useState('all');
   const [brokers, setBrokers] = useState<any[]>([]);
 
+  // Lead Statistics
+  const [leadStats, setLeadStats] = useState({
+    totalCount: 0,
+    activeCount: 0,
+    deletedCount: 0,
+  });
+
   // Lead Dialog States
   const [selectedLead, setSelectedLead] = useState<any | null>(null);
   const [leadDialog, setLeadDialog] = useState(false);
@@ -175,6 +182,24 @@ const AdminDashboard: React.FC = () => {
   const [leadToDelete, setLeadToDelete] = useState<any | null>(null);
   const [viewProperty, setViewProperty] = useState<any | null>(null);
   const [pagination, setPagination] = useState({ page: 0, rowsPerPage: 10 });
+
+  // Request tracking to prevent excessive API calls
+  const [dataFetched, setDataFetched] = useState({
+    users: false,
+    analytics: false,
+    leads: false,
+    properties: false,
+  });
+
+  // Request timing tracking to prevent rapid successive calls
+  const lastRequestTime = useRef({
+    users: 0,
+    analytics: 0,
+    leads: 0,
+    properties: 0,
+  });
+
+  const REQUEST_DEBOUNCE_MS = 2000; // 2 seconds minimum between requests
 
   // --- Property Management State ---
   const [showCreateProperty, setShowCreateProperty] = useState(false);
@@ -295,16 +320,25 @@ const AdminDashboard: React.FC = () => {
 
   // Fetch various data sets
   const fetchAnalyticsData = useCallback(async () => {
+    if (analyticsLoading) {
+      console.log('AdminDashboard - Analytics fetch already in progress, skipping...');
+      return;
+    }
+
     setAnalyticsLoading(true);
     try {
+      console.log('AdminDashboard - Starting analytics fetch...');
       const data = await getAnalyticsData();
       setAnalyticsData(data);
+      setDataFetched(prev => ({ ...prev, analytics: true }));
+      console.log('AdminDashboard - Analytics fetch completed successfully');
     } catch (err) {
+      console.error('AdminDashboard - Analytics fetch failed:', err);
       setError('Failed to fetch analytics data');
     } finally {
       setAnalyticsLoading(false);
     }
-  }, []);
+  }, [analyticsLoading]);
 
   const fetchDashboardStats = useCallback(async () => {
     setLoading(true);
@@ -330,45 +364,112 @@ const AdminDashboard: React.FC = () => {
   }, []);
 
   const fetchUsers = useCallback(async () => {
+    if (usersLoading) {
+      console.log('AdminDashboard - Users fetch already in progress, skipping...');
+      return;
+    }
+
     setUsersLoading(true);
     setUsersError(null);
     try {
+      console.log('AdminDashboard - Starting users fetch...');
       const usersData = await getAllUsers();
       setUsers(usersData);
+      setDataFetched(prev => ({ ...prev, users: true }));
+      console.log('AdminDashboard - Users fetch completed successfully');
     } catch (err) {
+      console.error('AdminDashboard - Users fetch failed:', err);
       setUsersError('Failed to fetch users');
     } finally {
       setUsersLoading(false);
     }
-  }, []);
+  }, [usersLoading]);
 
   const fetchLeads = useCallback(async () => {
+    if (leadsLoading) {
+      console.log('AdminDashboard - Leads fetch already in progress, skipping...');
+      return;
+    }
+
     setLeadsLoading(true);
     setLeadsError(null);
     try {
-      const leadsData = await getAllLeads();
+      console.log('AdminDashboard - Starting leads fetch...');
+      const leadsResponse = await getAllLeads();
+      console.log('Admin Dashboard - Leads response:', leadsResponse);
+
+      // Handle new response format
+      const leadsData = leadsResponse.leads || leadsResponse; // Backward compatibility
       setLeads(leadsData);
+
+      // Set lead statistics if available
+      if (leadsResponse.totalCount !== undefined) {
+        setLeadStats({
+          totalCount: leadsResponse.totalCount,
+          activeCount: leadsResponse.activeCount,
+          deletedCount: leadsResponse.deletedCount,
+        });
+      } else {
+        // Fallback calculation for backward compatibility
+        const totalCount = leadsData.length;
+        const activeCount = leadsData.filter(
+          (lead: any) =>
+            !lead.isDeleted &&
+            !lead.deletedByAdmin &&
+            !lead.deletedByBroker &&
+            !lead.deletionStatus?.isDeleted &&
+            !lead.deletionStatus?.deletedByAdmin &&
+            !lead.deletionStatus?.deletedByBroker
+        ).length;
+        setLeadStats({
+          totalCount,
+          activeCount,
+          deletedCount: totalCount - activeCount,
+        });
+      }
+
+      setDataFetched(prev => ({ ...prev, leads: true }));
+      console.log('AdminDashboard - Leads fetch completed successfully');
+
       const brokersData = await getAllUsers();
       setBrokers(brokersData.filter((user: any) => user.role === 'broker'));
     } catch (err) {
+      console.error('Admin Dashboard - Failed to fetch leads:', err);
       setLeadsError('Failed to fetch leads');
     } finally {
       setLeadsLoading(false);
     }
-  }, []);
-
+  }, [leadsLoading]);
   const fetchProperties = useCallback(async () => {
+    const now = Date.now();
+    const timeSinceLastRequest = now - lastRequestTime.current.properties;
+
+    if (timeSinceLastRequest < REQUEST_DEBOUNCE_MS) {
+      console.log('AdminDashboard - Properties fetch debounced, too soon since last request');
+      return;
+    }
+
+    if (propertiesLoading) {
+      console.log('AdminDashboard - Properties fetch already in progress, skipping...');
+      return;
+    }
+
+    lastRequestTime.current.properties = now;
     setPropertiesLoading(true);
     setPropertiesError(null);
     try {
+      console.log('AdminDashboard - Starting properties fetch...');
       const data = await getAllProperties();
       setProperties(data);
+      setDataFetched(prev => ({ ...prev, properties: true }));
+      console.log('AdminDashboard - Properties fetch completed successfully');
     } catch (err) {
+      console.error('AdminDashboard - Properties fetch failed:', err);
       setPropertiesError('Failed to fetch properties');
     } finally {
       setPropertiesLoading(false);
     }
-  }, []);
+  }, [propertiesLoading]);
 
   // Filtered lists
   const filteredUsers = users.filter(user => {
@@ -410,17 +511,46 @@ const AdminDashboard: React.FC = () => {
     return true;
   });
 
-  // Load initial and tab-specific data
+  // Load initial data on mount
   useEffect(() => {
     fetchDashboardStats();
   }, [fetchDashboardStats]);
 
+  // Tab-specific data loading with prevention of excessive requests
   useEffect(() => {
-    if (tabValue === 0) fetchUsers();
-    if (tabValue === 1) fetchAnalyticsData();
-    if (tabValue === 2) fetchLeads();
-    if (tabValue === 3) fetchProperties();
-  }, [tabValue, fetchUsers, fetchAnalyticsData, fetchLeads, fetchProperties]);
+    console.log('AdminDashboard - Tab changed to:', tabValue);
+    console.log('AdminDashboard - DataFetched state:', dataFetched);
+
+    // Only fetch data when tab changes and data hasn't been fetched yet
+    switch (tabValue) {
+      case 0:
+        if (!dataFetched.users && !usersLoading) {
+          console.log('AdminDashboard - Fetching users for tab 0');
+          fetchUsers();
+        }
+        break;
+      case 1:
+        if (!dataFetched.analytics && !analyticsLoading) {
+          console.log('AdminDashboard - Fetching analytics for tab 1');
+          fetchAnalyticsData();
+        }
+        break;
+      case 2:
+        if (!dataFetched.leads && !leadsLoading) {
+          console.log('AdminDashboard - Fetching leads for tab 2');
+          fetchLeads();
+        }
+        break;
+      case 3:
+        if (!dataFetched.properties && !propertiesLoading) {
+          console.log('AdminDashboard - Fetching properties for tab 3');
+          fetchProperties();
+        }
+        break;
+      default:
+        break;
+    }
+  }, [tabValue]); // Minimal dependencies to prevent excessive re-runs
 
   // Property actions
   const handleCreateProperty = async () => {
@@ -448,6 +578,8 @@ const AdminDashboard: React.FC = () => {
       });
       fetchProperties();
       setSuccess('Property created successfully!');
+      // Reset the fetch flag to allow future refreshes
+      setDataFetched(prev => ({ ...prev, properties: false }));
     } catch (err) {
       setError('Failed to create property');
     } finally {
@@ -480,6 +612,8 @@ const AdminDashboard: React.FC = () => {
       setEditPropertyForm(null);
       fetchProperties();
       setSuccess('Property updated successfully!');
+      // Reset the fetch flag to allow future refreshes
+      setDataFetched(prev => ({ ...prev, properties: false }));
     } catch (err) {
       setError('Failed to update property');
     } finally {
