@@ -34,6 +34,7 @@ import {
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import logo from '../../assets/logo.png';
 
 const Navbar: React.FC = () => {
   const muiTheme = muiUseTheme();
@@ -213,7 +214,7 @@ const Navbar: React.FC = () => {
           >
             <Box
               component='img'
-              src={`${process.env.PUBLIC_URL || ''}/logo.png`}
+              src={logo}
               alt='Home Loan Mittra Logo'
               sx={{
                 height: 48,

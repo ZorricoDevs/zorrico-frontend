@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Container, Typography, Link, Stack, Divider, keyframes } from '@mui/material';
 import { LocationOn, LinkedIn, Twitter, TrendingUp, Security, Speed } from '@mui/icons-material';
+import logo from '../../assets/logo.png';
 
 const Footer: React.FC = () => {
   // Animation keyframes
@@ -90,7 +91,7 @@ const Footer: React.FC = () => {
               }}
             >
               <img
-                src={`${process.env.PUBLIC_URL || ''}/logo.png`}
+                src={logo}
                 alt='Home Loan Mittra Logo'
                 style={{
                   height: '40px',
