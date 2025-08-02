@@ -1,6 +1,27 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://homeloanmittra-backend.onrender.com/api';
+// Environment-based configuration
+const getApiBaseUrl = (): string => {
+  // Use environment variable if available, fallback to production URL
+  const envApiUrl = process.env.REACT_APP_API_URL;
+  const defaultUrl = 'https://homeloanmittra-backend.onrender.com/api';
+
+  if (envApiUrl) {
+    console.log(`🔧 API Mode: Using ${envApiUrl.includes('localhost') ? 'LOCAL' : 'LIVE'} backend`);
+    console.log(`🌐 API URL: ${envApiUrl}`);
+    return envApiUrl;
+  }
+
+  console.log('⚠️ No REACT_APP_API_URL found, using production URL');
+  return defaultUrl;
+};
+
+const API_BASE_URL = getApiBaseUrl();
+
+// Development mode logging
+const isDevelopment =
+  process.env.REACT_APP_ENV === 'development' || process.env.NODE_ENV === 'development';
+const enableLogging = process.env.REACT_APP_ENABLE_LOGGING === 'true' || isDevelopment;
 
 // Create axios instance with default config
 const api = axios.create({
@@ -12,22 +33,49 @@ const api = axios.create({
 
 // Request interceptor to add auth token
 api.interceptors.request.use(
-  (config) => {
+  config => {
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    // Development logging
+    if (enableLogging) {
+      console.log(`🚀 API Request: ${config.method?.toUpperCase()} ${config.url}`);
+      if (config.data && Object.keys(config.data).length > 0) {
+        console.log('📤 Request Data:', config.data);
+      }
+    }
+
     return config;
   },
-  (error) => {
+  error => {
+    if (enableLogging) {
+      console.error('❌ Request Error:', error);
+    }
     return Promise.reject(error);
   }
 );
 
 // Response interceptor for error handling
 api.interceptors.response.use(
-  (response) => response,
-  (error) => {
+  response => {
+    // Development logging
+    if (enableLogging) {
+      console.log(
+        `✅ API Response: ${response.config.method?.toUpperCase()} ${response.config.url}`
+      );
+      console.log('📥 Response Data:', response.data);
+    }
+    return response;
+  },
+  error => {
+    // Development logging
+    if (enableLogging) {
+      console.error(`❌ API Error: ${error.config?.method?.toUpperCase()} ${error.config?.url}`);
+      console.error('Error Details:', error.response?.data || error.message);
+    }
+
     if (error.response?.status === 401) {
       // Token expired or invalid
       localStorage.removeItem('token');
@@ -94,7 +142,11 @@ export const loanAPI = {
   },
 
   // Calculate EMI
-  calculateEMI: async (amount: number, rate: number, tenure: number): Promise<{
+  calculateEMI: async (
+    amount: number,
+    rate: number,
+    tenure: number
+  ): Promise<{
     emi: number;
     totalInterest: number;
     totalPayment: number;
@@ -103,7 +155,7 @@ export const loanAPI = {
       const response = await api.post('/loans/calculate-emi', {
         amount,
         rate,
-        tenure
+        tenure,
       });
       return response.data.data;
     } catch (error) {
@@ -121,7 +173,7 @@ export const loanAPI = {
       console.error('Error applying for loan:', error);
       throw error;
     }
-  }
+  },
 };
 
 export default api;

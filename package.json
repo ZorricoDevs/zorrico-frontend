@@ -1,5 +1,4 @@
 {
-
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
@@ -57,6 +56,9 @@
     "start": "react-scripts start",
     "start:optimized": "craco start",
     "start:fast": "DISABLE_ESLINT_PLUGIN=true GENERATE_SOURCEMAP=false react-scripts start",
+    "start:local": "REACT_APP_ENV=development react-scripts start",
+    "start:live": "cp .env.local .env && react-scripts start",
+    "start:prod": "cp .env.production .env && react-scripts start",
     "build": "craco build",
     "build:analyze": "npm run build && npx webpack-bundle-analyzer build/static/js/*.js",
     "test": "react-scripts test",
@@ -75,7 +77,8 @@
     "docker:run": "docker run -p 3000:80 homeloanmittra-frontend",
     "startup:build": "npm run build && echo 'Frontend ready for deployment!'",
     "serve": "npx serve -s build -l 3000",
-    "health:check": "curl -f http://localhost:3000/health || exit 1"
+    "health:check": "curl -f http://localhost:3000/health || exit 1",
+    "env:info": "node -e \"console.log('Environment Info:'); console.log('API URL:', process.env.REACT_APP_API_URL || 'Not set'); console.log('ENV:', process.env.REACT_APP_ENV || 'Not set');\""
   },
   "eslintConfig": {
     "extends": [
