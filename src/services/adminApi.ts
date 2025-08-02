@@ -18,6 +18,37 @@ export const getAllUsers = async () => {
   return response.data.data.users;
 };
 
+// Fetch users with filters
+export const getUsersWithFilters = async (
+  role?: string,
+  status?: string,
+  search?: string,
+  page?: number,
+  limit?: number
+) => {
+  const params = new URLSearchParams();
+  if (role) params.append('role', role);
+  if (status) params.append('status', status);
+  if (search) params.append('search', search);
+  if (page) params.append('page', page.toString());
+  if (limit) params.append('limit', limit.toString());
+
+  const response = await api.get(`/admin/users?${params.toString()}`);
+  return response.data.data;
+};
+
+// Update user details
+export const updateUser = async (userId: string, updates: any) => {
+  const response = await api.put(`/admin/users/${userId}`, updates);
+  return response.data;
+};
+
+// Create new user
+export const createUser = async (userData: any) => {
+  const response = await api.post('/admin/users', userData);
+  return response.data;
+};
+
 // Fetch all leads for admin
 export const getAllLeads = async () => {
   try {
@@ -69,8 +100,15 @@ export const deleteUser = async (userId: string) => {
 };
 
 // Reset user password (admin)
-export const resetUserPassword = async (userId: string, newPassword: string, sendNotification = false) => {
-  const response = await api.post(`/admin/users/${userId}/reset-password`, { newPassword, sendNotification });
+export const resetUserPassword = async (
+  userId: string,
+  newPassword: string,
+  sendNotification = false
+) => {
+  const response = await api.post(`/admin/users/${userId}/reset-password`, {
+    newPassword,
+    sendNotification,
+  });
   return response.data;
 };
 

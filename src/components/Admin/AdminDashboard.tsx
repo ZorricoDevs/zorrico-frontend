@@ -61,6 +61,7 @@ import {
   TrendingDown,
   PieChart,
   Group,
+  LockReset,
 } from '@mui/icons-material';
 import Badge from '@mui/material/Badge';
 import {
@@ -68,6 +69,11 @@ import {
   getAllUsers,
   getAnalyticsData,
   getAllLeads,
+  getUsersWithFilters,
+  updateUser,
+  deleteUser,
+  resetUserPassword,
+  createUser,
 } from '../../services/adminApi';
 import applicationApi, { Application, ApplicationFilters } from '../../services/applicationApi';
 import { getAllProperties, createProperty, updateProperty } from '../../services/propertyApi';
@@ -122,6 +128,10 @@ const AdminDashboard: React.FC = () => {
 
   // Dialog states for user actions
   const [viewUser, setViewUser] = useState<any | null>(null);
+  const [editUser, setEditUser] = useState<any | null>(null);
+  const [resetPasswordUser, setResetPasswordUser] = useState<any | null>(null);
+  const [deleteUserConfirm, setDeleteUserConfirm] = useState<any | null>(null);
+  const [userActionLoading, setUserActionLoading] = useState(false);
 
   // Lead Management State
   const [leads, setLeads] = useState<any[]>([]);
@@ -176,33 +186,19 @@ const AdminDashboard: React.FC = () => {
     if (addUserDialog && newUserRole === 'customer') {
       const fetchCustomers = async () => {
         try {
-          const response = await fetch(
-            'http://localhost:5000/api/admin/users?role=customer&status=active',
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
-                'Content-Type': 'application/json',
-              },
-            }
-          );
-
-          if (response.ok) {
-            const data = await response.json();
-            const customers = data.data?.users || data.data || data.users || [];
-            const formattedCustomers = customers.map((customer: any) => ({
-              id: customer._id,
-              customerId: customer.customerId || `CUST-${customer._id?.slice(-6).toUpperCase()}`,
-              name:
-                customer.fullName ||
-                `${customer.firstName || ''} ${customer.lastName || ''}`.trim(),
-              email: customer.email,
-              phone: customer.phone || customer.profile?.phone || 'N/A',
-            }));
-            setApprovedCustomers(formattedCustomers);
-          } else {
-            setApprovedCustomers([]);
-          }
+          const data = await getUsersWithFilters('customer', 'active');
+          const customers = data?.users || [];
+          const formattedCustomers = customers.map((customer: any) => ({
+            id: customer._id,
+            customerId: customer.customerId || `CUST-${customer._id?.slice(-6).toUpperCase()}`,
+            name:
+              customer.fullName || `${customer.firstName || ''} ${customer.lastName || ''}`.trim(),
+            email: customer.email,
+            phone: customer.phone || customer.profile?.phone || 'N/A',
+          }));
+          setApprovedCustomers(formattedCustomers);
         } catch (error) {
+          console.error('Error fetching customers:', error);
           setApprovedCustomers([]);
         }
       };
@@ -249,41 +245,28 @@ const AdminDashboard: React.FC = () => {
           : {}),
       };
 
-      const response = await fetch('http://localhost:5000/api/admin/users', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      });
+      await createUser(userData);
 
-      if (response.ok) {
-        setCreatingUser(false);
-        setAddUserDialog(false);
-        setManualUser({
-          firstName: '',
-          lastName: '',
-          email: '',
-          phone: '',
-          password: '',
-          companyName: '',
-          licenseNumber: '',
-        });
-        setAutoPassword('');
-        setSelectedApprovedCustomer('');
-        fetchUsers();
-        fetchDashboardStats();
-        setSuccess(
-          `${newUserRole.charAt(0).toUpperCase() + newUserRole.slice(1)} created successfully!${customerId ? ` Customer ID: ${customerId}` : ''}`
-        );
-      } else {
-        const errorData = await response.json();
-        setError(errorData.message || 'Failed to create user');
-        setCreatingUser(false);
-      }
-    } catch (error) {
-      setError('Failed to create user. Please try again.');
+      setCreatingUser(false);
+      setAddUserDialog(false);
+      setManualUser({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        password: '',
+        companyName: '',
+        licenseNumber: '',
+      });
+      setAutoPassword('');
+      setSelectedApprovedCustomer('');
+      fetchUsers();
+      fetchDashboardStats();
+      setSuccess(
+        `${newUserRole.charAt(0).toUpperCase() + newUserRole.slice(1)} created successfully!${customerId ? ` Customer ID: ${customerId}` : ''}`
+      );
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to create user. Please try again.');
       setCreatingUser(false);
     }
   };
@@ -497,6 +480,48 @@ const AdminDashboard: React.FC = () => {
       setSuccess('No leads found for this property.');
     }
   }
+
+  // User Management Functions
+  const handleEditUser = async (updatedUser: any) => {
+    setUserActionLoading(true);
+    try {
+      await updateUser(editUser._id, updatedUser);
+      setEditUser(null);
+      fetchUsers();
+      setSuccess('User updated successfully!');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to update user');
+    } finally {
+      setUserActionLoading(false);
+    }
+  };
+
+  const handleResetPassword = async (newPassword: string) => {
+    setUserActionLoading(true);
+    try {
+      await resetUserPassword(resetPasswordUser._id, newPassword, true);
+      setResetPasswordUser(null);
+      setSuccess('Password reset successfully! Notification sent to user.');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to reset password');
+    } finally {
+      setUserActionLoading(false);
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    setUserActionLoading(true);
+    try {
+      await deleteUser(deleteUserConfirm._id);
+      setDeleteUserConfirm(null);
+      fetchUsers();
+      setSuccess('User deleted successfully!');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to delete user');
+    } finally {
+      setUserActionLoading(false);
+    }
+  };
 
   return (
     <Container maxWidth='xl' sx={{ py: 4 }}>
@@ -1130,6 +1155,28 @@ const AdminDashboard: React.FC = () => {
                           <Tooltip title='View Details'>
                             <IconButton size='small' onClick={() => setViewUser(user)}>
                               <Visibility fontSize='small' />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title='Edit User'>
+                            <IconButton size='small' onClick={() => setEditUser(user)}>
+                              <Edit fontSize='small' />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title='Reset Password'>
+                            <IconButton size='small' onClick={() => setResetPasswordUser(user)}>
+                              <LockReset fontSize='small' />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title='Delete User'>
+                            <IconButton
+                              size='small'
+                              onClick={() => setDeleteUserConfirm(user)}
+                              sx={{
+                                color: 'error.main',
+                                '&:hover': { bgcolor: 'error.light', color: 'white' },
+                              }}
+                            >
+                              <Delete fontSize='small' />
                             </IconButton>
                           </Tooltip>
                         </Stack>
@@ -2083,6 +2130,156 @@ const AdminDashboard: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Edit User Dialog */}
+      <Dialog open={!!editUser} onClose={() => setEditUser(null)} maxWidth='sm' fullWidth>
+        <DialogTitle>Edit User</DialogTitle>
+        <DialogContent>
+          {editUser && (
+            <Box sx={{ pt: 2 }}>
+              <TextField
+                fullWidth
+                label='First Name'
+                value={editUser.firstName || ''}
+                onChange={e => setEditUser({ ...editUser, firstName: e.target.value })}
+                margin='normal'
+              />
+              <TextField
+                fullWidth
+                label='Last Name'
+                value={editUser.lastName || ''}
+                onChange={e => setEditUser({ ...editUser, lastName: e.target.value })}
+                margin='normal'
+              />
+              <TextField
+                fullWidth
+                label='Email'
+                value={editUser.email || ''}
+                onChange={e => setEditUser({ ...editUser, email: e.target.value })}
+                margin='normal'
+              />
+              <TextField
+                fullWidth
+                label='Phone'
+                value={editUser.phone || ''}
+                onChange={e => setEditUser({ ...editUser, phone: e.target.value })}
+                margin='normal'
+              />
+              <FormControl fullWidth margin='normal'>
+                <InputLabel>Status</InputLabel>
+                <Select
+                  value={editUser.status || 'active'}
+                  onChange={e => setEditUser({ ...editUser, status: e.target.value })}
+                  label='Status'
+                >
+                  <MenuItem value='active'>Active</MenuItem>
+                  <MenuItem value='inactive'>Inactive</MenuItem>
+                  <MenuItem value='suspended'>Suspended</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEditUser(null)}>Cancel</Button>
+          <Button
+            onClick={() => handleEditUser(editUser)}
+            variant='contained'
+            disabled={userActionLoading}
+            startIcon={userActionLoading ? <CircularProgress size={20} /> : <Save />}
+          >
+            Save Changes
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Reset Password Dialog */}
+      <Dialog
+        open={!!resetPasswordUser}
+        onClose={() => setResetPasswordUser(null)}
+        maxWidth='xs'
+        fullWidth
+      >
+        <DialogTitle>Reset Password</DialogTitle>
+        <DialogContent>
+          {resetPasswordUser && (
+            <Box sx={{ pt: 2 }}>
+              <Typography variant='body2' sx={{ mb: 2 }}>
+                Reset password for{' '}
+                <strong>{resetPasswordUser.fullName || resetPasswordUser.email}</strong>?
+              </Typography>
+              <TextField
+                fullWidth
+                label='New Password'
+                type='password'
+                placeholder='Enter new password or leave blank for auto-generated'
+                margin='normal'
+                onChange={e =>
+                  setResetPasswordUser({ ...resetPasswordUser, newPassword: e.target.value })
+                }
+              />
+              <Typography variant='caption' color='text.secondary'>
+                If left blank, a secure password will be auto-generated and sent to the user.
+              </Typography>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setResetPasswordUser(null)}>Cancel</Button>
+          <Button
+            onClick={() => handleResetPassword(resetPasswordUser.newPassword || generatePassword())}
+            variant='contained'
+            color='warning'
+            disabled={userActionLoading}
+            startIcon={userActionLoading ? <CircularProgress size={20} /> : <LockReset />}
+          >
+            Reset Password
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Delete User Confirmation Dialog */}
+      <Dialog
+        open={!!deleteUserConfirm}
+        onClose={() => setDeleteUserConfirm(null)}
+        maxWidth='xs'
+        fullWidth
+      >
+        <DialogTitle sx={{ color: 'error.main' }}>Delete User</DialogTitle>
+        <DialogContent>
+          {deleteUserConfirm && (
+            <Box sx={{ pt: 2 }}>
+              <Typography variant='body1' sx={{ mb: 2 }}>
+                Are you sure you want to delete this user?
+              </Typography>
+              <Box sx={{ p: 2, bgcolor: 'error.light', borderRadius: 1, mb: 2 }}>
+                <Typography variant='subtitle2' color='error.contrastText'>
+                  <strong>{deleteUserConfirm.fullName || deleteUserConfirm.email}</strong>
+                </Typography>
+                <Typography variant='body2' color='error.contrastText'>
+                  {deleteUserConfirm.email}
+                </Typography>
+              </Box>
+              <Alert severity='warning' sx={{ mb: 2 }}>
+                This action will soft-delete the user account. The user will not be able to log in.
+              </Alert>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteUserConfirm(null)}>Cancel</Button>
+          <Button
+            onClick={handleDeleteUser}
+            variant='contained'
+            color='error'
+            disabled={userActionLoading}
+            startIcon={userActionLoading ? <CircularProgress size={20} /> : <Delete />}
+          >
+            Delete User
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       {/* Other dialogs like Edit, Delete, Lead Details etc. would follow a similar pattern */}
     </Container>
   );
