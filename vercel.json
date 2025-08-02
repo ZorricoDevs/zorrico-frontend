@@ -1,15 +1,7 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "build",
-        "buildCommand": "npm run build"
-      }
-    }
-  ],
+  "buildCommand": "npm run build",
+  "outputDirectory": "build",
   "routes": [
     {
       "src": "/static/(.*)",
@@ -18,28 +10,11 @@
       }
     },
     {
-      "src": "/sw.js",
-      "headers": {
-        "Cache-Control": "no-cache, no-store, must-revalidate"
-      }
-    },
-    {
-      "src": "/manifest.json",
-      "headers": {
-        "Cache-Control": "public, max-age=86400"
-      }
-    },
-    {
       "src": "/(.*)",
       "headers": {
-        "Cache-Control": "no-cache, no-store, must-revalidate",
-        "X-Frame-Options": "DENY",
-        "X-Content-Type-Options": "nosniff",
-        "Referrer-Policy": "strict-origin-when-cross-origin"
+        "Cache-Control": "no-cache, no-store, must-revalidate"
       },
       "dest": "/index.html"
     }
-  ],
-  "cleanUrls": true,
-  "trailingSlash": false
+  ]
 }
