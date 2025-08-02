@@ -41,6 +41,8 @@ const Navbar: React.FC = () => {
   const isDark = muiTheme.palette.mode === 'dark';
   const [scrolled, setScrolled] = useState(false);
   const isMobile = useMediaQuery(muiTheme.breakpoints.down('md'));
+  const isTablet = useMediaQuery(muiTheme.breakpoints.between('md', 'lg'));
+  const isSmallMobile = useMediaQuery(muiTheme.breakpoints.down('sm'));
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
@@ -114,39 +116,132 @@ const Navbar: React.FC = () => {
   }, []);
 
   const renderMobileDrawer = () => (
-    <Drawer anchor='left' open={mobileDrawerOpen} onClose={() => setMobileDrawerOpen(false)}>
-      <Box sx={{ width: 250 }} role='presentation'>
-        <List>
-          <ListItem>
-            <Typography variant='h6' sx={{ fontWeight: 'bold', color: '#1976d2' }}>
-              HomeLoanMittra
-            </Typography>
+    <Drawer
+      anchor='left'
+      open={mobileDrawerOpen}
+      onClose={() => setMobileDrawerOpen(false)}
+      PaperProps={{
+        sx: {
+          width: { xs: '80vw', sm: 280, md: 320 },
+          maxWidth: 400,
+          bgcolor: isDark ? '#1e293b' : '#fff',
+          color: isDark ? '#fff' : '#222',
+        },
+      }}
+    >
+      <Box sx={{ width: '100%' }} role='presentation'>
+        <List sx={{ pt: 2 }}>
+          <ListItem sx={{ pb: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+              <Box
+                component='img'
+                src={logo}
+                alt='Home Loan Mittra Logo'
+                sx={{
+                  height: 32,
+                  width: 'auto',
+                  maxWidth: 80,
+                  borderRadius: 2,
+                  objectFit: 'contain',
+                }}
+              />
+              <Typography
+                variant='h6'
+                sx={{
+                  fontWeight: 'bold',
+                  color: isDark ? '#60a5fa' : '#1976d2',
+                  fontSize: { xs: 16, sm: 18 },
+                }}
+              >
+                HomeLoanMittra
+              </Typography>
+            </Box>
           </ListItem>
-          <Divider />
+          <Divider sx={{ bgcolor: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)' }} />
 
           {menuItems.map(item => (
-            <ListItem key={item.label}>
+            <ListItem key={item.label} disablePadding>
               <ListItemButton
                 onClick={() => handleNavigation(item.path)}
                 selected={location.pathname === item.path}
+                sx={{
+                  py: { xs: 1.5, sm: 1.8 },
+                  px: { xs: 2, sm: 3 },
+                  borderRadius: 2,
+                  mx: 1,
+                  my: 0.5,
+                  '&.Mui-selected': {
+                    bgcolor: isDark ? 'rgba(59, 130, 246, 0.15)' : 'rgba(25, 118, 210, 0.08)',
+                    '&:hover': {
+                      bgcolor: isDark ? 'rgba(59, 130, 246, 0.2)' : 'rgba(25, 118, 210, 0.12)',
+                    },
+                  },
+                  '&:hover': {
+                    bgcolor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)',
+                  },
+                }}
               >
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.label} />
+                <ListItemIcon
+                  sx={{
+                    color: 'inherit',
+                    minWidth: { xs: 40, sm: 56 },
+                  }}
+                >
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText
+                  primary={item.label}
+                  primaryTypographyProps={{
+                    fontSize: { xs: 14, sm: 16 },
+                    fontWeight: 500,
+                  }}
+                />
               </ListItemButton>
             </ListItem>
           ))}
 
           {user && (
             <>
-              <Divider />
+              <Divider
+                sx={{
+                  my: 2,
+                  bgcolor: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)',
+                }}
+              />
               {userMenuItems.map(item => (
-                <ListItem key={item.label}>
+                <ListItem key={item.label} disablePadding>
                   <ListItemButton
                     onClick={() => handleNavigation(item.path)}
                     selected={location.pathname === item.path}
+                    sx={{
+                      py: { xs: 1.5, sm: 1.8 },
+                      px: { xs: 2, sm: 3 },
+                      borderRadius: 2,
+                      mx: 1,
+                      my: 0.5,
+                      '&.Mui-selected': {
+                        bgcolor: isDark ? 'rgba(59, 130, 246, 0.15)' : 'rgba(25, 118, 210, 0.08)',
+                      },
+                      '&:hover': {
+                        bgcolor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)',
+                      },
+                    }}
                   >
-                    <ListItemIcon>{item.icon}</ListItemIcon>
-                    <ListItemText primary={item.label} />
+                    <ListItemIcon
+                      sx={{
+                        color: 'inherit',
+                        minWidth: { xs: 40, sm: 56 },
+                      }}
+                    >
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={item.label}
+                      primaryTypographyProps={{
+                        fontSize: { xs: 14, sm: 16 },
+                        fontWeight: 500,
+                      }}
+                    />
                   </ListItemButton>
                 </ListItem>
               ))}
@@ -198,16 +293,38 @@ const Navbar: React.FC = () => {
           backdropFilter: scrolled ? 'blur(8px)' : 'none',
         }}
       >
-        <Toolbar sx={{ minHeight: 72, px: 0 }}>
+        <Toolbar
+          sx={{
+            minHeight: { xs: 60, sm: 64, md: 72 },
+            px: { xs: 1, sm: 2, md: 3, lg: 4 },
+            gap: { xs: 1, sm: 2 },
+          }}
+        >
+          {/* Mobile Menu Button */}
+          {isMobile && (
+            <IconButton
+              color='inherit'
+              aria-label='open drawer'
+              edge='start'
+              onClick={() => setMobileDrawerOpen(true)}
+              sx={{
+                mr: { xs: 1, sm: 2 },
+                display: { md: 'none' },
+              }}
+            >
+              <Apps />
+            </IconButton>
+          )}
+
           {/* Logo and Business Name */}
           <Box
             sx={{
               display: 'flex',
               alignItems: 'center',
-              gap: 1.5,
+              gap: { xs: 1, sm: 1.5 },
               cursor: 'pointer',
-              minWidth: 260,
-              pl: 1,
+              minWidth: { xs: 'auto', sm: 200, md: 260 },
+              pl: { xs: 0, sm: 1 },
               flexShrink: 0,
             }}
             onClick={() => navigate('/')}
@@ -217,42 +334,59 @@ const Navbar: React.FC = () => {
               src={logo}
               alt='Home Loan Mittra Logo'
               sx={{
-                height: 48,
+                height: { xs: 32, sm: 40, md: 48 },
                 width: 'auto',
-                maxWidth: 120,
+                maxWidth: { xs: 80, sm: 100, md: 120 },
                 borderRadius: 2,
                 boxShadow: '0 2px 8px 0 rgba(30,41,59,0.10)',
                 objectFit: 'contain',
                 display: 'block',
               }}
             />
-            <Box>
-              <Typography
-                variant='h6'
-                sx={{
-                  fontWeight: 700,
-                  color: isDark ? '#60a5fa' : '#1976d2',
-                  lineHeight: 1,
-                  fontSize: 24,
-                }}
-              >
-                Home Loan Mittra
-              </Typography>
-              <Typography
-                variant='caption'
-                sx={{ color: isDark ? '#CBD5E1' : '#64748B', fontWeight: 500, letterSpacing: 1 }}
-              >
-                MAKING HOME LOANS EFFORTLESS
-              </Typography>
-            </Box>
+            {!isSmallMobile && (
+              <Box>
+                <Typography
+                  variant='h6'
+                  sx={{
+                    fontWeight: 700,
+                    color: isDark ? '#60a5fa' : '#1976d2',
+                    lineHeight: 1,
+                    fontSize: { xs: 16, sm: 20, md: 24 },
+                    display: { xs: 'none', sm: 'block' },
+                  }}
+                >
+                  Home Loan Mittra
+                </Typography>
+                <Typography
+                  variant='caption'
+                  sx={{
+                    color: isDark ? '#CBD5E1' : '#64748B',
+                    fontWeight: 500,
+                    letterSpacing: 1,
+                    fontSize: { xs: 10, sm: 12 },
+                    display: { xs: 'none', md: 'block' },
+                  }}
+                >
+                  MAKING HOME LOANS EFFORTLESS
+                </Typography>
+              </Box>
+            )}
           </Box>
 
           {/* Spacer to push nav to right */}
           <Box sx={{ flexGrow: 1 }} />
 
-          {/* Desktop Navigation Headings to right */}
+          {/* Desktop Navigation */}
           {!isMobile && (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2, pr: 1 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: { md: 0.8, lg: 1.2 },
+                pr: { md: 1, lg: 2 },
+                flexWrap: 'wrap',
+              }}
+            >
               {menuItems.map(item => (
                 <Button
                   key={item.label}
@@ -267,12 +401,13 @@ const Navbar: React.FC = () => {
                         : 'transparent',
                     color: isDark ? '#fff' : '#222',
                     fontWeight: 500,
-                    fontSize: 14,
+                    fontSize: { md: 12, lg: 14 },
                     borderRadius: 2,
-                    px: 1.5,
-                    py: 0.7,
+                    px: { md: 1, lg: 1.5 },
+                    py: { md: 0.5, lg: 0.7 },
                     minWidth: 0,
                     textTransform: 'none',
+                    whiteSpace: 'nowrap',
                     '&:hover': {
                       backgroundColor: isDark ? 'rgba(255,255,255,0.10)' : 'rgba(30,41,59,0.10)',
                     },
@@ -284,23 +419,24 @@ const Navbar: React.FC = () => {
 
               {/* User Menu (avatar) */}
               {user && (
-                <Box sx={{ ml: 1 }}>
+                <Box sx={{ ml: { md: 0.5, lg: 1 } }}>
                   <Tooltip title='Account settings'>
                     <IconButton
                       onClick={handleProfileMenuOpen}
                       size='small'
-                      sx={{ ml: 1 }}
+                      sx={{ ml: { md: 0.5, lg: 1 } }}
                       aria-controls={anchorEl ? 'account-menu' : undefined}
                       aria-haspopup='true'
                       aria-expanded={anchorEl ? 'true' : undefined}
                     >
                       <Avatar
                         sx={{
-                          width: 32,
-                          height: 32,
+                          width: { md: 28, lg: 32 },
+                          height: { md: 28, lg: 32 },
                           backgroundColor: '#fff',
                           color: '#1976d2',
                           fontWeight: 700,
+                          fontSize: { md: 12, lg: 14 },
                         }}
                       >
                         {user.firstName || user.name
