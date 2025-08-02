@@ -1179,16 +1179,32 @@ const AdminDashboard: React.FC = () => {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 mb: 3,
-                flexWrap: 'wrap',
+                flexDirection: { xs: 'column', sm: 'row' },
                 gap: 2,
               }}
             >
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Avatar sx={{ bgcolor: 'primary.main' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 2,
+                  width: { xs: '100%', sm: 'auto' },
+                }}
+              >
+                <Avatar
+                  sx={{
+                    bgcolor: 'primary.main',
+                    width: { xs: 40, sm: 56 },
+                    height: { xs: 40, sm: 56 },
+                  }}
+                >
                   <People />
                 </Avatar>
                 <Box>
-                  <Typography variant='h6' sx={{ fontWeight: 600 }}>
+                  <Typography
+                    variant='h6'
+                    sx={{ fontWeight: 600, fontSize: { xs: '1.125rem', sm: '1.25rem' } }}
+                  >
                     User Management
                   </Typography>
                   <Typography variant='body2' color='text.secondary'>
@@ -1196,21 +1212,53 @@ const AdminDashboard: React.FC = () => {
                   </Typography>
                 </Box>
               </Box>
-              <TextField
-                size='small'
-                placeholder='Search users...'
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                sx={{ minWidth: 250 }}
-                InputProps={{
-                  startAdornment: <Search sx={{ color: 'text.secondary', mr: 1 }} />,
-                  endAdornment: searchQuery && (
-                    <IconButton size='small' onClick={() => setSearchQuery('')} sx={{ p: 0.5 }}>
-                      <Close fontSize='small' />
-                    </IconButton>
-                  ),
+              <Box
+                sx={{
+                  width: { xs: '100%', sm: 'auto' },
+                  display: 'flex',
+                  gap: 2,
+                  flexDirection: { xs: 'column', sm: 'row' },
                 }}
-              />
+              >
+                <TextField
+                  size='small'
+                  placeholder='Search users...'
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  sx={{ minWidth: { xs: '100%', sm: 250 } }}
+                  InputProps={{
+                    startAdornment: <Search sx={{ color: 'text.secondary', mr: 1 }} />,
+                    endAdornment: searchQuery && (
+                      <IconButton size='small' onClick={() => setSearchQuery('')} sx={{ p: 0.5 }}>
+                        <Close fontSize='small' />
+                      </IconButton>
+                    ),
+                  }}
+                />
+                <Button
+                  variant='contained'
+                  startIcon={<PersonAdd />}
+                  onClick={() => {
+                    setAddUserDialog(true);
+                    setManualUser({
+                      firstName: '',
+                      lastName: '',
+                      email: '',
+                      phone: '',
+                      password: '',
+                      companyName: '',
+                      licenseNumber: '',
+                    });
+                    setAutoPassword('');
+                    setSelectedApprovedCustomer('');
+                    setNewUserRole('customer');
+                  }}
+                  size={isMobile ? 'large' : 'medium'}
+                  fullWidth={isMobile}
+                >
+                  Add User
+                </Button>
+              </Box>
             </Box>
             {usersLoading ? (
               <Box
@@ -1248,123 +1296,317 @@ const AdminDashboard: React.FC = () => {
                 </Button>
               </Box>
             ) : (
-              <List sx={{ bgcolor: 'background.paper', borderRadius: 2 }}>
-                {filteredUsers.map((user, index) => (
-                  <React.Fragment key={user._id}>
-                    <ListItem sx={{ py: 2, px: 3, '&:hover': { bgcolor: 'action.hover' } }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', flex: 1, gap: 3 }}>
-                        <Avatar
-                          sx={{
-                            width: 56,
-                            height: 56,
-                            bgcolor:
-                              user.role === 'admin'
-                                ? 'error.main'
-                                : user.role === 'builder'
-                                  ? 'warning.main'
-                                  : 'success.main',
-                            fontSize: '1.25rem',
-                            fontWeight: 600,
-                          }}
-                        >
-                          {(user.fullName || user.firstName || user.email)
-                            ?.charAt(0)
-                            ?.toUpperCase()}
-                        </Avatar>
-                        <Box sx={{ flex: 1, minWidth: 0 }}>
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
-                            <Typography variant='h6' sx={{ fontWeight: 600 }}>
-                              {user.fullName ||
-                                `${user.firstName || ''} ${user.lastName || ''}`.trim() ||
-                                'Unknown User'}
-                            </Typography>
-                            <Chip
-                              label={user.role}
-                              size='small'
-                              color={
-                                user.role === 'admin'
-                                  ? 'error'
-                                  : user.role === 'builder'
-                                    ? 'warning'
-                                    : 'success'
-                              }
-                              sx={{ textTransform: 'capitalize', fontWeight: 500 }}
-                            />
-                            <Chip
-                              label={user.status}
-                              size='small'
-                              variant='outlined'
-                              color={user.status === 'active' ? 'success' : 'default'}
-                              sx={{ textTransform: 'capitalize' }}
-                            />
-                          </Box>
-                          <Box
-                            sx={{ display: 'flex', alignItems: 'center', gap: 3, flexWrap: 'wrap' }}
-                          >
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                              <Email sx={{ fontSize: 16, color: 'text.secondary' }} />
-                              <Typography variant='body2' color='text.secondary'>
-                                {user.email}
-                              </Typography>
-                            </Box>
-                            {user.phone && (
-                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                                <Phone sx={{ fontSize: 16, color: 'text.secondary' }} />
-                                <Typography variant='body2' color='text.secondary'>
-                                  {user.phone}
-                                </Typography>
-                              </Box>
-                            )}
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                              <Badge sx={{ fontSize: 16, color: 'text.secondary' }} />
-                              <Typography variant='body2' color='text.secondary'>
-                                Joined{' '}
-                                {user.createdAt
-                                  ? new Date(user.createdAt).toLocaleDateString('en-US', {
-                                      month: 'short',
-                                      day: 'numeric',
-                                      year: 'numeric',
-                                    })
-                                  : 'Unknown'}
-                              </Typography>
-                            </Box>
-                          </Box>
-                        </Box>
-                        <Stack direction='row' spacing={1}>
-                          <Tooltip title='View Details'>
-                            <IconButton size='small' onClick={() => setViewUser(user)}>
-                              <Visibility fontSize='small' />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title='Edit User'>
-                            <IconButton size='small' onClick={() => setEditUser(user)}>
-                              <Edit fontSize='small' />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title='Reset Password'>
-                            <IconButton size='small' onClick={() => setResetPasswordUser(user)}>
-                              <LockReset fontSize='small' />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title='Delete User'>
-                            <IconButton
-                              size='small'
-                              onClick={() => setDeleteUserConfirm(user)}
+              <Box>
+                {/* Desktop List View */}
+                {!isMobile && (
+                  <List sx={{ bgcolor: 'background.paper', borderRadius: 2 }}>
+                    {filteredUsers.map((user, index) => (
+                      <React.Fragment key={user._id}>
+                        <ListItem sx={{ py: 2, px: 3, '&:hover': { bgcolor: 'action.hover' } }}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', flex: 1, gap: 3 }}>
+                            <Avatar
                               sx={{
-                                color: 'error.main',
-                                '&:hover': { bgcolor: 'error.light', color: 'white' },
+                                width: 56,
+                                height: 56,
+                                bgcolor:
+                                  user.role === 'admin'
+                                    ? 'error.main'
+                                    : user.role === 'builder'
+                                      ? 'warning.main'
+                                      : 'success.main',
+                                fontSize: '1.25rem',
+                                fontWeight: 600,
                               }}
                             >
-                              <Delete fontSize='small' />
-                            </IconButton>
-                          </Tooltip>
-                        </Stack>
-                      </Box>
-                    </ListItem>
-                    {index < filteredUsers.length - 1 && <Divider />}
-                  </React.Fragment>
-                ))}
-              </List>
+                              {(user.fullName || user.firstName || user.email)
+                                ?.charAt(0)
+                                ?.toUpperCase()}
+                            </Avatar>
+                            <Box sx={{ flex: 1, minWidth: 0 }}>
+                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
+                                <Typography variant='h6' sx={{ fontWeight: 600 }}>
+                                  {user.fullName ||
+                                    `${user.firstName || ''} ${user.lastName || ''}`.trim() ||
+                                    'Unknown User'}
+                                </Typography>
+                                <Chip
+                                  label={user.role}
+                                  size='small'
+                                  color={
+                                    user.role === 'admin'
+                                      ? 'error'
+                                      : user.role === 'builder'
+                                        ? 'warning'
+                                        : 'success'
+                                  }
+                                  sx={{ textTransform: 'capitalize', fontWeight: 500 }}
+                                />
+                                <Chip
+                                  label={user.status}
+                                  size='small'
+                                  variant='outlined'
+                                  color={user.status === 'active' ? 'success' : 'default'}
+                                  sx={{ textTransform: 'capitalize' }}
+                                />
+                              </Box>
+                              <Box
+                                sx={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: 3,
+                                  flexWrap: 'wrap',
+                                }}
+                              >
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                  <Email sx={{ fontSize: 16, color: 'text.secondary' }} />
+                                  <Typography variant='body2' color='text.secondary'>
+                                    {user.email}
+                                  </Typography>
+                                </Box>
+                                {user.phone && (
+                                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                    <Phone sx={{ fontSize: 16, color: 'text.secondary' }} />
+                                    <Typography variant='body2' color='text.secondary'>
+                                      {user.phone}
+                                    </Typography>
+                                  </Box>
+                                )}
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                  <Badge sx={{ fontSize: 16, color: 'text.secondary' }} />
+                                  <Typography variant='body2' color='text.secondary'>
+                                    Joined{' '}
+                                    {user.createdAt
+                                      ? new Date(user.createdAt).toLocaleDateString('en-US', {
+                                          month: 'short',
+                                          day: 'numeric',
+                                          year: 'numeric',
+                                        })
+                                      : 'Unknown'}
+                                  </Typography>
+                                </Box>
+                              </Box>
+                            </Box>
+                            <Stack direction='row' spacing={1}>
+                              <Tooltip title='View Details'>
+                                <IconButton size='small' onClick={() => setViewUser(user)}>
+                                  <Visibility fontSize='small' />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip title='Edit User'>
+                                <IconButton size='small' onClick={() => setEditUser(user)}>
+                                  <Edit fontSize='small' />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip title='Reset Password'>
+                                <IconButton size='small' onClick={() => setResetPasswordUser(user)}>
+                                  <LockReset fontSize='small' />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip title='Delete User'>
+                                <IconButton
+                                  size='small'
+                                  onClick={() => setDeleteUserConfirm(user)}
+                                  sx={{
+                                    color: 'error.main',
+                                    '&:hover': { bgcolor: 'error.light', color: 'white' },
+                                  }}
+                                >
+                                  <Delete fontSize='small' />
+                                </IconButton>
+                              </Tooltip>
+                            </Stack>
+                          </Box>
+                        </ListItem>
+                        {index < filteredUsers.length - 1 && <Divider />}
+                      </React.Fragment>
+                    ))}
+                  </List>
+                )}
+
+                {/* Mobile Card View */}
+                {isMobile && (
+                  <Box sx={{ display: 'grid', gridTemplateColumns: '1fr', gap: 2 }}>
+                    {filteredUsers.map(user => (
+                      <Card
+                        key={user._id}
+                        sx={{
+                          border: '1px solid',
+                          borderColor: 'divider',
+                          '&:hover': {
+                            boxShadow: 2,
+                            borderColor: 'primary.main',
+                          },
+                        }}
+                      >
+                        <CardContent sx={{ p: 2 }}>
+                          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
+                            <Avatar
+                              sx={{
+                                width: 48,
+                                height: 48,
+                                bgcolor:
+                                  user.role === 'admin'
+                                    ? 'error.main'
+                                    : user.role === 'builder'
+                                      ? 'warning.main'
+                                      : 'success.main',
+                                fontSize: '1.125rem',
+                                fontWeight: 600,
+                                flexShrink: 0,
+                              }}
+                            >
+                              {(user.fullName || user.firstName || user.email)
+                                ?.charAt(0)
+                                ?.toUpperCase()}
+                            </Avatar>
+                            <Box sx={{ flex: 1, minWidth: 0 }}>
+                              <Box
+                                sx={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: 1,
+                                  mb: 1,
+                                  flexWrap: 'wrap',
+                                }}
+                              >
+                                <Typography variant='h6' sx={{ fontWeight: 600, fontSize: '1rem' }}>
+                                  {user.fullName ||
+                                    `${user.firstName || ''} ${user.lastName || ''}`.trim() ||
+                                    'Unknown User'}
+                                </Typography>
+                                <Chip
+                                  label={user.role}
+                                  size='small'
+                                  color={
+                                    user.role === 'admin'
+                                      ? 'error'
+                                      : user.role === 'builder'
+                                        ? 'warning'
+                                        : 'success'
+                                  }
+                                  sx={{
+                                    textTransform: 'capitalize',
+                                    fontWeight: 500,
+                                    fontSize: '0.6875rem',
+                                  }}
+                                />
+                              </Box>
+                              <Box sx={{ mb: 1 }}>
+                                <Box
+                                  sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}
+                                >
+                                  <Email sx={{ fontSize: 14, color: 'text.secondary' }} />
+                                  <Typography
+                                    variant='body2'
+                                    color='text.secondary'
+                                    sx={{ fontSize: '0.75rem' }}
+                                  >
+                                    {user.email}
+                                  </Typography>
+                                </Box>
+                                {user.phone && (
+                                  <Box
+                                    sx={{
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: 0.5,
+                                      mb: 0.5,
+                                    }}
+                                  >
+                                    <Phone sx={{ fontSize: 14, color: 'text.secondary' }} />
+                                    <Typography
+                                      variant='body2'
+                                      color='text.secondary'
+                                      sx={{ fontSize: '0.75rem' }}
+                                    >
+                                      {user.phone}
+                                    </Typography>
+                                  </Box>
+                                )}
+                                <Box
+                                  sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 1 }}
+                                >
+                                  <Badge sx={{ fontSize: 14, color: 'text.secondary' }} />
+                                  <Typography
+                                    variant='body2'
+                                    color='text.secondary'
+                                    sx={{ fontSize: '0.75rem' }}
+                                  >
+                                    Joined{' '}
+                                    {user.createdAt
+                                      ? new Date(user.createdAt).toLocaleDateString('en-US', {
+                                          month: 'short',
+                                          day: 'numeric',
+                                          year: 'numeric',
+                                        })
+                                      : 'Unknown'}
+                                  </Typography>
+                                </Box>
+                                <Chip
+                                  label={user.status}
+                                  size='small'
+                                  variant='outlined'
+                                  color={user.status === 'active' ? 'success' : 'default'}
+                                  sx={{ textTransform: 'capitalize', fontSize: '0.6875rem' }}
+                                />
+                              </Box>
+
+                              {/* Mobile Action Buttons */}
+                              <Box
+                                sx={{
+                                  display: 'grid',
+                                  gridTemplateColumns: 'repeat(2, 1fr)',
+                                  gap: 1,
+                                  mt: 2,
+                                }}
+                              >
+                                <Button
+                                  size='small'
+                                  variant='outlined'
+                                  startIcon={<Visibility />}
+                                  onClick={() => setViewUser(user)}
+                                  sx={{ fontSize: '0.75rem', py: 0.5 }}
+                                >
+                                  View
+                                </Button>
+                                <Button
+                                  size='small'
+                                  variant='outlined'
+                                  startIcon={<Edit />}
+                                  onClick={() => setEditUser(user)}
+                                  sx={{ fontSize: '0.75rem', py: 0.5 }}
+                                >
+                                  Edit
+                                </Button>
+                                <Button
+                                  size='small'
+                                  variant='outlined'
+                                  color='warning'
+                                  startIcon={<LockReset />}
+                                  onClick={() => setResetPasswordUser(user)}
+                                  sx={{ fontSize: '0.75rem', py: 0.5 }}
+                                >
+                                  Reset
+                                </Button>
+                                <Button
+                                  size='small'
+                                  variant='outlined'
+                                  color='error'
+                                  startIcon={<Delete />}
+                                  onClick={() => setDeleteUserConfirm(user)}
+                                  sx={{ fontSize: '0.75rem', py: 0.5 }}
+                                >
+                                  Delete
+                                </Button>
+                              </Box>
+                            </Box>
+                          </Box>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </Box>
+                )}
+              </Box>
             )}
           </CardContent>
         </Card>
@@ -2275,97 +2517,345 @@ const AdminDashboard: React.FC = () => {
 
       {/* View User Dialog */}
       <Dialog open={!!viewUser} onClose={() => setViewUser(null)} maxWidth='sm' fullWidth>
-        <DialogTitle>User Details</DialogTitle>
+        <DialogTitle sx={{ pb: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Avatar
+              sx={{
+                bgcolor:
+                  viewUser?.role === 'admin'
+                    ? 'error.main'
+                    : viewUser?.role === 'builder'
+                      ? 'warning.main'
+                      : 'success.main',
+                width: 40,
+                height: 40,
+              }}
+            >
+              {(viewUser?.fullName || viewUser?.firstName || viewUser?.email)
+                ?.charAt(0)
+                ?.toUpperCase()}
+            </Avatar>
+            <Box>
+              <Typography variant='h6' sx={{ fontWeight: 600 }}>
+                User Details
+              </Typography>
+              <Typography variant='body2' color='text.secondary'>
+                {viewUser?.role} Account Information
+              </Typography>
+            </Box>
+          </Box>
+        </DialogTitle>
         <DialogContent>
           {viewUser && (
-            <Box>
-              <Typography variant='subtitle1' sx={{ mb: 1 }}>
-                <strong>Name:</strong>{' '}
-                {viewUser.fullName ||
-                  `${viewUser.firstName || ''} ${viewUser.lastName || ''}`.trim()}
-              </Typography>
-              <Typography variant='body2'>
-                <strong>Email:</strong> {viewUser.email}
-              </Typography>
-              <Typography variant='body2'>
-                <strong>Phone:</strong> {viewUser.phone}
-              </Typography>
-              <Typography variant='body2'>
-                <strong>Role:</strong> {viewUser.role}
-              </Typography>
-              <Typography variant='body2'>
-                <strong>Status:</strong> {viewUser.status}
-              </Typography>
-              <Typography variant='body2'>
-                <strong>Created:</strong>{' '}
-                {viewUser.createdAt ? new Date(viewUser.createdAt).toLocaleDateString() : ''}
-              </Typography>
+            <Box sx={{ pt: 1 }}>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
+                  gap: 2,
+                  mb: 3,
+                }}
+              >
+                <Box>
+                  <Typography
+                    variant='caption'
+                    color='text.secondary'
+                    sx={{ fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1 }}
+                  >
+                    Full Name
+                  </Typography>
+                  <Typography variant='body1' sx={{ mt: 0.5, fontWeight: 500 }}>
+                    {viewUser.fullName ||
+                      `${viewUser.firstName || ''} ${viewUser.lastName || ''}`.trim() ||
+                      'Not provided'}
+                  </Typography>
+                </Box>
+                <Box>
+                  <Typography
+                    variant='caption'
+                    color='text.secondary'
+                    sx={{ fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1 }}
+                  >
+                    Role
+                  </Typography>
+                  <Box sx={{ mt: 0.5 }}>
+                    <Chip
+                      label={viewUser.role}
+                      size='small'
+                      color={
+                        viewUser.role === 'admin'
+                          ? 'error'
+                          : viewUser.role === 'builder'
+                            ? 'warning'
+                            : 'success'
+                      }
+                      sx={{ textTransform: 'capitalize', fontWeight: 500 }}
+                    />
+                  </Box>
+                </Box>
+                <Box>
+                  <Typography
+                    variant='caption'
+                    color='text.secondary'
+                    sx={{ fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1 }}
+                  >
+                    Email Address
+                  </Typography>
+                  <Typography
+                    variant='body1'
+                    sx={{ mt: 0.5, fontWeight: 500, wordBreak: 'break-word' }}
+                  >
+                    {viewUser.email}
+                  </Typography>
+                </Box>
+                <Box>
+                  <Typography
+                    variant='caption'
+                    color='text.secondary'
+                    sx={{ fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1 }}
+                  >
+                    Phone Number
+                  </Typography>
+                  <Typography variant='body1' sx={{ mt: 0.5, fontWeight: 500 }}>
+                    {viewUser.phone || 'Not provided'}
+                  </Typography>
+                </Box>
+                <Box>
+                  <Typography
+                    variant='caption'
+                    color='text.secondary'
+                    sx={{ fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1 }}
+                  >
+                    Account Status
+                  </Typography>
+                  <Box sx={{ mt: 0.5 }}>
+                    <Chip
+                      label={viewUser.status}
+                      size='small'
+                      variant='outlined'
+                      color={viewUser.status === 'active' ? 'success' : 'default'}
+                      sx={{ textTransform: 'capitalize' }}
+                    />
+                  </Box>
+                </Box>
+                <Box>
+                  <Typography
+                    variant='caption'
+                    color='text.secondary'
+                    sx={{ fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1 }}
+                  >
+                    Member Since
+                  </Typography>
+                  <Typography variant='body1' sx={{ mt: 0.5, fontWeight: 500 }}>
+                    {viewUser.createdAt
+                      ? new Date(viewUser.createdAt).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })
+                      : 'Unknown'}
+                  </Typography>
+                </Box>
+              </Box>
+
+              {/* Additional User Info for specific roles */}
+              {(viewUser.companyName || viewUser.licenseNumber) && (
+                <Box sx={{ mt: 3, p: 2, bgcolor: 'background.default', borderRadius: 1 }}>
+                  <Typography variant='subtitle2' sx={{ mb: 2, fontWeight: 600 }}>
+                    Professional Information
+                  </Typography>
+                  {viewUser.companyName && (
+                    <Box sx={{ mb: 1 }}>
+                      <Typography
+                        variant='caption'
+                        color='text.secondary'
+                        sx={{ fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1 }}
+                      >
+                        Company Name
+                      </Typography>
+                      <Typography variant='body2' sx={{ mt: 0.5 }}>
+                        {viewUser.companyName}
+                      </Typography>
+                    </Box>
+                  )}
+                  {viewUser.licenseNumber && (
+                    <Box>
+                      <Typography
+                        variant='caption'
+                        color='text.secondary'
+                        sx={{ fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1 }}
+                      >
+                        License Number
+                      </Typography>
+                      <Typography variant='body2' sx={{ mt: 0.5 }}>
+                        {viewUser.licenseNumber}
+                      </Typography>
+                    </Box>
+                  )}
+                </Box>
+              )}
             </Box>
           )}
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setViewUser(null)} startIcon={<Close />}>
+        <DialogActions sx={{ px: 3, pb: 3 }}>
+          <Button
+            onClick={() => setViewUser(null)}
+            startIcon={<Close />}
+            variant='outlined'
+            fullWidth={isMobile}
+          >
             Close
+          </Button>
+          <Button
+            onClick={() => {
+              setViewUser(null);
+              setEditUser(viewUser);
+            }}
+            startIcon={<Edit />}
+            variant='contained'
+            fullWidth={isMobile}
+          >
+            Edit User
           </Button>
         </DialogActions>
       </Dialog>
 
       {/* Edit User Dialog */}
       <Dialog open={!!editUser} onClose={() => setEditUser(null)} maxWidth='sm' fullWidth>
-        <DialogTitle>Edit User</DialogTitle>
+        <DialogTitle sx={{ pb: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Edit sx={{ color: 'primary.main' }} />
+            <Box>
+              <Typography variant='h6' sx={{ fontWeight: 600 }}>
+                Edit User
+              </Typography>
+              <Typography variant='body2' color='text.secondary'>
+                Update user information and settings
+              </Typography>
+            </Box>
+          </Box>
+        </DialogTitle>
         <DialogContent>
           {editUser && (
-            <Box sx={{ pt: 2 }}>
+            <Box sx={{ pt: 1 }}>
+              <Box
+                sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}
+              >
+                <TextField
+                  fullWidth
+                  label='First Name'
+                  value={editUser.firstName || ''}
+                  onChange={e => setEditUser({ ...editUser, firstName: e.target.value })}
+                  variant='outlined'
+                  size={isMobile ? 'medium' : 'small'}
+                />
+                <TextField
+                  fullWidth
+                  label='Last Name'
+                  value={editUser.lastName || ''}
+                  onChange={e => setEditUser({ ...editUser, lastName: e.target.value })}
+                  variant='outlined'
+                  size={isMobile ? 'medium' : 'small'}
+                />
+              </Box>
               <TextField
                 fullWidth
-                label='First Name'
-                value={editUser.firstName || ''}
-                onChange={e => setEditUser({ ...editUser, firstName: e.target.value })}
-                margin='normal'
-              />
-              <TextField
-                fullWidth
-                label='Last Name'
-                value={editUser.lastName || ''}
-                onChange={e => setEditUser({ ...editUser, lastName: e.target.value })}
-                margin='normal'
-              />
-              <TextField
-                fullWidth
-                label='Email'
+                label='Email Address'
                 value={editUser.email || ''}
                 onChange={e => setEditUser({ ...editUser, email: e.target.value })}
                 margin='normal'
+                variant='outlined'
+                size={isMobile ? 'medium' : 'small'}
+                type='email'
               />
               <TextField
                 fullWidth
-                label='Phone'
+                label='Phone Number'
                 value={editUser.phone || ''}
                 onChange={e => setEditUser({ ...editUser, phone: e.target.value })}
                 margin='normal'
+                variant='outlined'
+                size={isMobile ? 'medium' : 'small'}
+                type='tel'
               />
-              <FormControl fullWidth margin='normal'>
-                <InputLabel>Status</InputLabel>
+              <FormControl fullWidth margin='normal' size={isMobile ? 'medium' : 'small'}>
+                <InputLabel>Account Status</InputLabel>
                 <Select
                   value={editUser.status || 'active'}
                   onChange={e => setEditUser({ ...editUser, status: e.target.value })}
-                  label='Status'
+                  label='Account Status'
                 >
-                  <MenuItem value='active'>Active</MenuItem>
-                  <MenuItem value='inactive'>Inactive</MenuItem>
-                  <MenuItem value='suspended'>Suspended</MenuItem>
+                  <MenuItem value='active'>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Box
+                        sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }}
+                      />
+                      Active
+                    </Box>
+                  </MenuItem>
+                  <MenuItem value='inactive'>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'grey.500' }} />
+                      Inactive
+                    </Box>
+                  </MenuItem>
+                  <MenuItem value='suspended'>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Box
+                        sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'error.main' }}
+                      />
+                      Suspended
+                    </Box>
+                  </MenuItem>
                 </Select>
               </FormControl>
+
+              {/* Role Information (Read-only) */}
+              <Box sx={{ mt: 2, p: 2, bgcolor: 'background.default', borderRadius: 1 }}>
+                <Typography
+                  variant='caption'
+                  color='text.secondary'
+                  sx={{ fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1 }}
+                >
+                  User Role
+                </Typography>
+                <Box sx={{ mt: 0.5 }}>
+                  <Chip
+                    label={editUser.role}
+                    size='small'
+                    color={
+                      editUser.role === 'admin'
+                        ? 'error'
+                        : editUser.role === 'builder'
+                          ? 'warning'
+                          : 'success'
+                    }
+                    sx={{ textTransform: 'capitalize', fontWeight: 500 }}
+                  />
+                  <Typography variant='caption' color='text.secondary' sx={{ ml: 1 }}>
+                    (Cannot be changed)
+                  </Typography>
+                </Box>
+              </Box>
             </Box>
           )}
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setEditUser(null)}>Cancel</Button>
+        <DialogActions sx={{ px: 3, pb: 3, gap: 1, flexDirection: { xs: 'column', sm: 'row' } }}>
+          <Button
+            onClick={() => setEditUser(null)}
+            variant='outlined'
+            fullWidth={isMobile}
+            size={isMobile ? 'large' : 'medium'}
+          >
+            Cancel
+          </Button>
           <Button
             onClick={() => handleEditUser(editUser)}
             variant='contained'
             disabled={userActionLoading}
             startIcon={userActionLoading ? <CircularProgress size={20} /> : <Save />}
+            fullWidth={isMobile}
+            size={isMobile ? 'large' : 'medium'}
           >
             Save Changes
           </Button>
@@ -2379,38 +2869,79 @@ const AdminDashboard: React.FC = () => {
         maxWidth='xs'
         fullWidth
       >
-        <DialogTitle>Reset Password</DialogTitle>
+        <DialogTitle sx={{ pb: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <LockReset sx={{ color: 'warning.main' }} />
+            <Box>
+              <Typography variant='h6' sx={{ fontWeight: 600 }}>
+                Reset Password
+              </Typography>
+              <Typography variant='body2' color='text.secondary'>
+                Set a new password for this user
+              </Typography>
+            </Box>
+          </Box>
+        </DialogTitle>
         <DialogContent>
           {resetPasswordUser && (
-            <Box sx={{ pt: 2 }}>
-              <Typography variant='body2' sx={{ mb: 2 }}>
-                Reset password for{' '}
-                <strong>{resetPasswordUser.fullName || resetPasswordUser.email}</strong>?
-              </Typography>
+            <Box sx={{ pt: 1 }}>
+              <Box sx={{ p: 2, bgcolor: 'warning.light', borderRadius: 1, mb: 3 }}>
+                <Typography
+                  variant='subtitle2'
+                  sx={{ fontWeight: 600, color: 'warning.contrastText' }}
+                >
+                  {resetPasswordUser.fullName || resetPasswordUser.email}
+                </Typography>
+                <Typography variant='caption' sx={{ color: 'warning.contrastText', opacity: 0.9 }}>
+                  {resetPasswordUser.email}
+                </Typography>
+              </Box>
+
               <TextField
                 fullWidth
                 label='New Password'
                 type='password'
                 placeholder='Enter new password or leave blank for auto-generated'
-                margin='normal'
+                variant='outlined'
+                size={isMobile ? 'medium' : 'small'}
                 onChange={e =>
                   setResetPasswordUser({ ...resetPasswordUser, newPassword: e.target.value })
                 }
+                sx={{ mb: 2 }}
               />
-              <Typography variant='caption' color='text.secondary'>
-                If left blank, a secure password will be auto-generated and sent to the user.
-              </Typography>
+
+              <Alert severity='info' sx={{ mb: 2 }}>
+                <Typography variant='body2'>
+                  If left blank, a secure password will be auto-generated and sent to the user via
+                  email.
+                </Typography>
+              </Alert>
+
+              <Alert severity='warning'>
+                <Typography variant='body2'>
+                  The user will need to use the new password for their next login.
+                </Typography>
+              </Alert>
             </Box>
           )}
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setResetPasswordUser(null)}>Cancel</Button>
+        <DialogActions sx={{ px: 3, pb: 3, gap: 1, flexDirection: { xs: 'column', sm: 'row' } }}>
+          <Button
+            onClick={() => setResetPasswordUser(null)}
+            variant='outlined'
+            fullWidth={isMobile}
+            size={isMobile ? 'large' : 'medium'}
+          >
+            Cancel
+          </Button>
           <Button
             onClick={() => handleResetPassword(resetPasswordUser.newPassword || generatePassword())}
             variant='contained'
             color='warning'
             disabled={userActionLoading}
             startIcon={userActionLoading ? <CircularProgress size={20} /> : <LockReset />}
+            fullWidth={isMobile}
+            size={isMobile ? 'large' : 'medium'}
           >
             Reset Password
           </Button>
@@ -2424,35 +2955,105 @@ const AdminDashboard: React.FC = () => {
         maxWidth='xs'
         fullWidth
       >
-        <DialogTitle sx={{ color: 'error.main' }}>Delete User</DialogTitle>
+        <DialogTitle sx={{ pb: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Delete sx={{ color: 'error.main' }} />
+            <Box>
+              <Typography variant='h6' sx={{ fontWeight: 600, color: 'error.main' }}>
+                Delete User
+              </Typography>
+              <Typography variant='body2' color='text.secondary'>
+                This action cannot be undone
+              </Typography>
+            </Box>
+          </Box>
+        </DialogTitle>
         <DialogContent>
           {deleteUserConfirm && (
-            <Box sx={{ pt: 2 }}>
-              <Typography variant='body1' sx={{ mb: 2 }}>
-                Are you sure you want to delete this user?
+            <Box sx={{ pt: 1 }}>
+              <Typography variant='body1' sx={{ mb: 3, fontWeight: 500 }}>
+                Are you sure you want to delete this user account?
               </Typography>
-              <Box sx={{ p: 2, bgcolor: 'error.light', borderRadius: 1, mb: 2 }}>
-                <Typography variant='subtitle2' color='error.contrastText'>
-                  <strong>{deleteUserConfirm.fullName || deleteUserConfirm.email}</strong>
-                </Typography>
-                <Typography variant='body2' color='error.contrastText'>
-                  {deleteUserConfirm.email}
-                </Typography>
+
+              <Box sx={{ p: 2, bgcolor: 'error.light', borderRadius: 1, mb: 3 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
+                  <Avatar
+                    sx={{
+                      width: 32,
+                      height: 32,
+                      bgcolor: 'error.main',
+                      fontSize: '0.875rem',
+                    }}
+                  >
+                    {(
+                      deleteUserConfirm.fullName ||
+                      deleteUserConfirm.firstName ||
+                      deleteUserConfirm.email
+                    )
+                      ?.charAt(0)
+                      ?.toUpperCase()}
+                  </Avatar>
+                  <Box>
+                    <Typography
+                      variant='subtitle2'
+                      sx={{ fontWeight: 600, color: 'error.contrastText' }}
+                    >
+                      {deleteUserConfirm.fullName ||
+                        `${deleteUserConfirm.firstName || ''} ${deleteUserConfirm.lastName || ''}`.trim() ||
+                        'Unknown User'}
+                    </Typography>
+                    <Typography
+                      variant='caption'
+                      sx={{ color: 'error.contrastText', opacity: 0.9 }}
+                    >
+                      {deleteUserConfirm.email}
+                    </Typography>
+                  </Box>
+                </Box>
+                <Chip
+                  label={deleteUserConfirm.role}
+                  size='small'
+                  sx={{
+                    bgcolor: 'rgba(255,255,255,0.2)',
+                    color: 'error.contrastText',
+                    textTransform: 'capitalize',
+                    fontWeight: 500,
+                  }}
+                />
               </Box>
+
               <Alert severity='warning' sx={{ mb: 2 }}>
-                This action will soft-delete the user account. The user will not be able to log in.
+                <Typography variant='body2'>
+                  This action will soft-delete the user account. The user will not be able to log
+                  in, but their data will be preserved for audit purposes.
+                </Typography>
+              </Alert>
+
+              <Alert severity='error'>
+                <Typography variant='body2' sx={{ fontWeight: 500 }}>
+                  All associated data and permissions will be revoked immediately.
+                </Typography>
               </Alert>
             </Box>
           )}
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDeleteUserConfirm(null)}>Cancel</Button>
+        <DialogActions sx={{ px: 3, pb: 3, gap: 1, flexDirection: { xs: 'column', sm: 'row' } }}>
+          <Button
+            onClick={() => setDeleteUserConfirm(null)}
+            variant='outlined'
+            fullWidth={isMobile}
+            size={isMobile ? 'large' : 'medium'}
+          >
+            Cancel
+          </Button>
           <Button
             onClick={handleDeleteUser}
             variant='contained'
             color='error'
             disabled={userActionLoading}
             startIcon={userActionLoading ? <CircularProgress size={20} /> : <Delete />}
+            fullWidth={isMobile}
+            size={isMobile ? 'large' : 'medium'}
           >
             Delete User
           </Button>
