@@ -30,7 +30,7 @@ import {
   Stack,
   Divider,
   Avatar,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import {
   Assignment as AssignmentIcon,
@@ -41,7 +41,7 @@ import {
   Close,
   Refresh,
   TrendingUp,
-  AccountBalance as AccountBalanceIcon
+  AccountBalance as AccountBalanceIcon,
 } from '@mui/icons-material';
 import applicationApi, { Application } from '../../services/applicationApi';
 
@@ -106,7 +106,7 @@ const CustomerDashboard: React.FC = () => {
       rejected_by_bank: { color: '#F44336', label: 'Rejected by Bank', icon: '', progress: 100 },
       sanctioned: { color: '#2E7D32', label: 'Sanctioned', icon: '', progress: 95 },
       disbursed: { color: '#1B5E20', label: 'Disbursed', icon: '', progress: 100 },
-      rejected: { color: '#D32F2F', label: 'Rejected', icon: '', progress: 100 }
+      rejected: { color: '#D32F2F', label: 'Rejected', icon: '', progress: 100 },
     };
     return configs[status] || { color: '#757575', label: status, icon: '', progress: 0 };
   };
@@ -114,8 +114,8 @@ const CustomerDashboard: React.FC = () => {
   // Get application statistics
   const getApplicationStats = () => {
     const totalApplications = applications.length;
-    const activeApplications = applications.filter(app =>
-      !['rejected', 'rejected_by_bank', 'disbursed'].includes(app.status)
+    const activeApplications = applications.filter(
+      app => !['rejected', 'rejected_by_bank', 'disbursed'].includes(app.status)
     ).length;
     const totalLoanAmount = applications
       .filter(app => ['approved_by_bank', 'sanctioned', 'disbursed'].includes(app.status))
@@ -127,7 +127,7 @@ const CustomerDashboard: React.FC = () => {
       totalLoanAmount,
       completedApplications: applications.filter(app =>
         ['approved_by_bank', 'sanctioned', 'disbursed'].includes(app.status)
-      ).length
+      ).length,
     };
   };
 
@@ -137,40 +137,55 @@ const CustomerDashboard: React.FC = () => {
   const isDark = theme.palette.mode === 'dark';
 
   return (
-    <Container maxWidth="xl" sx={{ py: 4 }}>
+    <Container maxWidth='xl' sx={{ py: { xs: 2, sm: 3, md: 4 } }}>
       {/* Header */}
       <Box
         sx={{
           display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' },
           justifyContent: 'space-between',
-          alignItems: 'center',
-          mb: 4,
-          px: { xs: 2, md: 4 },
-          py: 3,
+          alignItems: { xs: 'flex-start', sm: 'center' },
+          gap: { xs: 2, sm: 0 },
+          mb: { xs: 3, md: 4 },
+          px: { xs: 2, sm: 3, md: 4 },
+          py: { xs: 2, sm: 3 },
           borderRadius: 3,
           background: isDark
             ? 'linear-gradient(90deg, #1e293b 0%, #334155 100%)'
             : 'linear-gradient(90deg, #e3f0ff 0%, #f9fbfd 100%)',
           boxShadow: isDark
             ? '0 2px 12px 0 rgba(30,41,59,0.30)'
-            : '0 2px 12px 0 rgba(30,41,59,0.08)'
+            : '0 2px 12px 0 rgba(30,41,59,0.08)',
         }}
       >
-        <Box display="flex" alignItems="center" gap={2}>
-          <Avatar sx={{ width: 56, height: 56, bgcolor: isDark ? theme.palette.primary.dark : theme.palette.primary.main }}>
+        <Box display='flex' alignItems='center' gap={2}>
+          <Avatar
+            sx={{
+              width: 56,
+              height: 56,
+              bgcolor: isDark ? theme.palette.primary.dark : theme.palette.primary.main,
+            }}
+          >
             <AccountBalanceIcon sx={{ fontSize: 32, color: '#fff' }} />
           </Avatar>
           <Box>
-            <Typography variant="h5" fontWeight="bold" color={isDark ? '#fff' : theme.palette.primary.main}>
+            <Typography
+              variant='h5'
+              fontWeight='bold'
+              color={isDark ? '#fff' : theme.palette.primary.main}
+            >
               Welcome Back!
             </Typography>
-            <Typography variant="subtitle1" color={isDark ? theme.palette.grey[300] : theme.palette.text.secondary}>
+            <Typography
+              variant='subtitle1'
+              color={isDark ? theme.palette.grey[300] : theme.palette.text.secondary}
+            >
               Here’s a summary of your loan journey
             </Typography>
           </Box>
         </Box>
         <Button
-          variant="outlined"
+          variant='outlined'
           startIcon={<Refresh />}
           onClick={fetchApplications}
           disabled={loading}
@@ -181,12 +196,14 @@ const CustomerDashboard: React.FC = () => {
             px: 3,
             py: 1.2,
             borderRadius: 2,
-            boxShadow: isDark ? '0 2px 12px 0 rgba(30,41,59,0.20)' : '0 2px 12px 0 rgba(30,41,59,0.05)',
+            boxShadow: isDark
+              ? '0 2px 12px 0 rgba(30,41,59,0.20)'
+              : '0 2px 12px 0 rgba(30,41,59,0.05)',
             '&:hover': {
               background: isDark ? theme.palette.primary.dark : theme.palette.primary.light,
               color: '#fff',
-              borderColor: isDark ? theme.palette.primary.dark : theme.palette.primary.light
-            }
+              borderColor: isDark ? theme.palette.primary.dark : theme.palette.primary.light,
+            },
           }}
         >
           Refresh
@@ -194,7 +211,7 @@ const CustomerDashboard: React.FC = () => {
       </Box>
 
       {/* Stats Cards */}
-      <Box display="flex" flexWrap="wrap" gap={3} mb={4}>
+      <Box display='flex' flexWrap='wrap' gap={3} mb={4}>
         <Box sx={{ flex: '1 1 100%', maxWidth: { xs: '100%', sm: '50%', md: '25%' } }}>
           <Card
             sx={{
@@ -206,19 +223,19 @@ const CustomerDashboard: React.FC = () => {
               borderRadius: 3,
               boxShadow: isDark ? 6 : 2,
               transition: 'box-shadow 0.2s',
-              '&:hover': { boxShadow: isDark ? 12 : 6 }
+              '&:hover': { boxShadow: isDark ? 12 : 6 },
             }}
           >
             <CardContent>
-              <Box display="flex" alignItems="center" gap={2}>
+              <Box display='flex' alignItems='center' gap={2}>
                 <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.14)', width: 48, height: 48 }}>
                   <AssignmentIcon sx={{ fontSize: 28, color: '#fff' }} />
                 </Avatar>
                 <Box>
-                  <Typography variant="h4" fontWeight="bold" color="white">
+                  <Typography variant='h4' fontWeight='bold' color='white'>
                     {stats.totalApplications}
                   </Typography>
-                  <Typography color="rgba(255,255,255,0.8)">Total Applications</Typography>
+                  <Typography color='rgba(255,255,255,0.8)'>Total Applications</Typography>
                 </Box>
               </Box>
             </CardContent>
@@ -235,19 +252,19 @@ const CustomerDashboard: React.FC = () => {
               borderRadius: 3,
               boxShadow: isDark ? 6 : 2,
               transition: 'box-shadow 0.2s',
-              '&:hover': { boxShadow: isDark ? 12 : 6 }
+              '&:hover': { boxShadow: isDark ? 12 : 6 },
             }}
           >
             <CardContent>
-              <Box display="flex" alignItems="center" gap={2}>
+              <Box display='flex' alignItems='center' gap={2}>
                 <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.14)', width: 48, height: 48 }}>
                   <PendingIcon sx={{ fontSize: 28, color: '#fff' }} />
                 </Avatar>
                 <Box>
-                  <Typography variant="h4" fontWeight="bold" color="white">
+                  <Typography variant='h4' fontWeight='bold' color='white'>
                     {stats.activeApplications}
                   </Typography>
-                  <Typography color="rgba(255,255,255,0.8)">Active Applications</Typography>
+                  <Typography color='rgba(255,255,255,0.8)'>Active Applications</Typography>
                 </Box>
               </Box>
             </CardContent>
@@ -264,34 +281,40 @@ const CustomerDashboard: React.FC = () => {
               borderRadius: 3,
               boxShadow: isDark ? 6 : 2,
               transition: 'box-shadow 0.2s',
-              '&:hover': { boxShadow: isDark ? 12 : 6 }
+              '&:hover': { boxShadow: isDark ? 12 : 6 },
             }}
           >
             <CardContent>
-              <Box display="flex" alignItems="center" gap={2}>
+              <Box display='flex' alignItems='center' gap={2}>
                 <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.14)', width: 48, height: 48 }}>
                   <CheckCircleIcon sx={{ fontSize: 28, color: '#fff' }} />
                 </Avatar>
                 <Box>
-                  <Typography variant="h4" fontWeight="bold" color="white">
+                  <Typography variant='h4' fontWeight='bold' color='white'>
                     {stats.completedApplications}
                   </Typography>
-                  <Typography color="rgba(255,255,255,0.8)">Completed</Typography>
+                  <Typography color='rgba(255,255,255,0.8)'>Completed</Typography>
                 </Box>
               </Box>
             </CardContent>
           </Card>
         </Box>
         <Box sx={{ flex: '1 1 100%', maxWidth: { xs: '100%', sm: '50%', md: '25%' } }}>
-          <Card sx={{ height: '100%', background: 'linear-gradient(135deg, #FFA726 0%, #FFB74D 100%)', color: 'white' }}>
+          <Card
+            sx={{
+              height: '100%',
+              background: 'linear-gradient(135deg, #FFA726 0%, #FFB74D 100%)',
+              color: 'white',
+            }}
+          >
             <CardContent>
-              <Box display="flex" alignItems="center">
+              <Box display='flex' alignItems='center'>
                 <TrendingUp sx={{ mr: 2, fontSize: 40, color: 'white' }} />
                 <Box>
-                  <Typography variant="h4" fontWeight="bold" color="white">
+                  <Typography variant='h4' fontWeight='bold' color='white'>
                     ₹{(stats.totalLoanAmount / 100000).toFixed(1)}L
                   </Typography>
-                  <Typography color="rgba(255,255,255,0.8)">Total Sanctioned</Typography>
+                  <Typography color='rgba(255,255,255,0.8)'>Total Sanctioned</Typography>
                 </Box>
               </Box>
             </CardContent>
@@ -302,8 +325,8 @@ const CustomerDashboard: React.FC = () => {
       {/* Main Content */}
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
         <Tabs value={tabValue} onChange={(_, newValue) => setTabValue(newValue)}>
-          <Tab label="My Applications" icon={<AssignmentIcon />} />
-          <Tab label="Application History" icon={<TimelineIcon />} />
+          <Tab label='My Applications' icon={<AssignmentIcon />} />
+          <Tab label='Application History' icon={<TimelineIcon />} />
         </Tabs>
       </Box>
 
@@ -316,17 +339,19 @@ const CustomerDashboard: React.FC = () => {
                 <CircularProgress />
               </Box>
             ) : error ? (
-              <Alert severity="error" sx={{ m: 3 }}>{error}</Alert>
+              <Alert severity='error' sx={{ m: 3 }}>
+                {error}
+              </Alert>
             ) : applications.length === 0 ? (
               <Box sx={{ textAlign: 'center', py: 6 }}>
                 <AssignmentIcon sx={{ fontSize: 64, color: '#E0E0E0', mb: 2 }} />
-                <Typography variant="h6" color="#757575" gutterBottom>
+                <Typography variant='h6' color='#757575' gutterBottom>
                   No applications found
                 </Typography>
-                <Typography variant="body2" color="#757575" mb={3}>
+                <Typography variant='body2' color='#757575' mb={3}>
                   You haven&lsquo;t submitted any loan applications yet.
                 </Typography>
-                <Button variant="contained" sx={{ bgcolor: '#304FFE' }}>
+                <Button variant='contained' sx={{ bgcolor: '#304FFE' }}>
                   Apply for Loan
                 </Button>
               </Box>
@@ -335,17 +360,25 @@ const CustomerDashboard: React.FC = () => {
                 <Table>
                   <TableHead sx={{ bgcolor: '#F5F7FA' }}>
                     <TableRow>
-                      <TableCell sx={{ fontWeight: 'bold', color: '#2E2E2E' }}>Application #</TableCell>
-                      <TableCell sx={{ fontWeight: 'bold', color: '#2E2E2E' }}>Loan Amount</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold', color: '#2E2E2E' }}>
+                        Application #
+                      </TableCell>
+                      <TableCell sx={{ fontWeight: 'bold', color: '#2E2E2E' }}>
+                        Loan Amount
+                      </TableCell>
                       <TableCell sx={{ fontWeight: 'bold', color: '#2E2E2E' }}>Bank</TableCell>
                       <TableCell sx={{ fontWeight: 'bold', color: '#2E2E2E' }}>Status</TableCell>
                       <TableCell sx={{ fontWeight: 'bold', color: '#2E2E2E' }}>Progress</TableCell>
-                      <TableCell sx={{ fontWeight: 'bold', color: '#2E2E2E' }}>Last Updated</TableCell>
-                      <TableCell sx={{ fontWeight: 'bold', color: '#2E2E2E', textAlign: 'center' }}>Actions</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold', color: '#2E2E2E' }}>
+                        Last Updated
+                      </TableCell>
+                      <TableCell sx={{ fontWeight: 'bold', color: '#2E2E2E', textAlign: 'center' }}>
+                        Actions
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {applications.map((application) => {
+                    {applications.map(application => {
                       const statusConfig = getStatusConfig(application.status);
                       return (
                         <TableRow
@@ -354,41 +387,42 @@ const CustomerDashboard: React.FC = () => {
                           sx={{
                             '&:hover': {
                               bgcolor: '#F8F9FA',
-                              cursor: 'pointer'
-                            }
+                              cursor: 'pointer',
+                            },
                           }}
                         >
                           <TableCell sx={{ fontWeight: 500, color: '#304FFE' }}>
                             {application.applicationNumber}
                           </TableCell>
                           <TableCell>
-                            <Typography variant="body2" fontWeight={500}>
+                            <Typography variant='body2' fontWeight={500}>
                               ₹{application.loanDetails.requestedAmount.toLocaleString()}
                             </Typography>
-                            <Typography variant="caption" color="#757575">
-                              {application.loanDetails.tenure} years • {application.loanDetails.interestRate}% p.a.
+                            <Typography variant='caption' color='#757575'>
+                              {application.loanDetails.tenure} years •{' '}
+                              {application.loanDetails.interestRate}% p.a.
                             </Typography>
                           </TableCell>
                           <TableCell>
-                            <Typography variant="body2">
+                            <Typography variant='body2'>
                               {application.loanDetails.selectedBank}
                             </Typography>
                           </TableCell>
                           <TableCell>
                             <Chip
                               label={statusConfig.label}
-                              size="small"
+                              size='small'
                               sx={{
                                 bgcolor: statusConfig.color,
                                 color: 'white',
-                                fontWeight: 500
+                                fontWeight: 500,
                               }}
                             />
                           </TableCell>
                           <TableCell>
                             <Box sx={{ width: 100 }}>
                               <LinearProgress
-                                variant="determinate"
+                                variant='determinate'
                                 value={statusConfig.progress}
                                 sx={{
                                   height: 6,
@@ -396,30 +430,30 @@ const CustomerDashboard: React.FC = () => {
                                   bgcolor: '#E0E0E0',
                                   '& .MuiLinearProgress-bar': {
                                     bgcolor: statusConfig.color,
-                                    borderRadius: 3
-                                  }
+                                    borderRadius: 3,
+                                  },
                                 }}
                               />
-                              <Typography variant="caption" color="#757575" sx={{ mt: 0.5 }}>
+                              <Typography variant='caption' color='#757575' sx={{ mt: 0.5 }}>
                                 {statusConfig.progress}%
                               </Typography>
                             </Box>
                           </TableCell>
                           <TableCell>
-                            <Typography variant="body2" color="#757575">
+                            <Typography variant='body2' color='#757575'>
                               {new Date(application.updatedAt).toLocaleDateString()}
                             </Typography>
                           </TableCell>
-                          <TableCell align="center">
+                          <TableCell align='center'>
                             <IconButton
-                              size="small"
+                              size='small'
                               onClick={() => {
                                 setSelectedApplication(application);
                                 setDrawerOpen(true);
                               }}
                               sx={{ color: '#304FFE' }}
                             >
-                              <Visibility fontSize="small" />
+                              <Visibility fontSize='small' />
                             </IconButton>
                           </TableCell>
                         </TableRow>
@@ -437,43 +471,45 @@ const CustomerDashboard: React.FC = () => {
       {tabValue === 1 && (
         <Card sx={{ border: '1px solid #E0E0E0' }}>
           <CardContent>
-            <Typography variant="h6" gutterBottom>Application Timeline</Typography>
+            <Typography variant='h6' gutterBottom>
+              Application Timeline
+            </Typography>
             {applications.length === 0 ? (
               <Box sx={{ textAlign: 'center', py: 4 }}>
                 <TimelineIcon sx={{ fontSize: 48, color: '#E0E0E0', mb: 2 }} />
-                <Typography color="#757575">No application history available</Typography>
+                <Typography color='#757575'>No application history available</Typography>
               </Box>
             ) : (
               <Box>
-                {applications.map((application) => (
+                {applications.map(application => (
                   <Card key={application._id} sx={{ mb: 2, border: '1px solid #E0E0E0' }}>
                     <CardContent>
-                      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                        <Typography variant="subtitle1" fontWeight="bold">
+                      <Box display='flex' justifyContent='space-between' alignItems='center' mb={2}>
+                        <Typography variant='subtitle1' fontWeight='bold'>
                           {application.applicationNumber}
                         </Typography>
                         <Chip
                           label={getStatusConfig(application.status).label}
-                          size="small"
+                          size='small'
                           sx={{
                             bgcolor: getStatusConfig(application.status).color,
-                            color: 'white'
+                            color: 'white',
                           }}
                         />
                       </Box>
-                      <Stepper orientation="vertical">
+                      <Stepper orientation='vertical'>
                         {application.timeline.map((item, index) => (
                           <Step key={index} completed={true}>
                             <StepLabel>
-                              <Typography variant="body2" fontWeight={500}>
+                              <Typography variant='body2' fontWeight={500}>
                                 {item.event}
                               </Typography>
                             </StepLabel>
                             <StepContent>
-                              <Typography variant="body2" color="#757575">
+                              <Typography variant='body2' color='#757575'>
                                 {item.description}
                               </Typography>
-                              <Typography variant="caption" color="#757575">
+                              <Typography variant='caption' color='#757575'>
                                 {new Date(item.date).toLocaleString()} • {item.performedBy}
                               </Typography>
                             </StepContent>
@@ -491,21 +527,21 @@ const CustomerDashboard: React.FC = () => {
 
       {/* Application Details Drawer */}
       <Drawer
-        anchor="right"
+        anchor='right'
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         sx={{
           '& .MuiDrawer-paper': {
             width: 500,
-            maxWidth: '90vw'
-          }
+            maxWidth: '90vw',
+          },
         }}
       >
         {selectedApplication && (
           <Box sx={{ p: 3 }}>
             {/* Header */}
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-              <Typography variant="h6" fontWeight="bold">
+            <Box display='flex' justifyContent='space-between' alignItems='center' mb={3}>
+              <Typography variant='h6' fontWeight='bold'>
                 Application Details
               </Typography>
               <IconButton onClick={() => setDrawerOpen(false)}>
@@ -516,21 +552,21 @@ const CustomerDashboard: React.FC = () => {
             {/* Application Info */}
             <Card sx={{ mb: 3, border: '1px solid #E0E0E0' }}>
               <CardContent>
-                <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                  <Typography variant="subtitle1" fontWeight="bold">
+                <Box display='flex' justifyContent='space-between' alignItems='center' mb={2}>
+                  <Typography variant='subtitle1' fontWeight='bold'>
                     {selectedApplication.applicationNumber}
                   </Typography>
                   <Chip
                     label={getStatusConfig(selectedApplication.status).label}
-                    size="small"
+                    size='small'
                     sx={{
                       bgcolor: getStatusConfig(selectedApplication.status).color,
-                      color: 'white'
+                      color: 'white',
                     }}
                   />
                 </Box>
                 <LinearProgress
-                  variant="determinate"
+                  variant='determinate'
                   value={getStatusConfig(selectedApplication.status).progress}
                   sx={{
                     height: 8,
@@ -538,11 +574,11 @@ const CustomerDashboard: React.FC = () => {
                     bgcolor: '#E0E0E0',
                     '& .MuiLinearProgress-bar': {
                       bgcolor: getStatusConfig(selectedApplication.status).color,
-                      borderRadius: 4
-                    }
+                      borderRadius: 4,
+                    },
                   }}
                 />
-                <Typography variant="body2" color="#757575" sx={{ mt: 1 }}>
+                <Typography variant='body2' color='#757575' sx={{ mt: 1 }}>
                   {getStatusConfig(selectedApplication.status).progress}% Complete
                 </Typography>
               </CardContent>
@@ -551,31 +587,49 @@ const CustomerDashboard: React.FC = () => {
             {/* Loan Details */}
             <Card sx={{ mb: 3, border: '1px solid #E0E0E0' }}>
               <CardContent>
-                <Typography variant="subtitle1" fontWeight="bold" mb={2}>Loan Details</Typography>
+                <Typography variant='subtitle1' fontWeight='bold' mb={2}>
+                  Loan Details
+                </Typography>
                 <Stack spacing={1}>
-                  <Box display="flex" justifyContent="space-between">
-                    <Typography variant="body2" color="#757575">Loan Amount:</Typography>
-                    <Typography variant="body2" fontWeight={500}>
+                  <Box display='flex' justifyContent='space-between'>
+                    <Typography variant='body2' color='#757575'>
+                      Loan Amount:
+                    </Typography>
+                    <Typography variant='body2' fontWeight={500}>
                       ₹{selectedApplication.loanDetails.requestedAmount.toLocaleString()}
                     </Typography>
                   </Box>
-                  <Box display="flex" justifyContent="space-between">
-                    <Typography variant="body2" color="#757575">Interest Rate:</Typography>
-                    <Typography variant="body2">{selectedApplication.loanDetails.interestRate}% p.a.</Typography>
+                  <Box display='flex' justifyContent='space-between'>
+                    <Typography variant='body2' color='#757575'>
+                      Interest Rate:
+                    </Typography>
+                    <Typography variant='body2'>
+                      {selectedApplication.loanDetails.interestRate}% p.a.
+                    </Typography>
                   </Box>
-                  <Box display="flex" justifyContent="space-between">
-                    <Typography variant="body2" color="#757575">Tenure:</Typography>
-                    <Typography variant="body2">{selectedApplication.loanDetails.tenure} years</Typography>
+                  <Box display='flex' justifyContent='space-between'>
+                    <Typography variant='body2' color='#757575'>
+                      Tenure:
+                    </Typography>
+                    <Typography variant='body2'>
+                      {selectedApplication.loanDetails.tenure} years
+                    </Typography>
                   </Box>
-                  <Box display="flex" justifyContent="space-between">
-                    <Typography variant="body2" color="#757575">Monthly EMI:</Typography>
-                    <Typography variant="body2" fontWeight={500}>
+                  <Box display='flex' justifyContent='space-between'>
+                    <Typography variant='body2' color='#757575'>
+                      Monthly EMI:
+                    </Typography>
+                    <Typography variant='body2' fontWeight={500}>
                       ₹{selectedApplication.loanDetails.monthlyEMI.toLocaleString()}
                     </Typography>
                   </Box>
-                  <Box display="flex" justifyContent="space-between">
-                    <Typography variant="body2" color="#757575">Bank:</Typography>
-                    <Typography variant="body2">{selectedApplication.loanDetails.selectedBank}</Typography>
+                  <Box display='flex' justifyContent='space-between'>
+                    <Typography variant='body2' color='#757575'>
+                      Bank:
+                    </Typography>
+                    <Typography variant='body2'>
+                      {selectedApplication.loanDetails.selectedBank}
+                    </Typography>
                   </Box>
                 </Stack>
               </CardContent>
@@ -584,25 +638,45 @@ const CustomerDashboard: React.FC = () => {
             {/* Documents Status */}
             <Card sx={{ mb: 3, border: '1px solid #E0E0E0' }}>
               <CardContent>
-                <Typography variant="subtitle1" fontWeight="bold" mb={2}>Documents</Typography>
+                <Typography variant='subtitle1' fontWeight='bold' mb={2}>
+                  Documents
+                </Typography>
                 <Box>
-                  <Typography variant="body2" color="#757575" mb={1}>Submitted:</Typography>
+                  <Typography variant='body2' color='#757575' mb={1}>
+                    Submitted:
+                  </Typography>
                   {selectedApplication.documents.submitted.length === 0 ? (
-                    <Typography variant="body2" color="#999">No documents submitted</Typography>
+                    <Typography variant='body2' color='#999'>
+                      No documents submitted
+                    </Typography>
                   ) : (
-                                        selectedApplication.documents.submitted.map((doc: string, index: number) => (
-                      <Chip key={index} label={doc} size="small" sx={{ mr: 1, mb: 1, bgcolor: '#E8F5E8' }} />
+                    selectedApplication.documents.submitted.map((doc: string, index: number) => (
+                      <Chip
+                        key={index}
+                        label={doc}
+                        size='small'
+                        sx={{ mr: 1, mb: 1, bgcolor: '#E8F5E8' }}
+                      />
                     ))
                   )}
                 </Box>
                 <Divider sx={{ my: 2 }} />
                 <Box>
-                  <Typography variant="body2" color="#757575" mb={1}>Pending:</Typography>
+                  <Typography variant='body2' color='#757575' mb={1}>
+                    Pending:
+                  </Typography>
                   {selectedApplication.documents.pending.length === 0 ? (
-                    <Typography variant="body2" color="#999">No pending documents</Typography>
+                    <Typography variant='body2' color='#999'>
+                      No pending documents
+                    </Typography>
                   ) : (
-                                        selectedApplication.documents.pending.map((doc: string, index: number) => (
-                      <Chip key={index} label={doc} size="small" sx={{ mr: 1, mb: 1, bgcolor: '#FFF3E0' }} />
+                    selectedApplication.documents.pending.map((doc: string, index: number) => (
+                      <Chip
+                        key={index}
+                        label={doc}
+                        size='small'
+                        sx={{ mr: 1, mb: 1, bgcolor: '#FFF3E0' }}
+                      />
                     ))
                   )}
                 </Box>
@@ -612,7 +686,9 @@ const CustomerDashboard: React.FC = () => {
             {/* Timeline */}
             <Card sx={{ border: '1px solid #E0E0E0' }}>
               <CardContent>
-                <Typography variant="subtitle1" fontWeight="bold" mb={2}>Recent Updates</Typography>
+                <Typography variant='subtitle1' fontWeight='bold' mb={2}>
+                  Recent Updates
+                </Typography>
                 <List dense>
                   {selectedApplication.timeline.slice(0, 5).map((item, index) => (
                     <ListItem key={index} sx={{ px: 0 }}>
@@ -620,10 +696,10 @@ const CustomerDashboard: React.FC = () => {
                         primary={item.event}
                         secondary={
                           <Box>
-                            <Typography variant="body2" color="#757575">
+                            <Typography variant='body2' color='#757575'>
                               {item.description}
                             </Typography>
-                            <Typography variant="caption" color="#757575">
+                            <Typography variant='caption' color='#757575'>
                               {new Date(item.date).toLocaleString()}
                             </Typography>
                           </Box>
