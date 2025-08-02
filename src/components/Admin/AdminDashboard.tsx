@@ -1041,7 +1041,15 @@ const AdminDashboard: React.FC = () => {
             <Tabs
               value={tabValue}
               onChange={(_, newValue) => setTabValue(newValue)}
+              variant='scrollable'
+              scrollButtons='auto'
+              allowScrollButtonsMobile
               sx={{
+                '& .MuiTabs-scrollButtons': {
+                  color: 'rgba(255,255,255,0.7)',
+                  '&.Mui-disabled': { opacity: 0.3 },
+                  '&:hover': { color: 'white' },
+                },
                 '& .MuiTabs-indicator': {
                   backgroundColor: 'white',
                   height: 3,
@@ -1053,6 +1061,7 @@ const AdminDashboard: React.FC = () => {
                   fontSize: { md: '0.875rem', lg: '1rem' },
                   textTransform: 'none',
                   minHeight: 60,
+                  minWidth: { md: 140, lg: 180 },
                   px: { md: 2, lg: 3 },
                   '&.Mui-selected': { color: 'white' },
                   '&:hover': {

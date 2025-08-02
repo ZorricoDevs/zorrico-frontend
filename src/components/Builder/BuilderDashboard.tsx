@@ -528,7 +528,27 @@ const BuilderDashboard: React.FC = () => {
 
       {/* Tabs (Builder) */}
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-        <Tabs value={tabValue} onChange={(_, newValue) => setTabValue(newValue)}>
+        <Tabs
+          value={tabValue}
+          onChange={(_, newValue) => setTabValue(newValue)}
+          variant='scrollable'
+          scrollButtons='auto'
+          allowScrollButtonsMobile
+          sx={{
+            '& .MuiTabs-scrollButtons': {
+              '&.Mui-disabled': { opacity: 0.3 },
+            },
+            '& .MuiTab-root': {
+              textTransform: 'none',
+              fontSize: '1rem',
+              fontWeight: 600,
+              minWidth: { xs: 120, sm: 160 },
+              '&:hover': {
+                backgroundColor: 'rgba(25, 118, 210, 0.04)',
+              },
+            },
+          }}
+        >
           <Tab label='Properties' />
           <Tab label='Customer Leads' />
           <Tab label='Analytics' />

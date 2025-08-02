@@ -324,7 +324,27 @@ const CustomerDashboard: React.FC = () => {
 
       {/* Main Content */}
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-        <Tabs value={tabValue} onChange={(_, newValue) => setTabValue(newValue)}>
+        <Tabs
+          value={tabValue}
+          onChange={(_, newValue) => setTabValue(newValue)}
+          variant='scrollable'
+          scrollButtons='auto'
+          allowScrollButtonsMobile
+          sx={{
+            '& .MuiTabs-scrollButtons': {
+              '&.Mui-disabled': { opacity: 0.3 },
+            },
+            '& .MuiTab-root': {
+              textTransform: 'none',
+              fontSize: '1rem',
+              fontWeight: 600,
+              minWidth: { xs: 140, sm: 180 },
+              '&:hover': {
+                backgroundColor: 'rgba(25, 118, 210, 0.04)',
+              },
+            },
+          }}
+        >
           <Tab label='My Applications' icon={<AssignmentIcon />} />
           <Tab label='Application History' icon={<TimelineIcon />} />
         </Tabs>

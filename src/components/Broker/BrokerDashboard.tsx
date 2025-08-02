@@ -858,12 +858,20 @@ const BrokerDashboard: React.FC = () => {
             <Tabs
               value={tabValue}
               onChange={(_, newValue) => setTabValue(newValue)}
+              variant='scrollable'
+              scrollButtons='auto'
+              allowScrollButtonsMobile
               sx={{
+                '& .MuiTabs-scrollButtons': {
+                  '&.Mui-disabled': { opacity: 0.3 },
+                  color: theme.palette.mode === 'dark' ? theme.palette.common.white : 'inherit',
+                },
                 '& .MuiTab-root': {
                   textTransform: 'none',
                   fontSize: '1rem',
                   fontWeight: 'bold',
                   minHeight: 60,
+                  minWidth: { xs: 140, sm: 180 },
                   color: theme.palette.mode === 'dark' ? theme.palette.common.white : 'inherit',
                   '&.Mui-selected': {
                     background: 'linear-gradient(135deg, #ff9800 0%, #f57c00 100%)',
