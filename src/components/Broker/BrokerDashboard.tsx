@@ -129,9 +129,18 @@ const BrokerDashboard: React.FC = () => {
           brokerApi.getBrokerAnalytics(),
         ]);
 
+        console.log('BrokerDashboard Debug - Stats:', statsData);
+        console.log('BrokerDashboard Debug - Leads:', leadsData);
+        console.log('BrokerDashboard Debug - Applications:', applicationsData);
+        console.log('BrokerDashboard Debug - User:', user);
+
+        // Ensure leadsData is an array
+        const validLeadsData = Array.isArray(leadsData) ? leadsData : [];
+        const validApplicationsData = Array.isArray(applicationsData) ? applicationsData : [];
+
         setStats(statsData);
-        setLeads(leadsData);
-        setApplications(applicationsData);
+        setLeads(validLeadsData);
+        setApplications(validApplicationsData);
         setAnalytics(analyticsData);
         setRetryCount(0);
 

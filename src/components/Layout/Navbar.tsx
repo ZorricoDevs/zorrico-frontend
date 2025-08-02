@@ -69,6 +69,37 @@ const Navbar: React.FC = () => {
     setMobileDrawerOpen(false);
   };
 
+  // Determine dashboard path based on user role
+  const getDashboardPath = () => {
+    if (!user) return '/dashboard';
+
+    // Check both role and userType for compatibility
+    const userRole = user.role;
+    const userType = user.userType;
+
+    console.log('Navbar Debug - User:', user);
+    console.log('Navbar Debug - User Role:', userRole);
+    console.log('Navbar Debug - User Type:', userType);
+
+    // Primary role checking
+    if (userRole === 'admin') return '/admin-dashboard';
+    if (userRole === 'broker') return '/broker-dashboard';
+    if (userRole === 'builder') return '/builder-dashboard';
+    if (userRole === 'customer') return '/customer-dashboard';
+
+    // Fallback to userType checking
+    if (userType === 'admin') return '/admin-dashboard';
+    if (userType === 'broker') return '/broker-dashboard';
+    if (userType === 'builder') return '/builder-dashboard';
+    if (userType === 'customer') return '/customer-dashboard';
+
+    // Default fallback
+    return '/customer-dashboard';
+  };
+
+  const dashboardPath = getDashboardPath();
+  console.log('Navbar Debug - Final Dashboard Path:', dashboardPath);
+
   const menuItems = [
     { label: 'Home', path: '/', icon: <Home /> },
     // { label: 'Compare Loans', path: '/compare', icon: <Compare /> }, // Removed as per request
@@ -80,14 +111,7 @@ const Navbar: React.FC = () => {
     ? [
         {
           label: 'Dashboard',
-          path:
-            user.role === 'admin'
-              ? '/admin-dashboard'
-              : user.role === 'broker'
-                ? '/broker-dashboard'
-                : user.role === 'builder'
-                  ? '/builder-dashboard'
-                  : '/customer-dashboard',
+          path: getDashboardPath(),
           icon: <Dashboard />,
         },
         { label: 'Applications', path: '/applications', icon: <Apps /> },
@@ -95,17 +119,6 @@ const Navbar: React.FC = () => {
         { label: 'Settings', path: '/settings', icon: <Settings /> },
       ]
     : [];
-
-  // Determine dashboard path based on user role
-  const dashboardPath = user
-    ? user.role === 'admin'
-      ? '/admin-dashboard'
-      : user.role === 'broker'
-        ? '/broker-dashboard'
-        : user.role === 'builder'
-          ? '/builder-dashboard'
-          : '/customer-dashboard'
-    : '/dashboard';
 
   useEffect(() => {
     const handleScroll = () => {

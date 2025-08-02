@@ -92,8 +92,12 @@ function AuthProvider({ children }: AuthProviderProps) {
           email: data.user.email,
           role: data.user.role,
           status: data.user.status,
-          avatar: data.user.avatar || ''
+          avatar: data.user.avatar || '',
         };
+
+        console.log('AuthContext Debug - Login response:', data);
+        console.log('AuthContext Debug - User object:', user);
+        console.log('AuthContext Debug - User role:', user.role);
 
         // Store token
         if (data.token) {
@@ -138,7 +142,7 @@ function AuthProvider({ children }: AuthProviderProps) {
     isLoading,
     login,
     logout,
-    setUser: safeSetUser
+    setUser: safeSetUser,
   };
 
   // Show branded loading screen during initial auth check
@@ -146,11 +150,7 @@ function AuthProvider({ children }: AuthProviderProps) {
     return <FinanceLoader />;
   }
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 // Hook to use auth context

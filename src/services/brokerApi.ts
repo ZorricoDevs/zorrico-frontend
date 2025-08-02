@@ -76,10 +76,13 @@ class BrokerApiService {
   // Dashboard Stats
   async getBrokerStats(): Promise<BrokerStats> {
     try {
+      console.log('BrokerAPI Debug - Fetching broker stats...');
       const response = await api.get('/broker/stats');
+      console.log('BrokerAPI Debug - Stats response:', response.data);
       return response.data;
-    } catch (error) {
-      console.error('Failed to fetch broker stats:', error);
+    } catch (error: any) {
+      console.error('BrokerAPI Debug - Failed to fetch broker stats:', error);
+      console.error('BrokerAPI Debug - Stats error response:', error.response?.data);
       throw error;
     }
   }
@@ -98,15 +101,42 @@ class BrokerApiService {
   // Lead Management
   async getLeads(): Promise<Lead[]> {
     try {
+      console.log('BrokerAPI Debug - Fetching leads...');
       const response = await api.get('/broker/leads');
-      return response.data;
-    } catch (error) {
-      console.error('Failed to fetch leads:', error);
+      console.log('BrokerAPI Debug - Leads response:', response.data);
+
+      // Ensure response is an array
+      if (Array.isArray(response.data)) {
+        return response.data;
+      } else if (response.data && Array.isArray(response.data.leads)) {
+        return response.data.leads;
+      } else {
+        console.warn('BrokerAPI Debug - Unexpected leads response format:', response.data);
+        return [];
+      }
+    } catch (error: any) {
+      console.error('BrokerAPI Debug - Failed to fetch leads:', error);
+      console.error('BrokerAPI Debug - Error response:', error.response?.data);
+
+      // If the broker-specific endpoint fails, try a fallback approach
+      if (error.response?.status === 404 || error.response?.status === 500) {
+        console.log('BrokerAPI Debug - Trying fallback leads endpoint...');
+        try {
+          const fallbackResponse = await api.get('/leads?assignedTo=broker');
+          console.log('BrokerAPI Debug - Fallback leads response:', fallbackResponse.data);
+          return Array.isArray(fallbackResponse.data) ? fallbackResponse.data : [];
+        } catch (fallbackError) {
+          console.error('BrokerAPI Debug - Fallback also failed:', fallbackError);
+        }
+      }
+
       throw error;
     }
   }
 
-  async createLead(leadData: Omit<Lead, '_id' | 'createdDate' | 'brokerId' | 'status'>): Promise<Lead> {
+  async createLead(
+    leadData: Omit<Lead, '_id' | 'createdDate' | 'brokerId' | 'status'>
+  ): Promise<Lead> {
     try {
       const response = await api.post('/broker/leads', leadData);
       return response.data;
@@ -146,7 +176,9 @@ class BrokerApiService {
     }
   }
 
-  async createApplication(applicationData: Omit<BrokerApplication, 'id' | 'applicationDate' | 'brokerId'>): Promise<BrokerApplication> {
+  async createApplication(
+    applicationData: Omit<BrokerApplication, 'id' | 'applicationDate' | 'brokerId'>
+  ): Promise<BrokerApplication> {
     try {
       const response = await api.post('/broker/applications', applicationData);
       return response.data;
@@ -156,7 +188,10 @@ class BrokerApiService {
     }
   }
 
-  async updateApplication(applicationId: string, updates: Partial<BrokerApplication>): Promise<BrokerApplication> {
+  async updateApplication(
+    applicationId: string,
+    updates: Partial<BrokerApplication>
+  ): Promise<BrokerApplication> {
     try {
       const response = await api.patch(`/broker/applications/${applicationId}`, updates);
       return response.data;
@@ -167,12 +202,14 @@ class BrokerApiService {
   }
 
   // Commission Tracking
-  async getCommissionHistory(): Promise<{
-    month: string;
-    totalCommission: number;
-    applications: number;
-    avgCommissionPerApp: number;
-  }[]> {
+  async getCommissionHistory(): Promise<
+    {
+      month: string;
+      totalCommission: number;
+      applications: number;
+      avgCommissionPerApp: number;
+    }[]
+  > {
     try {
       const response = await api.get('/broker/commission-history');
       return response.data;
