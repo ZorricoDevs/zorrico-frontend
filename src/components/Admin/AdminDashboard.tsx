@@ -74,6 +74,10 @@ import {
   deleteUser,
   resetUserPassword,
   createUser,
+  updateLead,
+  deleteLead,
+  assignBrokerToLead,
+  assignBuilderToLead,
 } from '../../services/adminApi';
 import applicationApi, { Application, ApplicationFilters } from '../../services/applicationApi';
 import { getAllProperties, createProperty, updateProperty } from '../../services/propertyApi';
@@ -518,6 +522,56 @@ const AdminDashboard: React.FC = () => {
       setSuccess('User deleted successfully!');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to delete user');
+    } finally {
+      setUserActionLoading(false);
+    }
+  };
+
+  // Lead Management Handler Functions
+  const handleAssignBroker = async (brokerId: string) => {
+    if (!selectedLead) return;
+    setUserActionLoading(true);
+    try {
+      await assignBrokerToLead(selectedLead._id, brokerId);
+      setAssignBrokerDialog(false);
+      setSelectedLead(null);
+      fetchLeads();
+      setSuccess('Broker assigned successfully!');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to assign broker');
+    } finally {
+      setUserActionLoading(false);
+    }
+  };
+
+  const handleUpdateLeadStatus = async () => {
+    if (!statusLead) return;
+    setUserActionLoading(true);
+    try {
+      await updateLead(statusLead._id, { status: newStatus });
+      setStatusDialog(false);
+      setStatusLead(null);
+      setNewStatus('');
+      fetchLeads();
+      setSuccess('Lead status updated successfully!');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to update lead status');
+    } finally {
+      setUserActionLoading(false);
+    }
+  };
+
+  const handleDeleteLead = async () => {
+    if (!leadToDelete) return;
+    setUserActionLoading(true);
+    try {
+      await deleteLead(leadToDelete._id);
+      setDeleteLeadDialog(false);
+      setLeadToDelete(null);
+      fetchLeads();
+      setSuccess('Lead deleted successfully!');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to delete lead');
     } finally {
       setUserActionLoading(false);
     }
@@ -2276,6 +2330,205 @@ const AdminDashboard: React.FC = () => {
             startIcon={userActionLoading ? <CircularProgress size={20} /> : <Delete />}
           >
             Delete User
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Lead Details Dialog */}
+      <Dialog open={leadDialog} onClose={() => setLeadDialog(false)} maxWidth='md' fullWidth>
+        <DialogTitle>Lead Details</DialogTitle>
+        <DialogContent>
+          {selectedLead && (
+            <Box sx={{ pt: 2 }}>
+              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, mb: 3 }}>
+                <TextField
+                  label='Name'
+                  value={selectedLead.name || ''}
+                  InputProps={{ readOnly: true }}
+                />
+                <TextField
+                  label='Email'
+                  value={selectedLead.email || ''}
+                  InputProps={{ readOnly: true }}
+                />
+                <TextField
+                  label='Contact'
+                  value={selectedLead.contact || ''}
+                  InputProps={{ readOnly: true }}
+                />
+                <TextField
+                  label='Loan Amount'
+                  value={`₹${(selectedLead.loanAmount / 100000).toFixed(1)}L`}
+                  InputProps={{ readOnly: true }}
+                />
+                <TextField
+                  label='Property Details'
+                  value={selectedLead.propertyDetails || ''}
+                  InputProps={{ readOnly: true }}
+                />
+                <TextField
+                  label='Status'
+                  value={selectedLead.status?.toUpperCase() || ''}
+                  InputProps={{ readOnly: true }}
+                />
+                <TextField
+                  label='Source'
+                  value={selectedLead.source || ''}
+                  InputProps={{ readOnly: true }}
+                />
+                <TextField
+                  label='Created Date'
+                  value={
+                    selectedLead.createdAt
+                      ? new Date(selectedLead.createdAt).toLocaleDateString()
+                      : ''
+                  }
+                  InputProps={{ readOnly: true }}
+                />
+              </Box>
+              {selectedLead.notes && (
+                <TextField
+                  fullWidth
+                  label='Notes'
+                  multiline
+                  rows={3}
+                  value={selectedLead.notes}
+                  InputProps={{ readOnly: true }}
+                />
+              )}
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setLeadDialog(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Assign Broker Dialog */}
+      <Dialog
+        open={assignBrokerDialog}
+        onClose={() => setAssignBrokerDialog(false)}
+        maxWidth='sm'
+        fullWidth
+      >
+        <DialogTitle>Assign Broker to Lead</DialogTitle>
+        <DialogContent>
+          {selectedLead && (
+            <Box sx={{ pt: 2 }}>
+              <Typography variant='body2' sx={{ mb: 2 }}>
+                Assign broker to lead: <strong>{selectedLead.name}</strong>
+              </Typography>
+              <FormControl fullWidth>
+                <InputLabel>Select Broker</InputLabel>
+                <Select
+                  value={selectedLead.brokerId || ''}
+                  onChange={e => setSelectedLead({ ...selectedLead, brokerId: e.target.value })}
+                  label='Select Broker'
+                >
+                  <MenuItem value=''>
+                    <em>Unassigned</em>
+                  </MenuItem>
+                  {brokers.map(broker => (
+                    <MenuItem key={broker._id} value={broker._id}>
+                      {broker.fullName || `${broker.firstName} ${broker.lastName}`}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setAssignBrokerDialog(false)}>Cancel</Button>
+          <Button
+            onClick={() => handleAssignBroker(selectedLead?.brokerId)}
+            variant='contained'
+            disabled={userActionLoading || !selectedLead?.brokerId}
+            startIcon={userActionLoading ? <CircularProgress size={20} /> : <Work />}
+          >
+            Assign Broker
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Update Lead Status Dialog */}
+      <Dialog open={statusDialog} onClose={() => setStatusDialog(false)} maxWidth='sm' fullWidth>
+        <DialogTitle>Update Lead Status</DialogTitle>
+        <DialogContent>
+          {statusLead && (
+            <Box sx={{ pt: 2 }}>
+              <Typography variant='body2' sx={{ mb: 2 }}>
+                Update status for lead: <strong>{statusLead.name}</strong>
+              </Typography>
+              <FormControl fullWidth>
+                <InputLabel>Status</InputLabel>
+                <Select
+                  value={newStatus}
+                  onChange={e => setNewStatus(e.target.value)}
+                  label='Status'
+                >
+                  <MenuItem value='new'>New</MenuItem>
+                  <MenuItem value='contacted'>Contacted</MenuItem>
+                  <MenuItem value='qualified'>Qualified</MenuItem>
+                  <MenuItem value='processing'>Processing</MenuItem>
+                  <MenuItem value='converted'>Converted</MenuItem>
+                  <MenuItem value='rejected'>Rejected</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setStatusDialog(false)}>Cancel</Button>
+          <Button
+            onClick={handleUpdateLeadStatus}
+            variant='contained'
+            disabled={userActionLoading || !newStatus}
+            startIcon={userActionLoading ? <CircularProgress size={20} /> : <Edit />}
+          >
+            Update Status
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Delete Lead Confirmation Dialog */}
+      <Dialog
+        open={deleteLeadDialog}
+        onClose={() => setDeleteLeadDialog(false)}
+        maxWidth='xs'
+        fullWidth
+      >
+        <DialogTitle sx={{ color: 'error.main' }}>Delete Lead</DialogTitle>
+        <DialogContent>
+          {leadToDelete && (
+            <Box sx={{ pt: 2 }}>
+              <Typography variant='body1' sx={{ mb: 2 }}>
+                Are you sure you want to delete this lead?
+              </Typography>
+              <Box sx={{ p: 2, bgcolor: 'error.light', borderRadius: 1, mb: 2 }}>
+                <Typography variant='subtitle2' color='error.contrastText'>
+                  <strong>{leadToDelete.name}</strong>
+                </Typography>
+                <Typography variant='body2' color='error.contrastText'>
+                  {leadToDelete.email} - ₹{(leadToDelete.loanAmount / 100000).toFixed(1)}L
+                </Typography>
+              </Box>
+              <Alert severity='warning' sx={{ mb: 2 }}>
+                This action cannot be undone. The lead will be permanently deleted.
+              </Alert>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteLeadDialog(false)}>Cancel</Button>
+          <Button
+            onClick={handleDeleteLead}
+            variant='contained'
+            color='error'
+            disabled={userActionLoading}
+            startIcon={userActionLoading ? <CircularProgress size={20} /> : <Delete />}
+          >
+            Delete Lead
           </Button>
         </DialogActions>
       </Dialog>
