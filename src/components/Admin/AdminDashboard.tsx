@@ -28,6 +28,12 @@ import {
   Alert,
   FormControl,
   InputLabel,
+  useTheme,
+  useMediaQuery,
+  SpeedDial,
+  SpeedDialIcon,
+  SpeedDialAction,
+  Backdrop,
   Select,
   MenuItem,
   Snackbar,
@@ -87,6 +93,12 @@ import applicationApi, {
 import { getAllProperties, createProperty, updateProperty } from '../../services/propertyApi';
 
 const AdminDashboard: React.FC = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isTablet = useMediaQuery(theme.breakpoints.between('md', 'lg'));
+
+  // Mobile navigation state
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [tabValue, setTabValue] = useState(0);
 
   const [stats, setStats] = useState<any>({
@@ -584,12 +596,35 @@ const AdminDashboard: React.FC = () => {
   return (
     <Container maxWidth='xl' sx={{ py: 4 }}>
       {/* Header */}
-      <Box display='flex' justifyContent='space-between' alignItems='center' mb={4}>
-        <Typography variant='h4' component='h1' fontWeight='bold'>
-          <AdminPanelSettings sx={{ mr: 2, verticalAlign: 'middle' }} />
+      <Box
+        display='flex'
+        flexDirection={{ xs: 'column', sm: 'row' }}
+        justifyContent='space-between'
+        alignItems={{ xs: 'stretch', sm: 'center' }}
+        mb={4}
+        gap={{ xs: 2, sm: 0 }}
+      >
+        <Typography
+          variant='h4'
+          component='h1'
+          fontWeight='bold'
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+            fontSize: { xs: '1.5rem', md: '2rem' },
+          }}
+        >
+          <AdminPanelSettings
+            sx={{ mr: 1, verticalAlign: 'middle', fontSize: { xs: '1.5rem', md: '2rem' } }}
+          />
           Admin Dashboard
         </Typography>
-        <Stack direction='row' spacing={2}>
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={2}
+          sx={{ width: { xs: '100%', sm: 'auto' } }}
+        >
           <Button
             variant='outlined'
             startIcon={<Refresh />}
@@ -597,6 +632,8 @@ const AdminDashboard: React.FC = () => {
               fetchDashboardStats();
             }}
             disabled={loading}
+            fullWidth={isMobile}
+            size={isMobile ? 'large' : 'medium'}
           >
             Refresh
           </Button>
@@ -604,13 +641,20 @@ const AdminDashboard: React.FC = () => {
             variant='outlined'
             startIcon={<TrendingUp />}
             onClick={() => setTabValue(2)}
-            sx={{ color: 'warning.main', borderColor: 'warning.main' }}
+            sx={{
+              color: 'warning.main',
+              borderColor: 'warning.main',
+              width: { xs: '100%', sm: 'auto' },
+            }}
+            size={isMobile ? 'large' : 'medium'}
           >
             Manage Leads
           </Button>
           <Button
             variant='contained'
             startIcon={<PersonAdd />}
+            fullWidth={isMobile}
+            size={isMobile ? 'large' : 'medium'}
             onClick={() => {
               setAddUserDialog(true);
               setManualUser({
@@ -980,71 +1024,148 @@ const AdminDashboard: React.FC = () => {
           sx={{
             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
             color: 'white',
-            p: 3,
+            p: { xs: 2, md: 3 },
             borderRadius: '12px 12px 0 0',
           }}
         >
-          <Typography variant='h5' fontWeight='bold' sx={{ mb: 2 }}>
+          <Typography
+            variant='h5'
+            fontWeight='bold'
+            sx={{ mb: 2, fontSize: { xs: '1.25rem', md: '1.5rem' } }}
+          >
             Dashboard Navigation
           </Typography>
-          <Tabs
-            value={tabValue}
-            onChange={(_, newValue) => setTabValue(newValue)}
-            sx={{
-              '& .MuiTabs-indicator': { backgroundColor: 'white', height: 3, borderRadius: '2px' },
-              '& .MuiTab-root': {
-                color: 'rgba(255,255,255,0.7)',
-                fontWeight: 600,
-                fontSize: '1rem',
-                textTransform: 'none',
-                minHeight: 60,
-                px: 3,
-                '&.Mui-selected': { color: 'white' },
-                '&:hover': {
-                  color: 'white',
-                  backgroundColor: 'rgba(255,255,255,0.1)',
-                  borderRadius: 2,
+
+          {/* Desktop/Tablet Tabs */}
+          {!isMobile && (
+            <Tabs
+              value={tabValue}
+              onChange={(_, newValue) => setTabValue(newValue)}
+              sx={{
+                '& .MuiTabs-indicator': {
+                  backgroundColor: 'white',
+                  height: 3,
+                  borderRadius: '2px',
                 },
-              },
-            }}
-          >
-            <Tab
-              label='Users'
-              icon={<People sx={{ fontSize: 24 }} />}
-              iconPosition='start'
-              sx={{ flexDirection: 'row', gap: 1, '& .MuiTab-iconWrapper': { mb: 0 } }}
-            />
-            <Tab
-              label='Analytics'
-              icon={<Analytics sx={{ fontSize: 24 }} />}
-              iconPosition='start'
-              sx={{ flexDirection: 'row', gap: 1, '& .MuiTab-iconWrapper': { mb: 0 } }}
-            />
-            <Tab
-              label='Lead Management'
-              icon={<TrendingUp sx={{ fontSize: 24 }} />}
-              iconPosition='start'
-              sx={{ flexDirection: 'row', gap: 1, '& .MuiTab-iconWrapper': { mb: 0 } }}
-            />
-            <Tab
-              label='Property Management'
-              icon={<Business sx={{ fontSize: 24 }} />}
-              iconPosition='start'
-              sx={{ flexDirection: 'row', gap: 1, '& .MuiTab-iconWrapper': { mb: 0 } }}
-            />
-            <Tab
-              label='Applications'
-              icon={<Assignment sx={{ fontSize: 24 }} />}
-              iconPosition='start'
-              sx={{ flexDirection: 'row', gap: 1, '& .MuiTab-iconWrapper': { mb: 0 } }}
-            />
-            <Tab
-              label='Reports'
-              icon={<Assessment sx={{ fontSize: 24 }} />}
-              iconPosition='start'
-              sx={{ flexDirection: 'row', gap: 1, '& .MuiTab-iconWrapper': { mb: 0 } }}
-            />
-          </Tabs>
+                '& .MuiTab-root': {
+                  color: 'rgba(255,255,255,0.7)',
+                  fontWeight: 600,
+                  fontSize: { md: '0.875rem', lg: '1rem' },
+                  textTransform: 'none',
+                  minHeight: 60,
+                  px: { md: 2, lg: 3 },
+                  '&.Mui-selected': { color: 'white' },
+                  '&:hover': {
+                    color: 'white',
+                    backgroundColor: 'rgba(255,255,255,0.1)',
+                    borderRadius: 2,
+                  },
+                },
+              }}
+            >
+              <Tab
+                label='Users'
+                icon={<People sx={{ fontSize: 24 }} />}
+                iconPosition='start'
+                sx={{ flexDirection: 'row', gap: 1, '& .MuiTab-iconWrapper': { mb: 0 } }}
+              />
+              <Tab
+                label='Analytics'
+                icon={<Analytics sx={{ fontSize: 24 }} />}
+                iconPosition='start'
+                sx={{ flexDirection: 'row', gap: 1, '& .MuiTab-iconWrapper': { mb: 0 } }}
+              />
+              <Tab
+                label='Lead Management'
+                icon={<TrendingUp sx={{ fontSize: 24 }} />}
+                iconPosition='start'
+                sx={{ flexDirection: 'row', gap: 1, '& .MuiTab-iconWrapper': { mb: 0 } }}
+              />
+              <Tab
+                label='Property Management'
+                icon={<Business sx={{ fontSize: 24 }} />}
+                iconPosition='start'
+                sx={{ flexDirection: 'row', gap: 1, '& .MuiTab-iconWrapper': { mb: 0 } }}
+              />
+              <Tab
+                label='Applications'
+                icon={<Assignment sx={{ fontSize: 24 }} />}
+                iconPosition='start'
+                sx={{ flexDirection: 'row', gap: 1, '& .MuiTab-iconWrapper': { mb: 0 } }}
+              />
+              <Tab
+                label='Reports'
+                icon={<Assessment sx={{ fontSize: 24 }} />}
+                iconPosition='start'
+                sx={{ flexDirection: 'row', gap: 1, '& .MuiTab-iconWrapper': { mb: 0 } }}
+              />
+            </Tabs>
+          )}
+
+          {/* Mobile Navigation */}
+          {isMobile && (
+            <Box>
+              <Typography variant='body2' sx={{ mb: 2, opacity: 0.9 }}>
+                Current Section:{' '}
+                {tabValue === 0
+                  ? 'Users'
+                  : tabValue === 1
+                    ? 'Analytics'
+                    : tabValue === 2
+                      ? 'Lead Management'
+                      : tabValue === 3
+                        ? 'Property Management'
+                        : tabValue === 4
+                          ? 'Applications'
+                          : 'Reports'}
+              </Typography>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(3, 1fr)',
+                  gap: 1,
+                  mt: 2,
+                }}
+              >
+                {[
+                  { icon: <People />, label: 'Users', value: 0 },
+                  { icon: <Analytics />, label: 'Analytics', value: 1 },
+                  { icon: <TrendingUp />, label: 'Leads', value: 2 },
+                  { icon: <Business />, label: 'Properties', value: 3 },
+                  { icon: <Assignment />, label: 'Applications', value: 4 },
+                  { icon: <Assessment />, label: 'Reports', value: 5 },
+                ].map(tab => (
+                  <Button
+                    key={tab.value}
+                    variant={tabValue === tab.value ? 'contained' : 'outlined'}
+                    onClick={() => setTabValue(tab.value)}
+                    startIcon={tab.icon}
+                    sx={{
+                      bgcolor: tabValue === tab.value ? 'rgba(255,255,255,0.2)' : 'transparent',
+                      color: 'white',
+                      borderColor: 'rgba(255,255,255,0.3)',
+                      py: 1,
+                      px: 1,
+                      fontSize: '0.75rem',
+                      minWidth: 'auto',
+                      flexDirection: 'column',
+                      gap: 0.5,
+                      '&:hover': {
+                        bgcolor: 'rgba(255,255,255,0.1)',
+                        borderColor: 'rgba(255,255,255,0.5)',
+                      },
+                      '& .MuiButton-startIcon': {
+                        margin: 0,
+                        fontSize: '1rem',
+                      },
+                    }}
+                  >
+                    {tab.label}
+                  </Button>
+                ))}
+              </Box>
+            </Box>
+          )}
         </Box>
       </Card>
 

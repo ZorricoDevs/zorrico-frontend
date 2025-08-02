@@ -130,33 +130,107 @@ const Navbar: React.FC = () => {
       }}
     >
       <Box sx={{ width: '100%' }} role='presentation'>
-        <List sx={{ pt: 2 }}>
-          <ListItem sx={{ pb: 2 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-              <Box
-                component='img'
-                src={logo}
-                alt='Home Loan Mittra Logo'
-                sx={{
-                  height: 32,
-                  width: 'auto',
-                  maxWidth: 80,
-                  borderRadius: 2,
-                  objectFit: 'contain',
-                }}
-              />
+        {/* Enhanced Mobile Header */}
+        <Box
+          sx={{
+            p: 3,
+            background: isDark
+              ? 'linear-gradient(135deg, #1e293b 0%, #334155 100%)'
+              : 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
+            borderBottom: `1px solid ${isDark ? '#334155' : '#e2e8f0'}`,
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+            <Box
+              component='img'
+              src={logo}
+              alt='Home Loan Mittra Logo'
+              sx={{
+                height: 40,
+                width: 'auto',
+                maxWidth: 80,
+                borderRadius: 2,
+                objectFit: 'contain',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+              }}
+            />
+            <Box>
               <Typography
                 variant='h6'
                 sx={{
-                  fontWeight: 'bold',
+                  fontWeight: 700,
                   color: isDark ? '#60a5fa' : '#1976d2',
-                  fontSize: { xs: 16, sm: 18 },
+                  lineHeight: 1.2,
+                  fontSize: 18,
                 }}
               >
-                HomeLoanMittra
+                Home Loan Mittra
+              </Typography>
+              <Typography
+                variant='caption'
+                sx={{
+                  color: isDark ? '#94A3B8' : '#64748B',
+                  fontWeight: 500,
+                  letterSpacing: 0.5,
+                  fontSize: 11,
+                }}
+              >
+                Making Home Loans Effortless
               </Typography>
             </Box>
-          </ListItem>
+          </Box>
+
+          {user && (
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1.5,
+                p: 2,
+                bgcolor: isDark ? 'rgba(59, 130, 246, 0.1)' : 'rgba(25, 118, 210, 0.08)',
+                borderRadius: 2,
+                border: `1px solid ${isDark ? 'rgba(59, 130, 246, 0.2)' : 'rgba(25, 118, 210, 0.15)'}`,
+              }}
+            >
+              <Avatar
+                sx={{
+                  width: 32,
+                  height: 32,
+                  bgcolor: isDark ? '#3b82f6' : '#1976d2',
+                  fontSize: 14,
+                  fontWeight: 600,
+                }}
+              >
+                {user.firstName?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase() || 'U'}
+              </Avatar>
+              <Box>
+                <Typography
+                  variant='body2'
+                  sx={{
+                    fontWeight: 600,
+                    color: isDark ? '#f1f5f9' : '#1e293b',
+                    fontSize: 14,
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {user.firstName || user.email?.split('@')[0] || 'User'}
+                </Typography>
+                <Typography
+                  variant='caption'
+                  sx={{
+                    color: isDark ? '#94A3B8' : '#64748B',
+                    fontSize: 11,
+                    textTransform: 'capitalize',
+                  }}
+                >
+                  {user.role || 'User'}
+                </Typography>
+              </Box>
+            </Box>
+          )}
+        </Box>
+
+        <List sx={{ pt: 2 }}>
           <Divider sx={{ bgcolor: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)' }} />
 
           {menuItems.map(item => (
@@ -270,6 +344,51 @@ const Navbar: React.FC = () => {
               </ListItem>
             </>
           )}
+
+          {/* Theme Toggle Section in Mobile Drawer */}
+          <Divider
+            sx={{ mt: 2, bgcolor: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)' }}
+          />
+          <ListItem sx={{ py: 2 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                width: '100%',
+                px: 1,
+              }}
+            >
+              <Typography
+                variant='body2'
+                sx={{
+                  color: isDark ? '#CBD5E1' : '#64748B',
+                  fontWeight: 500,
+                  fontSize: { xs: 14, sm: 16 },
+                }}
+              >
+                Theme
+              </Typography>
+              <ThemeToggle />
+            </Box>
+          </ListItem>
+
+          {/* App Info Section */}
+          <ListItem sx={{ pt: 1, pb: 2 }}>
+            <Box sx={{ textAlign: 'center', width: '100%' }}>
+              <Typography
+                variant='caption'
+                sx={{
+                  color: isDark ? '#94A3B8' : '#94A3B8',
+                  fontSize: 11,
+                  fontWeight: 400,
+                  letterSpacing: 0.5,
+                }}
+              >
+                Home Loan Mittra v1.0
+              </Typography>
+            </Box>
+          </ListItem>
         </List>
       </Box>
     </Drawer>
