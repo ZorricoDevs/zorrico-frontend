@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -54,9 +54,13 @@ const ApplicationsPage = lazyWithRetry(() => import('./pages/ApplicationsPage'))
 const ProfilePage = lazyWithRetry(() => import('./pages/ProfilePage'));
 const Settings = lazyWithRetry(() => import('./pages/Settings'));
 const AdminApplicationsPage = lazyWithRetry(() => import('./pages/AdminApplicationsPage'));
-const EligibilityChecker = lazyWithRetry(() => import('./components/Calculators/EligibilityChecker'));
+const EligibilityChecker = lazyWithRetry(
+  () => import('./components/Calculators/EligibilityChecker')
+);
 const EMICalculator = lazyWithRetry(() => import('./components/Calculators/EMICalculator'));
-const LoanApplicationForm = lazyWithRetry(() => import('./components/Applications/LoanApplicationForm'));
+const LoanApplicationForm = lazyWithRetry(
+  () => import('./components/Applications/LoanApplicationForm')
+);
 const CustomerDashboard = lazyWithRetry(() => import('./components/Customer/CustomerDashboard'));
 const BrokerDashboard = lazyWithRetry(() => import('./components/Broker/BrokerDashboard'));
 const BuilderDashboard = lazyWithRetry(() => import('./components/Builder/BuilderDashboard'));
@@ -140,9 +144,8 @@ const AppContent: React.FC = () => {
         styleOverrides: {
           root: {
             borderRadius: '12px',
-            boxShadow: mode === 'dark'
-              ? '0 4px 8px rgba(0, 0, 0, 0.3)'
-              : '0 4px 8px rgba(0, 0, 0, 0.1)',
+            boxShadow:
+              mode === 'dark' ? '0 4px 8px rgba(0, 0, 0, 0.3)' : '0 4px 8px rgba(0, 0, 0, 0.1)',
           },
         },
       },
@@ -156,184 +159,237 @@ const AppContent: React.FC = () => {
         <AuthErrorBoundary>
           <AuthProvider>
             <Router>
-              <div className="App">
+              <div className='App'>
                 <Navbar />
                 <main style={{ minHeight: 'calc(100vh - 88px)' }}>
                   <Suspense fallback={<FinanceLoader />}>
                     <Routes>
                       {/* Public Routes */}
-                      <Route path="/" element={<HomePage />} />
-                      <Route path="/home" element={<HomePage />} />
-                      <Route path="/loans" element={<HomePage />} />
+                      <Route path='/' element={<HomePage />} />
+                      <Route path='/home' element={<HomePage />} />
+                      <Route path='/loans' element={<HomePage />} />
 
                       {/* Calculator Routes - Multiple paths for flexibility */}
-                      <Route path="/calculator/emi" element={<EMICalculator />} />
-                      <Route path="/emi-calculator" element={<EMICalculator />} />
-                      <Route path="/calculator/eligibility" element={<EligibilityChecker />} />
-                      <Route path="/eligibility-checker" element={<EligibilityChecker />} />
+                      <Route path='/calculator/emi' element={<EMICalculator />} />
+                      <Route path='/emi-calculator' element={<EMICalculator />} />
+                      <Route path='/calculator/eligibility' element={<EligibilityChecker />} />
+                      <Route path='/eligibility-checker' element={<EligibilityChecker />} />
 
                       {/* Tools and Additional Routes */}
-                      <Route path="/apply-loan" element={<LoanApplicationForm />} />
-                      <Route path="/support" element={<ContactPage />} />
-                      <Route path="/about" element={<AboutUsPage />} />
-                      <Route path="/contact" element={<ContactPage />} />
+                      <Route path='/apply-loan' element={<LoanApplicationForm />} />
+                      <Route path='/support' element={<ContactPage />} />
+                      <Route path='/about' element={<AboutUsPage />} />
+                      <Route path='/contact' element={<ContactPage />} />
 
                       {/* Footer Company Links */}
-                      <Route path="/aboutus" element={<AboutUsPage />} />
-                      <Route path="/careers" element={<CareersPage />} />
-                      <Route path="/newsroom" element={<NewsroomPage />} />
+                      <Route path='/aboutus' element={<AboutUsPage />} />
+                      <Route path='/careers' element={<CareersPage />} />
+                      <Route path='/newsroom' element={<NewsroomPage />} />
 
                       {/* Footer Product Links */}
-                      <Route path="/emicalculator" element={<EMICalculator />} />
-                      <Route path="/homeloans" element={<HomeLoansPage />} />
-                      <Route path="/applicationtracker" element={<ApplicationsPage />} />
-                      <Route path="/loanadvisory" element={<HomePage />} />
+                      <Route path='/emicalculator' element={<EMICalculator />} />
+                      <Route path='/homeloans' element={<HomeLoansPage />} />
+                      <Route path='/applicationtracker' element={<ApplicationsPage />} />
+                      <Route path='/loanadvisory' element={<HomePage />} />
 
                       {/* Footer Compliance Links */}
-                      <Route path="/securitydisclosure" element={<SecurityDisclosurePage />} />
-                      <Route path="/loanaggregation" element={<HomePage />} />
-                      <Route path="/rbicompliance" element={<RBICompliancePage />} />
-                      <Route path="/iso270012022" element={<ISO270012022Page />} />
-                      <Route path="/nbfcguidelines" element={<NBFCGuidelinesPage />} />
+                      <Route path='/securitydisclosure' element={<SecurityDisclosurePage />} />
+                      <Route path='/loanaggregation' element={<HomePage />} />
+                      <Route path='/rbicompliance' element={<RBICompliancePage />} />
+                      <Route path='/iso270012022' element={<ISO270012022Page />} />
+                      <Route path='/nbfcguidelines' element={<NBFCGuidelinesPage />} />
 
                       {/* Login Routes - Multiple paths */}
-                      <Route path="/login" element={<CustomerLoginPage />} />
-                      <Route path="/login/customer" element={<CustomerLoginPage />} />
-                      <Route path="/login/broker" element={<BrokerLoginPage />} />
-                      <Route path="/login/lender" element={<LenderLoginPage />} />
-                      <Route path="/login/admin" element={<AdminLoginPage />} />
+                      <Route path='/login' element={<CustomerLoginPage />} />
+                      <Route path='/login/customer' element={<CustomerLoginPage />} />
+                      <Route path='/login/broker' element={<BrokerLoginPage />} />
+                      <Route path='/login/lender' element={<LenderLoginPage />} />
+                      <Route path='/login/admin' element={<AdminLoginPage />} />
 
                       {/* Footer Login Links */}
-                      <Route path="/admin-login" element={<AdminLoginPage />} />
-                      <Route path="/customer-login" element={<CustomerLoginPage />} />
-                      <Route path="/broker-login" element={<BrokerLoginPage />} />
-                      <Route path="/lender-login" element={<LenderLoginPage />} />
-                      <Route path="/builder-login" element={<BuilderLoginPage />} />
+                      <Route path='/admin-login' element={<AdminLoginPage />} />
+                      <Route path='/customer-login' element={<CustomerLoginPage />} />
+                      <Route path='/broker-login' element={<BrokerLoginPage />} />
+                      <Route path='/lender-login' element={<LenderLoginPage />} />
+                      <Route path='/builder-login' element={<BuilderLoginPage />} />
 
                       {/* Protected Routes - Customer */}
-                      <Route path="/dashboard" element={
-                        <ProtectedRoute>
-                          <CustomerDashboard />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/dashboard/customer" element={
-                        <ProtectedRoute>
-                          <CustomerDashboard />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/customer-dashboard" element={
-                        <ProtectedRoute>
-                          <CustomerDashboard />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/applications" element={
-                        <ProtectedRoute>
-                          <ApplicationsPage />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/apply" element={
-                        <ProtectedRoute>
-                          <LoanApplicationForm />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/profile" element={
-                        <ProtectedRoute>
-                          <ProfilePage />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/settings" element={
-                        <ProtectedRoute>
-                          <Settings />
-                        </ProtectedRoute>
-                      } />
+                      <Route
+                        path='/dashboard'
+                        element={
+                          <ProtectedRoute>
+                            <CustomerDashboard />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path='/dashboard/customer'
+                        element={
+                          <ProtectedRoute>
+                            <CustomerDashboard />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path='/customer-dashboard'
+                        element={
+                          <ProtectedRoute>
+                            <CustomerDashboard />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path='/applications'
+                        element={
+                          <ProtectedRoute>
+                            <ApplicationsPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path='/apply'
+                        element={
+                          <ProtectedRoute>
+                            <LoanApplicationForm />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path='/profile'
+                        element={
+                          <ProtectedRoute>
+                            <ProfilePage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path='/settings'
+                        element={
+                          <ProtectedRoute>
+                            <Settings />
+                          </ProtectedRoute>
+                        }
+                      />
 
                       {/* Protected Routes - Broker */}
-                      <Route path="/dashboard/broker" element={
-                        <ProtectedRoute>
-                          <BrokerDashboard />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/broker-dashboard" element={
-                        <ProtectedRoute>
-                          <BrokerDashboard />
-                        </ProtectedRoute>
-                      } />
+                      <Route
+                        path='/dashboard/broker'
+                        element={
+                          <ProtectedRoute>
+                            <BrokerDashboard />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path='/broker-dashboard'
+                        element={
+                          <ProtectedRoute>
+                            <BrokerDashboard />
+                          </ProtectedRoute>
+                        }
+                      />
 
                       {/* Protected Routes - Builder */}
-                      <Route path="/dashboard/builder" element={
-                        <ProtectedRoute>
-                          <BuilderDashboard />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/builder-dashboard" element={
-                        <ProtectedRoute>
-                          <BuilderDashboard />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/builder" element={
-                        <ProtectedRoute>
-                          <BuilderDashboard />
-                        </ProtectedRoute>
-                      } />
+                      <Route
+                        path='/dashboard/builder'
+                        element={
+                          <ProtectedRoute>
+                            <BuilderDashboard />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path='/builder-dashboard'
+                        element={
+                          <ProtectedRoute>
+                            <BuilderDashboard />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path='/builder'
+                        element={
+                          <ProtectedRoute>
+                            <BuilderDashboard />
+                          </ProtectedRoute>
+                        }
+                      />
 
                       {/* Protected Routes - Admin */}
-                      <Route path="/dashboard/admin" element={
-                        <ProtectedRoute requireAdmin={true}>
-                          <AdminDashboard />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/admin/dashboard" element={
-                        <ProtectedRoute requireAdmin={true}>
-                          <AdminDashboard />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/admin-dashboard" element={
-                        <ProtectedRoute requireAdmin={true}>
-                          <AdminDashboard />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/admin/applications" element={
-                        <ProtectedRoute requireAdmin={true}>
-                          <AdminApplicationsPage />
-                        </ProtectedRoute>
-                      } />
+                      <Route
+                        path='/dashboard/admin'
+                        element={
+                          <ProtectedRoute requireAdmin={true}>
+                            <AdminDashboard />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path='/admin/dashboard'
+                        element={
+                          <ProtectedRoute requireAdmin={true}>
+                            <AdminDashboard />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path='/admin-dashboard'
+                        element={
+                          <ProtectedRoute requireAdmin={true}>
+                            <AdminDashboard />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path='/admin/applications'
+                        element={
+                          <ProtectedRoute requireAdmin={true}>
+                            <AdminApplicationsPage />
+                          </ProtectedRoute>
+                        }
+                      />
 
                       {/* Legal Pages */}
-                      <Route path="/privacypolicy" element={<PrivacyPolicyPage />} />
-                      <Route path="/termsofuse" element={<TermsOfUsePage />} />
+                      <Route path='/privacypolicy' element={<PrivacyPolicyPage />} />
+                      <Route path='/termsofuse' element={<TermsOfUsePage />} />
 
                       {/* 404 Not Found Route - Show proper error instead of redirecting to HomePage */}
-                      <Route path="*" element={
-                        <div style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          minHeight: '60vh',
-                          textAlign: 'center',
-                          padding: '2rem'
-                        }}>
-                          <h2 style={{ marginBottom: '1rem', color: '#666' }}>
-                            🔍 Page Not Found
-                          </h2>
-                          <p style={{ marginBottom: '2rem', color: '#888' }}>
-                            The page you&apos;re looking for doesn&apos;t exist.
-                          </p>
-                          <button
-                            onClick={() => window.location.href = '/'}
+                      <Route
+                        path='*'
+                        element={
+                          <div
                             style={{
-                              padding: '10px 20px',
-                              backgroundColor: '#1976d2',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '5px',
-                              cursor: 'pointer'
+                              display: 'flex',
+                              flexDirection: 'column',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              minHeight: '60vh',
+                              textAlign: 'center',
+                              padding: '2rem',
                             }}
                           >
-                            Go to Homepage
-                          </button>
-                        </div>
-                      } />
+                            <h2 style={{ marginBottom: '1rem', color: '#666' }}>
+                              🔍 Page Not Found
+                            </h2>
+                            <p style={{ marginBottom: '2rem', color: '#888' }}>
+                              The page you&apos;re looking for doesn&apos;t exist.
+                            </p>
+                            <button
+                              onClick={() => (window.location.href = '/')}
+                              style={{
+                                padding: '10px 20px',
+                                backgroundColor: '#1976d2',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '5px',
+                                cursor: 'pointer',
+                              }}
+                            >
+                              Go to Homepage
+                            </button>
+                          </div>
+                        }
+                      />
                     </Routes>
                   </Suspense>
                 </main>
@@ -348,6 +404,37 @@ const AppContent: React.FC = () => {
 };
 
 function App() {
+  // Clear cache on app initialization if needed
+  useEffect(() => {
+    const handleCacheClearing = async () => {
+      // Check if this is a fresh deployment (version mismatch)
+      const buildVersion = document
+        .querySelector('meta[name="build-version"]')
+        ?.getAttribute('content');
+      const storedVersion = localStorage.getItem('app-version');
+
+      if (buildVersion && storedVersion !== buildVersion) {
+        console.log('New deployment detected, clearing cache...');
+
+        // Clear caches
+        if ('caches' in window) {
+          const cacheNames = await caches.keys();
+          await Promise.all(cacheNames.map(name => caches.delete(name)));
+        }
+
+        // Clear storage
+        sessionStorage.clear();
+
+        // Update stored version
+        localStorage.setItem('app-version', buildVersion);
+
+        console.log('Cache cleared for new deployment');
+      }
+    };
+
+    handleCacheClearing();
+  }, []);
+
   return (
     <ChunkErrorBoundary>
       <Provider store={store}>
@@ -362,4 +449,3 @@ function App() {
 }
 
 export default App;
-

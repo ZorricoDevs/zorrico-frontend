@@ -15,17 +15,18 @@ const safeReload = (): void => {
   }
 };
 
-window.addEventListener('unhandledrejection', (event) => {
+window.addEventListener('unhandledrejection', event => {
   const error = event.reason;
 
   // Check if it's a chunk loading error
-  if (error && (
-    error.message?.includes('Loading chunk') ||
-    error.message?.includes('ChunkLoadError') ||
-    error.name === 'ChunkLoadError' ||
-    error.message?.includes('Loading CSS chunk') ||
-    error.message?.includes('Loading script chunk')
-  )) {
+  if (
+    error &&
+    (error.message?.includes('Loading chunk') ||
+      error.message?.includes('ChunkLoadError') ||
+      error.name === 'ChunkLoadError' ||
+      error.message?.includes('Loading CSS chunk') ||
+      error.message?.includes('Loading script chunk'))
+  ) {
     console.warn('Chunk loading error detected:', error);
 
     // Prevent the error from being logged to console
@@ -40,11 +41,14 @@ window.addEventListener('unhandledrejection', (event) => {
 
       // Clear any cached chunks and reload
       if ('caches' in window) {
-        caches.keys().then(names => {
-          names.forEach(name => caches.delete(name));
-        }).finally(() => {
-          safeReload();
-        });
+        caches
+          .keys()
+          .then(names => {
+            names.forEach(name => caches.delete(name));
+          })
+          .finally(() => {
+            safeReload();
+          });
       } else {
         safeReload();
       }
@@ -60,26 +64,30 @@ window.addEventListener('load', () => {
   sessionStorage.removeItem('chunk-error-refresh');
 });
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
 );
 
-// Register service worker for offline capabilities
-if ('serviceWorker' in navigator) {
+// Register service worker for offline capabilities (disabled in production to prevent caching issues)
+if ('serviceWorker' in navigator && process.env.NODE_ENV === 'development') {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then((registration) => {
-
+    navigator.serviceWorker
+      .register('/sw.js')
+      .then(registration => {
         console.log('SW registered: ', registration);
       })
-      .catch((registrationError) => {
-
+      .catch(registrationError => {
         console.log('SW registration failed: ', registrationError);
       });
+  });
+} else if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+  // Unregister any existing service workers in production
+  navigator.serviceWorker.getRegistrations().then(function (registrations) {
+    for (const registration of registrations) {
+      registration.unregister();
+    }
   });
 }
