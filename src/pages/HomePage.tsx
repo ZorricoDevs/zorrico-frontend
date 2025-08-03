@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Box, Container, Typography, Button, Card, CardContent } from '@mui/material';
 import {
   TrendingUp,
@@ -17,11 +17,13 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { motion, useScroll } from 'framer-motion';
 import { useInView as useIntersectionObserver } from 'react-intersection-observer';
+import LoanApplicationPopup from '../components/UI/LoanApplicationPopup';
 import '../styles/animations.css';
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
+  const [openApplicationPopup, setOpenApplicationPopup] = useState(false);
 
   // Scroll progress for the scroll indicator - tracks entire document scroll
   const { scrollYProgress } = useScroll({
@@ -96,46 +98,46 @@ const HomePage: React.FC = () => {
       title: 'Home Loan',
       description:
         'Traditional home loan for purchasing your dream home with competitive interest rates',
-      rate: '8.5% onwards',
+      rate: '7.35% onwards',
       icon: <Home sx={{ fontSize: 32 }} />,
     },
     {
       title: 'Resale Home Loan',
       description: 'Finance for purchasing pre-owned residential properties with flexible terms',
-      rate: '8.7% onwards',
+      rate: '7.5% onwards',
       icon: <HomeWork sx={{ fontSize: 32 }} />,
     },
     {
       title: 'Fresh Home Loan',
       description: 'New home loan for first-time buyers with special benefits and lower rates',
-      rate: '8.3% onwards',
+      rate: '7.4% onwards',
       icon: <TrendingUpSharp sx={{ fontSize: 32 }} />,
     },
     {
       title: 'Under Construction Home Loan',
       description:
         'Stage-wise disbursement for homes under construction with flexible payment options',
-      rate: '8.6% onwards',
+      rate: '7.5% onwards',
       icon: <Construction sx={{ fontSize: 32 }} />,
     },
     {
       title: 'Loan Against Property',
       description: 'Unlock the value of your property for business or personal financial needs',
-      rate: '9.2% onwards',
+      rate: '8.6% onwards',
       icon: <Business sx={{ fontSize: 32 }} />,
     },
     {
       title: 'Balance Transfer & Top Up Home Loan',
       description: 'Transfer existing loan at better rates or get additional funds for your needs',
-      rate: '8.4% onwards',
+      rate: '7.5% onwards',
       icon: <SwapHoriz sx={{ fontSize: 32 }} />,
     },
   ];
 
   const stats = [
-    { number: '₹50,000Cr+', label: 'Loans Disbursed' },
-    { number: '2L+', label: 'Happy Customers' },
-    { number: '50+', label: 'Partner Banks' },
+    { number: '₹150Cr+', label: 'Loans Disbursed' },
+    { number: '10K+', label: 'Happy Customers' },
+    { number: '10+', label: 'Partner Banks' },
     { number: '4.8★', label: 'Customer Rating' },
   ];
 
@@ -326,8 +328,8 @@ const HomePage: React.FC = () => {
                     lineHeight: 1.6,
                   }}
                 >
-                  Compare home loans from 50+ banks and NBFCs. Get pre-approved in minutes with
-                  India&apos;s most trusted home loan platform.
+                  Compare home loans from 10+ banks and 50+ NBFCs. Get pre-approved Loan in 24 hours
+                  at Lowest Interest & Return on Investment.
                 </Typography>
               </motion.div>
 
@@ -387,36 +389,81 @@ const HomePage: React.FC = () => {
                     Calculate EMI
                   </Button>
                 </motion.div>
+
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Button
+                    variant='contained'
+                    size='large'
+                    onClick={() => setOpenApplicationPopup(true)}
+                    sx={{
+                      minWidth: { xs: 160, sm: 180, md: 200 },
+                      px: { xs: 2, sm: 3 },
+                      py: { xs: 1, sm: 1.5 },
+                      fontSize: { xs: '0.9rem', sm: '1rem' },
+                      background: 'linear-gradient(135deg, #FF6B35 0%, #F7931E 100%)',
+                      color: 'white',
+                      fontWeight: 700,
+                      '&:hover': {
+                        background: 'linear-gradient(135deg, #F7931E 0%, #FF6B35 100%)',
+                      },
+                    }}
+                  >
+                    Direct Apply
+                  </Button>
+                </motion.div>
               </motion.div>
 
               {/* Animated Quick Stats */}
-              <motion.div
+              <Box
+                component={motion.div}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1, delay: 1.2 }}
-                style={{ display: 'flex', gap: 32, flexWrap: 'wrap' }}
+                sx={{
+                  display: 'flex',
+                  gap: { xs: 2, sm: 3, md: 4 }, // Responsive gap
+                  flexWrap: 'wrap',
+                  justifyContent: 'center', // Always center the stats
+                  mt: { xs: 2, sm: 3 }, // Add top margin for better spacing
+                }}
               >
                 {[
-                  { value: '8.5%*', label: 'Starting Rate' },
-                  { value: '24hrs', label: 'Approval Time' },
-                  { value: '₹3Cr', label: 'Max Loan Amount' },
+                  { value: '7.35%*', label: 'Starting Rate' },
+                  { value: '24hrs', label: 'Pre Approval Time' },
+                  { value: '₹30 Lakh', label: 'Max Loan Amount' },
                 ].map((stat, index) => (
                   <motion.div
                     key={index}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 1.4 + index * 0.2 }}
-                    style={{ textAlign: 'center' }}
+                    style={{
+                      textAlign: 'center',
+                      minWidth: '80px', // Ensure consistent width
+                      flex: '0 0 auto', // Prevent shrinking
+                    }}
                   >
-                    <Typography sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'white' }}>
+                    <Typography
+                      sx={{
+                        fontSize: { xs: '1.25rem', sm: '1.4rem', md: '1.5rem' },
+                        fontWeight: 700,
+                        color: 'white',
+                      }}
+                    >
                       {stat.value}
                     </Typography>
-                    <Typography sx={{ fontSize: '0.875rem', color: 'rgba(255,255,255,0.8)' }}>
+                    <Typography
+                      sx={{
+                        fontSize: { xs: '0.75rem', sm: '0.8rem', md: '0.875rem' },
+                        color: 'rgba(255,255,255,0.8)',
+                        lineHeight: 1.2,
+                      }}
+                    >
                       {stat.label}
                     </Typography>
                   </motion.div>
                 ))}
-              </motion.div>
+              </Box>
             </Box>
 
             {/* Right Visual with simple design */}
@@ -726,7 +773,7 @@ const HomePage: React.FC = () => {
                         <Button
                           variant='contained'
                           fullWidth
-                          onClick={() => navigate('/apply-loan')}
+                          onClick={() => setOpenApplicationPopup(true)}
                           sx={{
                             background: 'linear-gradient(135deg, #304FFE 0%, #5C6FFF 100%)',
                             fontWeight: 700,
@@ -973,6 +1020,13 @@ const HomePage: React.FC = () => {
           </Container>
         </Box>
       </AnimatedSection>
+
+      {/* Loan Application Popup */}
+      <LoanApplicationPopup
+        open={openApplicationPopup}
+        onClose={() => setOpenApplicationPopup(false)}
+        showEligibilitySummary={false}
+      />
     </Box>
   );
 };

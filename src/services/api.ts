@@ -174,6 +174,67 @@ export const loanAPI = {
       throw error;
     }
   },
+
+  // Submit eligibility form application
+  submitEligibilityForm: async (applicationData: any): Promise<any> => {
+    try {
+      const response = await api.post('/applications/eligibility-form', applicationData);
+      return response.data;
+    } catch (error) {
+      console.error('Error submitting eligibility form:', error);
+      throw error;
+    }
+  },
+};
+
+// Auth API functions
+export const authAPI = {
+  // Login
+  login: async (credentials: { email: string; password: string; role: string }): Promise<any> => {
+    try {
+      const response = await api.post('/auth/login', credentials);
+      return response.data;
+    } catch (error) {
+      console.error('Error during login:', error);
+      throw error;
+    }
+  },
+};
+
+// Admin API functions
+export const adminAPI = {
+  // Get eligibility forms
+  getEligibilityForms: async (): Promise<any> => {
+    try {
+      const response = await api.get('/admin/eligibility-forms');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching eligibility forms:', error);
+      throw error;
+    }
+  },
+
+  // Convert customer
+  convertCustomer: async (formId: string): Promise<any> => {
+    try {
+      const response = await api.post(`/admin/convert-customer/${formId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error converting customer:', error);
+      throw error;
+    }
+  },
+
+  // Update form status
+  updateFormStatus: async (formId: string, status: string): Promise<any> => {
+    try {
+      const response = await api.put(`/admin/eligibility-forms/${formId}/status`, { status });
+      return response.data;
+    } catch (error) {
+      console.error('Error updating form status:', error);
+      throw error;
+    }
+  },
 };
 
 export default api;

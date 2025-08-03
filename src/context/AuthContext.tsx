@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import FinanceLoader from '../components/UI/FinanceLoader';
+import { authAPI } from '../services/api';
 
 interface User {
   id: string;
@@ -75,17 +76,10 @@ function AuthProvider({ children }: AuthProviderProps) {
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      // Use proper authentication API
-      const response = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      // Use proper authentication API with environment configuration
+      const data = await authAPI.login({ email, password, role: 'user' });
 
-      if (response.ok) {
-        const data = await response.json();
+      if (data.success) {
         const user: User = {
           id: data.user.id || data.user._id,
           name: data.user.fullName || data.user.firstName || data.user.name,
