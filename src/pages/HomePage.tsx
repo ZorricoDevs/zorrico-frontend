@@ -160,7 +160,7 @@ const HomePage: React.FC = () => {
     {
       step: '04',
       title: 'Get Approved',
-      description: 'Receive approval in 24 hours',
+      description: 'Receive Pre-Approval in 24 hours',
     },
   ];
 
@@ -408,7 +408,7 @@ const HomePage: React.FC = () => {
                       },
                     }}
                   >
-                    Direct Apply
+                    Apply for Home Loan
                   </Button>
                 </motion.div>
               </motion.div>
@@ -430,7 +430,7 @@ const HomePage: React.FC = () => {
                 {[
                   { value: '7.35%*', label: 'Starting Rate' },
                   { value: '24hrs', label: 'Pre Approval Time' },
-                  { value: '₹30 Lakh', label: 'Max Loan Amount' },
+                  { value: '₹30Cr+', label: 'Max Loan Amount' },
                 ].map((stat, index) => (
                   <motion.div
                     key={index}
