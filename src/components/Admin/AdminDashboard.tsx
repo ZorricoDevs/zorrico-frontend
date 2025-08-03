@@ -348,6 +348,13 @@ const AdminDashboard: React.FC = () => {
       console.log('Total Builders:', statsData.totalBuilders);
       console.log('Total Lenders:', statsData.totalLenders);
 
+      // Debug lead statistics
+      console.log('📊 Lead Statistics Debug:');
+      console.log('  Total Leads:', statsData.totalLeads);
+      console.log('  Unassigned Leads:', statsData.unassignedLeads);
+      console.log('  Converted Leads:', statsData.convertedLeads);
+      console.log('  Lead Conversion Rate:', statsData.leadConversionRate);
+
       // Handle backward compatibility - if totalBuilders is undefined, use totalLenders
       if (statsData.totalBuilders === undefined && statsData.totalLenders !== undefined) {
         statsData.totalBuilders = statsData.totalLenders;
