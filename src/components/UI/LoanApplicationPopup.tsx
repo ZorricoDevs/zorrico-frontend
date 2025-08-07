@@ -12,6 +12,9 @@ import {
   Paper,
   Snackbar,
   Alert,
+  FormControlLabel,
+  Checkbox,
+  Link,
 } from '@mui/material';
 import { Close, Email, Phone, Person, Work } from '@mui/icons-material';
 import { loanAPI } from '../../services/api';
@@ -38,6 +41,7 @@ interface FormData {
   currentAddress: string;
   propertyLocation: string;
   bankName: string;
+  acceptedTerms: boolean;
 }
 
 const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
@@ -58,6 +62,7 @@ const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
     currentAddress: '',
     propertyLocation: '',
     bankName: selectedBank,
+    acceptedTerms: false,
   });
 
   const [snackbar, setSnackbar] = useState({
@@ -108,6 +113,16 @@ const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
         return;
       }
 
+      // Terms & Conditions validation
+      if (!formData.acceptedTerms) {
+        setSnackbar({
+          open: true,
+          message: 'Please accept the Terms & Conditions to proceed',
+          severity: 'error',
+        });
+        return;
+      }
+
       // Prepare application data
       const applicationData = {
         ...formData,
@@ -145,6 +160,7 @@ const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
           currentAddress: '',
           propertyLocation: '',
           bankName: selectedBank,
+          acceptedTerms: false,
         });
       } else {
         throw new Error(result.message || 'Failed to submit application');
@@ -430,6 +446,50 @@ const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
                 </Box>
               </Paper>
             )}
+
+            {/* Terms & Conditions Checkbox */}
+            <Box sx={{ mt: 3, mb: 2 }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={formData.acceptedTerms}
+                    onChange={e => setFormData({ ...formData, acceptedTerms: e.target.checked })}
+                    color='primary'
+                  />
+                }
+                label={
+                  <Typography variant='body2' sx={{ color: '#666' }}>
+                    I accept the{' '}
+                    <Link
+                      href='/termsofuse'
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      sx={{
+                        color: '#1976d2',
+                        textDecoration: 'none',
+                        '&:hover': { textDecoration: 'underline' },
+                      }}
+                    >
+                      Terms & Conditions
+                    </Link>{' '}
+                    and{' '}
+                    <Link
+                      href='/privacypolicy'
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      sx={{
+                        color: '#1976d2',
+                        textDecoration: 'none',
+                        '&:hover': { textDecoration: 'underline' },
+                      }}
+                    >
+                      Privacy Policy
+                    </Link>
+                  </Typography>
+                }
+                sx={{ alignItems: 'flex-start' }}
+              />
+            </Box>
           </Box>
         </DialogContent>
 

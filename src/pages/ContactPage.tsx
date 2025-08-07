@@ -59,7 +59,7 @@ const ContactPage: React.FC = () => {
               color: isDarkMode ? theme.palette.text.primary : '#2E2E2E',
             }}
           >
-            <strong style={{ color: '#304FFE' }}>Customer Support:</strong> 1800-XXX-XXXX
+            <strong style={{ color: '#304FFE' }}>Customer Support:</strong> 1800-200-3344
           </Typography>
           <Typography
             variant='body1'
@@ -68,7 +68,7 @@ const ContactPage: React.FC = () => {
               color: isDarkMode ? theme.palette.text.primary : '#2E2E2E',
             }}
           >
-            <strong style={{ color: '#304FFE' }}>Loan Assistance:</strong> +91-XXXXX-XXXXX
+            <strong style={{ color: '#304FFE' }}>Loan Assistance:</strong> +91-11-4167-2200
           </Typography>
           <Typography
             variant='body2'

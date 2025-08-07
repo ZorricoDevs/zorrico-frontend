@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Container, Typography, Link, Stack, Divider, keyframes } from '@mui/material';
 import { LocationOn, LinkedIn, Twitter, TrendingUp, Security, Speed } from '@mui/icons-material';
+import { Link as RouterLink } from 'react-router-dom';
 import logo from '../../assets/logo.png';
 
 const Footer: React.FC = () => {
@@ -499,7 +500,8 @@ const Footer: React.FC = () => {
               {['Privacy Policy', 'Terms of Use'].map(item => (
                 <Link
                   key={item}
-                  href={`/${item.toLowerCase().replace(' ', '')}`}
+                  component={RouterLink}
+                  to={`/${item.toLowerCase().replace(' ', '')}`}
                   sx={{
                     color: '#6c757d',
                     textDecoration: 'none',
