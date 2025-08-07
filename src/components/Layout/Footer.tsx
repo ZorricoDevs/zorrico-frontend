@@ -497,24 +497,27 @@ const Footer: React.FC = () => {
                 justifyContent: 'center',
               }}
             >
-              {['Privacy Policy', 'Terms of Use'].map(item => (
-                <Link
-                  key={item}
-                  component={RouterLink}
-                  to={`/${item.toLowerCase().replace(' ', '')}`}
-                  sx={{
-                    color: '#6c757d',
-                    textDecoration: 'none',
-                    fontSize: { xs: '0.8rem', sm: '0.875rem' },
-                    transition: 'color 0.3s ease',
-                    '&:hover': {
-                      color: '#1976d2',
-                    },
-                  }}
-                >
-                  {item}
-                </Link>
-              ))}
+              {['Privacy Policy', 'Terms of Use'].map(item => {
+                const route = item === 'Privacy Policy' ? '/privacypolicy' : '/termsofuse';
+                return (
+                  <Link
+                    key={item}
+                    component={RouterLink}
+                    to={route}
+                    sx={{
+                      color: '#6c757d',
+                      textDecoration: 'none',
+                      fontSize: { xs: '0.8rem', sm: '0.875rem' },
+                      transition: 'color 0.3s ease',
+                      '&:hover': {
+                        color: '#1976d2',
+                      },
+                    }}
+                  >
+                    {item}
+                  </Link>
+                );
+              })}
             </Box>
           </Box>
 

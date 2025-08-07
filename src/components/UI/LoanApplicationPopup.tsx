@@ -17,6 +17,7 @@ import {
   Link,
 } from '@mui/material';
 import { Close, Email, Phone, Person, Work } from '@mui/icons-material';
+import { Link as RouterLink } from 'react-router-dom';
 import { loanAPI } from '../../services/api';
 
 interface LoanApplicationPopupProps {
@@ -455,13 +456,15 @@ const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
                     checked={formData.acceptedTerms}
                     onChange={e => setFormData({ ...formData, acceptedTerms: e.target.checked })}
                     color='primary'
+                    sx={{ py: 0 }}
                   />
                 }
                 label={
-                  <Typography variant='body2' sx={{ color: '#666' }}>
+                  <Typography variant='body2' sx={{ color: '#666', lineHeight: 1.5 }}>
                     I accept the{' '}
                     <Link
-                      href='/termsofuse'
+                      component={RouterLink}
+                      to='/termsofuse'
                       target='_blank'
                       rel='noopener noreferrer'
                       sx={{
@@ -474,7 +477,8 @@ const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
                     </Link>{' '}
                     and{' '}
                     <Link
-                      href='/privacypolicy'
+                      component={RouterLink}
+                      to='/privacypolicy'
                       target='_blank'
                       rel='noopener noreferrer'
                       sx={{
@@ -487,7 +491,13 @@ const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
                     </Link>
                   </Typography>
                 }
-                sx={{ alignItems: 'flex-start' }}
+                sx={{
+                  alignItems: 'flex-start',
+                  margin: 0,
+                  '& .MuiFormControlLabel-label': {
+                    paddingTop: '9px',
+                  },
+                }}
               />
             </Box>
           </Box>
