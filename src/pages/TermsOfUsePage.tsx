@@ -1,20 +1,26 @@
 import React from 'react';
-import { Typography, Stack, Box, Paper } from '@mui/material';
+import { Typography, Stack, Box, Paper, useTheme } from '@mui/material';
 import { Gavel, Shield } from '@mui/icons-material';
 import GenericPage from '../components/UI/GenericPage';
 
 const TermsOfUsePage: React.FC = () => {
+  const theme = useTheme();
+  const isDarkMode = theme.palette.mode === 'dark';
+
   const content = (
     <Stack spacing={4}>
       <Typography variant='h5' component='h2' sx={{ color: '#304FFE', fontWeight: 600 }}>
         Terms of Use
       </Typography>
 
-      <Typography variant='body2' sx={{ color: '#666', fontStyle: 'italic' }}>
+      <Typography
+        variant='body2'
+        sx={{ color: isDarkMode ? '#b0b0b0' : '#666', fontStyle: 'italic' }}
+      >
         Last updated: July 2025
       </Typography>
 
-      <Typography variant='body1' paragraph>
+      <Typography variant='body1' paragraph sx={{ color: isDarkMode ? '#e0e0e0' : '#333' }}>
         Welcome to HomeLoanMittra. These Terms of Use (&quot;Terms&quot;) govern your use of our
         website, mobile application, and services. By accessing or using our platform, you agree to
         be bound by these Terms.
@@ -28,56 +34,92 @@ const TermsOfUsePage: React.FC = () => {
           mb: 4,
         }}
       >
-        <Paper elevation={1} sx={{ p: 3, textAlign: 'center' }}>
+        <Paper
+          elevation={isDarkMode ? 0 : 1}
+          sx={{
+            p: 3,
+            textAlign: 'center',
+            backgroundColor: isDarkMode ? '#1a1a1a' : '#fff',
+            border: isDarkMode ? '1px solid #333' : 'none',
+          }}
+        >
           <Gavel sx={{ color: '#1976d2', fontSize: 40, mb: 2 }} />
-          <Typography variant='h6' sx={{ fontWeight: 600, mb: 1 }}>
+          <Typography
+            variant='h6'
+            sx={{ fontWeight: 600, mb: 1, color: isDarkMode ? '#fff' : '#333' }}
+          >
             Legal Compliance
           </Typography>
-          <Typography variant='body2' sx={{ color: '#666' }}>
+          <Typography variant='body2' sx={{ color: isDarkMode ? '#b0b0b0' : '#666' }}>
             Fully compliant with Indian laws and regulations
           </Typography>
         </Paper>
 
-        <Paper elevation={1} sx={{ p: 3, textAlign: 'center' }}>
+        <Paper
+          elevation={isDarkMode ? 0 : 1}
+          sx={{
+            p: 3,
+            textAlign: 'center',
+            backgroundColor: isDarkMode ? '#1a1a1a' : '#fff',
+            border: isDarkMode ? '1px solid #333' : 'none',
+          }}
+        >
           <Shield sx={{ color: '#28a745', fontSize: 40, mb: 2 }} />
-          <Typography variant='h6' sx={{ fontWeight: 600, mb: 1 }}>
+          <Typography
+            variant='h6'
+            sx={{ fontWeight: 600, mb: 1, color: isDarkMode ? '#fff' : '#333' }}
+          >
             User Protection
           </Typography>
-          <Typography variant='body2' sx={{ color: '#666' }}>
+          <Typography variant='body2' sx={{ color: isDarkMode ? '#b0b0b0' : '#666' }}>
             Clear terms protecting both users and platform
           </Typography>
         </Paper>
       </Box>
 
-      <Paper elevation={2} sx={{ p: 4 }}>
+      <Paper
+        elevation={isDarkMode ? 0 : 2}
+        sx={{
+          p: 4,
+          backgroundColor: isDarkMode ? '#1a1a1a' : '#fff',
+          border: isDarkMode ? '1px solid #333' : 'none',
+        }}
+      >
         <Typography variant='h6' sx={{ color: '#1976d2', fontWeight: 600, mb: 3 }}>
           1. Acceptance of Terms
         </Typography>
 
-        <Typography variant='body2' paragraph>
+        <Typography variant='body2' paragraph sx={{ color: isDarkMode ? '#e0e0e0' : '#555' }}>
           By using HomeLoanMittra&apos;s services, you acknowledge that you have read, understood,
           and agree to be bound by these Terms. If you do not agree to these Terms, please do not
           use our services.
         </Typography>
 
-        <Typography variant='body2' paragraph>
+        <Typography variant='body2' paragraph sx={{ color: isDarkMode ? '#e0e0e0' : '#555' }}>
           We reserve the right to modify these Terms at any time. Changes will be effective
           immediately upon posting. Your continued use of our services constitutes acceptance of the
           modified Terms.
         </Typography>
       </Paper>
 
-      <Paper elevation={2} sx={{ p: 4 }}>
+      <Paper
+        elevation={isDarkMode ? 0 : 2}
+        sx={{
+          p: 4,
+          backgroundColor: isDarkMode ? '#1a1a1a' : '#fff',
+          border: isDarkMode ? '1px solid #333' : 'none',
+        }}
+      >
         <Typography variant='h6' sx={{ color: '#1976d2', fontWeight: 600, mb: 3 }}>
           2. Service Description
         </Typography>
 
-        <Typography variant='body2' paragraph>
+        <Typography variant='body2' paragraph sx={{ color: isDarkMode ? '#e0e0e0' : '#555' }}>
           HomeLoanMittra is a digital platform that facilitates home loan applications by:
         </Typography>
 
         <Stack spacing={2}>
-          <Typography variant='body2'>
+          <Typography variant='body2' sx={{ color: isDarkMode ? '#e0e0e0' : '#555' }}>
             • <strong>Loan Comparison:</strong> Comparing offers from multiple banks and NBFCs
           </Typography>
           <Typography variant='body2'>

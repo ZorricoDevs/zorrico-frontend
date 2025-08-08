@@ -15,6 +15,7 @@ import {
   FormControlLabel,
   Checkbox,
   Link,
+  useTheme,
 } from '@mui/material';
 import { Close, Email, Phone, Person, Work, CheckCircle } from '@mui/icons-material';
 import { Link as RouterLink } from 'react-router-dom';
@@ -52,6 +53,9 @@ const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
   eligibilityData = null,
   selectedBank = '',
 }) => {
+  const theme = useTheme();
+  const isDarkMode = theme.palette.mode === 'dark';
+
   const [formData, setFormData] = useState<FormData>({
     fullName: '',
     email: '',
@@ -627,30 +631,60 @@ const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
 
           {submittedApplicationNumber && (
             <Paper
+              elevation={6}
               sx={{
-                p: 3,
-                backgroundColor: 'primary.light',
-                border: '2px solid',
-                borderColor: 'primary.main',
-                borderRadius: 2,
+                p: 4,
+                backgroundColor: isDarkMode ? '#1a1a1a' : '#f8f9fa',
+                border: '3px solid',
+                borderColor: isDarkMode ? '#4CAF50' : '#2196F3',
+                borderRadius: 3,
                 mb: 3,
+                background: isDarkMode
+                  ? 'linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%)'
+                  : 'linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%)',
+                boxShadow: isDarkMode
+                  ? '0 8px 32px rgba(76, 175, 80, 0.3)'
+                  : '0 8px 32px rgba(33, 150, 243, 0.3)',
               }}
             >
-              <Typography variant='subtitle2' sx={{ color: 'primary.dark', mb: 1 }}>
+              <Typography
+                variant='subtitle1'
+                sx={{
+                  color: isDarkMode ? '#4CAF50' : '#1976d2',
+                  mb: 2,
+                  fontWeight: 600,
+                  textAlign: 'center',
+                }}
+              >
                 Your Application Number
               </Typography>
               <Typography
-                variant='h4'
+                variant='h3'
                 sx={{
                   fontFamily: 'monospace',
-                  fontWeight: 700,
-                  color: 'primary.main',
-                  letterSpacing: 1,
+                  fontWeight: 800,
+                  color: isDarkMode ? '#4CAF50' : '#1976d2',
+                  letterSpacing: 2,
+                  textAlign: 'center',
+                  textShadow: isDarkMode
+                    ? '0 0 20px rgba(76, 175, 80, 0.5)'
+                    : '0 2px 4px rgba(33, 150, 243, 0.3)',
+                  fontSize: { xs: '1.8rem', sm: '2.5rem', md: '3rem' },
                 }}
               >
                 {submittedApplicationNumber}
               </Typography>
-              <Typography variant='caption' sx={{ color: 'primary.dark', mt: 1, display: 'block' }}>
+              <Typography
+                variant='body2'
+                sx={{
+                  color: isDarkMode ? '#81C784' : '#1565c0',
+                  mt: 2,
+                  display: 'block',
+                  textAlign: 'center',
+                  fontWeight: 500,
+                  fontSize: '0.95rem',
+                }}
+              >
                 Please save this number for future reference
               </Typography>
             </Paper>
