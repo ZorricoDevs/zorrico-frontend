@@ -72,6 +72,8 @@ const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
     severity: 'success' as 'success' | 'error',
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
@@ -81,7 +83,12 @@ const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
   };
 
   const handleFormSubmit = async () => {
+    // Prevent multiple submissions
+    if (isSubmitting) return;
+
     try {
+      setIsSubmitting(true);
+
       // Validate required fields
       if (!formData.fullName || !formData.email || !formData.phone) {
         setSnackbar({
@@ -124,10 +131,11 @@ const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
         return;
       }
 
-      // Prepare application data
+      // Prepare application data with optimized structure
       const applicationData = {
         ...formData,
         source: showEligibilitySummary ? 'eligibility-checker' : 'homepage',
+        timestamp: new Date().toISOString(), // Add timestamp for better tracking
         eligibilityDetails:
           showEligibilitySummary && eligibilityData
             ? {
@@ -137,42 +145,80 @@ const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
             : null,
       };
 
-      // Send to backend API using proper environment configuration
-      const result = await loanAPI.submitEligibilityForm(applicationData);
-
-      if (result.success) {
-        setSnackbar({
-          open: true,
-          message:
-            'Application submitted successfully! You will receive a confirmation email shortly.',
-          severity: 'success',
-        });
-        onClose();
-
-        // Reset form
-        setFormData({
-          fullName: '',
-          email: '',
-          phone: '',
-          panNumber: '',
-          occupation: '',
-          companyName: '',
-          workExperience: '',
-          currentAddress: '',
-          propertyLocation: '',
-          bankName: selectedBank,
-          acceptedTerms: false,
-        });
-      } else {
-        throw new Error(result.message || 'Failed to submit application');
-      }
-    } catch (error) {
-      console.error('Form submission error:', error);
+      // Show immediate success feedback
       setSnackbar({
         open: true,
-        message: 'Failed to submit application. Please try again.',
+        message: 'Submitting application...',
+        severity: 'success',
+      });
+
+      // Send to backend API with timeout for better UX
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+
+      try {
+        const result = await Promise.race([
+          loanAPI.submitEligibilityForm(applicationData),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Request timeout')), 8000)),
+        ]);
+
+        clearTimeout(timeoutId);
+
+        if (result.success) {
+          setSnackbar({
+            open: true,
+            message:
+              'Application submitted successfully! You will receive a confirmation email shortly.',
+            severity: 'success',
+          });
+
+          // Close modal after short delay
+          setTimeout(() => {
+            onClose();
+          }, 1500);
+
+          // Reset form
+          setFormData({
+            fullName: '',
+            email: '',
+            phone: '',
+            panNumber: '',
+            occupation: '',
+            companyName: '',
+            workExperience: '',
+            currentAddress: '',
+            propertyLocation: '',
+            bankName: selectedBank,
+            acceptedTerms: false,
+          });
+        } else {
+          throw new Error(result.message || 'Failed to submit application');
+        }
+      } catch (networkError) {
+        clearTimeout(timeoutId);
+        throw networkError;
+      }
+    } catch (error: any) {
+      console.error('Form submission error:', error);
+
+      // Enhanced error messaging
+      let errorMessage = 'Failed to submit application. Please try again.';
+      if (error?.message === 'Request timeout') {
+        errorMessage =
+          'Request is taking longer than expected. Your application may still be processed.';
+      } else if (error?.response?.status === 500) {
+        errorMessage = 'Server error. Please try again in a few moments.';
+      } else if (error?.response?.status === 429) {
+        errorMessage = 'Too many requests. Please wait a moment and try again.';
+      }
+
+      setSnackbar({
+        open: true,
+        message: errorMessage,
         severity: 'error',
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -511,11 +557,16 @@ const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
             borderBottomRightRadius: 12,
           }}
         >
-          <Button onClick={onClose} variant='outlined' sx={{ px: 3 }}>
+          <Button onClick={onClose} variant='outlined' sx={{ px: 3 }} disabled={isSubmitting}>
             Cancel
           </Button>
-          <Button onClick={handleFormSubmit} variant='contained' sx={{ px: 4, ml: 2 }}>
-            Submit Application
+          <Button
+            onClick={handleFormSubmit}
+            variant='contained'
+            sx={{ px: 4, ml: 2 }}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Submitting...' : 'Submit Application'}
           </Button>
         </DialogActions>
       </Dialog>

@@ -175,12 +175,22 @@ export const loanAPI = {
     }
   },
 
-  // Submit eligibility form application
+  // Submit eligibility form application with optimized performance
   submitEligibilityForm: async (applicationData: any): Promise<any> => {
     try {
-      const response = await api.post('/applications/eligibility-form', applicationData);
+      // Add request optimization headers
+      const response = await api.post('/applications/eligibility-form', applicationData, {
+        timeout: 10000, // 10 second timeout
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+      });
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      if (error?.code === 'ECONNABORTED') {
+        throw new Error('Request timeout - please try again');
+      }
       console.error('Error submitting eligibility form:', error);
       throw error;
     }
