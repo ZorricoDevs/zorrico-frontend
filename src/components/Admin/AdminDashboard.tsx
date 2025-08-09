@@ -38,14 +38,6 @@ import {
   Divider,
   List,
   ListItem,
-  Drawer,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  SpeedDial,
-  SpeedDialIcon,
-  SpeedDialAction,
-  Backdrop,
 } from '@mui/material';
 import {
   AdminPanelSettings,
@@ -130,7 +122,6 @@ const AdminDashboard: React.FC = () => {
   // UI state variables
   const [viewProperty, setViewProperty] = useState<any | null>(null);
   const [pagination, setPagination] = useState({ page: 0, rowsPerPage: 10 });
-  const [speedDialOpen, setSpeedDialOpen] = useState(false);
 
   // Add User Dialog State
   const [addUserDialog, setAddUserDialog] = useState(false);
@@ -232,6 +223,13 @@ const AdminDashboard: React.FC = () => {
   const [propertiesError, setPropertiesError] = useState<string | null>(null);
   const [editProperty, setEditProperty] = useState<any | null>(null);
   const [editPropertyForm, setEditPropertyForm] = useState<any | null>(null);
+
+  // Property Search and Filter State
+  const [propertySearchQuery, setPropertySearchQuery] = useState('');
+  const [propertyTypeFilter, setPropertyTypeFilter] = useState('all');
+  const [propertyStatusFilter, setPropertyStatusFilter] = useState('all');
+  const [propertyLocationFilter, setPropertyLocationFilter] = useState('all');
+  const [propertyBuilderFilter, setPropertyBuilderFilter] = useState('all');
 
   // Fetch approved customers for dropdown
   useEffect(() => {
@@ -527,6 +525,48 @@ const AdminDashboard: React.FC = () => {
     }
     return true;
   });
+
+  // Filtered properties
+  const filteredProperties = properties.filter(property => {
+    // Search query filter
+    if (propertySearchQuery) {
+      const query = propertySearchQuery.toLowerCase();
+      const matchesSearch =
+        property.name?.toLowerCase().includes(query) ||
+        property.location?.toLowerCase().includes(query) ||
+        property.builderName?.toLowerCase().includes(query) ||
+        property.builder?.toLowerCase().includes(query) ||
+        property.configuration?.toLowerCase().includes(query) ||
+        property.type?.toLowerCase().includes(query);
+      if (!matchesSearch) return false;
+    }
+
+    // Type filter
+    if (propertyTypeFilter !== 'all' && property.type !== propertyTypeFilter) return false;
+
+    // Status filter
+    if (propertyStatusFilter !== 'all' && property.status !== propertyStatusFilter) return false;
+
+    // Location filter
+    if (propertyLocationFilter !== 'all' && property.location !== propertyLocationFilter)
+      return false;
+
+    // Builder filter
+    if (propertyBuilderFilter !== 'all') {
+      const builderName = property.builderName || property.builder || '';
+      if (builderName !== propertyBuilderFilter) return false;
+    }
+
+    return true;
+  });
+
+  // Get unique values for filter dropdowns
+  const propertyTypes = Array.from(new Set(properties.map(p => p.type).filter(Boolean)));
+  const propertyStatuses = Array.from(new Set(properties.map(p => p.status).filter(Boolean)));
+  const propertyLocations = Array.from(new Set(properties.map(p => p.location).filter(Boolean)));
+  const propertyBuilders = Array.from(
+    new Set(properties.map(p => p.builderName || p.builder).filter(Boolean))
+  );
 
   // Load initial data on mount
   useEffect(() => {
@@ -2337,184 +2377,617 @@ const AdminDashboard: React.FC = () => {
       {tabValue === 3 && (
         <Card>
           <CardContent>
-            <Box display='flex' justifyContent='space-between' alignItems='center' mb={2}>
-              <Typography variant='h6' fontWeight={600}>
-                Property Management
-              </Typography>
+            {/* Header Section */}
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                mb: 3,
+                flexDirection: { xs: 'column', sm: 'row' },
+                gap: 2,
+              }}
+            >
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 2,
+                  width: { xs: '100%', sm: 'auto' },
+                }}
+              >
+                <Avatar
+                  sx={{
+                    bgcolor: 'warning.main',
+                    width: { xs: 40, sm: 56 },
+                    height: { xs: 40, sm: 56 },
+                  }}
+                >
+                  <Business />
+                </Avatar>
+                <Box>
+                  <Typography
+                    variant='h6'
+                    sx={{ fontWeight: 600, fontSize: { xs: '1.125rem', sm: '1.25rem' } }}
+                  >
+                    Property Management
+                  </Typography>
+                  <Typography variant='body2' color='text.secondary'>
+                    {filteredProperties.length} of {properties.length} properties
+                  </Typography>
+                </Box>
+              </Box>
               <Button
                 variant='contained'
-                color='primary'
                 startIcon={<Business />}
                 onClick={() => setShowCreateProperty(true)}
-                sx={{ borderRadius: 2, fontWeight: 600 }}
+                size={isMobile ? 'large' : 'medium'}
+                fullWidth={isMobile}
+                sx={{
+                  borderRadius: 2,
+                  fontWeight: 600,
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  '&:hover': {
+                    background: 'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)',
+                  },
+                }}
               >
                 Add Property
               </Button>
             </Box>
+
+            {/* Search and Filters Section */}
+            <Box sx={{ mb: 3 }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: 2,
+                  mb: 2,
+                  flexWrap: 'wrap',
+                  alignItems: 'center',
+                }}
+              >
+                <TextField
+                  size='small'
+                  placeholder='Search properties...'
+                  value={propertySearchQuery}
+                  onChange={e => setPropertySearchQuery(e.target.value)}
+                  sx={{ minWidth: { xs: '100%', sm: 250 } }}
+                  InputProps={{
+                    startAdornment: <Search sx={{ color: 'text.secondary', mr: 1 }} />,
+                    endAdornment: propertySearchQuery && (
+                      <IconButton
+                        size='small'
+                        onClick={() => setPropertySearchQuery('')}
+                        sx={{ p: 0.5 }}
+                      >
+                        <Close fontSize='small' />
+                      </IconButton>
+                    ),
+                  }}
+                />
+                <FormControl size='small' sx={{ minWidth: 120 }}>
+                  <InputLabel>Type</InputLabel>
+                  <Select
+                    value={propertyTypeFilter}
+                    label='Type'
+                    onChange={e => setPropertyTypeFilter(e.target.value)}
+                  >
+                    <MenuItem value='all'>All Types</MenuItem>
+                    {propertyTypes.map(type => (
+                      <MenuItem key={type} value={type}>
+                        {type}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <FormControl size='small' sx={{ minWidth: 120 }}>
+                  <InputLabel>Status</InputLabel>
+                  <Select
+                    value={propertyStatusFilter}
+                    label='Status'
+                    onChange={e => setPropertyStatusFilter(e.target.value)}
+                  >
+                    <MenuItem value='all'>All Status</MenuItem>
+                    {propertyStatuses.map(status => (
+                      <MenuItem key={status} value={status}>
+                        {status}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <FormControl size='small' sx={{ minWidth: 140 }}>
+                  <InputLabel>Location</InputLabel>
+                  <Select
+                    value={propertyLocationFilter}
+                    label='Location'
+                    onChange={e => setPropertyLocationFilter(e.target.value)}
+                  >
+                    <MenuItem value='all'>All Locations</MenuItem>
+                    {propertyLocations.map(location => (
+                      <MenuItem key={location} value={location}>
+                        {location}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <FormControl size='small' sx={{ minWidth: 120 }}>
+                  <InputLabel>Builder</InputLabel>
+                  <Select
+                    value={propertyBuilderFilter}
+                    label='Builder'
+                    onChange={e => setPropertyBuilderFilter(e.target.value)}
+                  >
+                    <MenuItem value='all'>All Builders</MenuItem>
+                    {propertyBuilders.map(builder => (
+                      <MenuItem key={builder} value={builder}>
+                        {builder}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <Button
+                  variant='outlined'
+                  onClick={() => {
+                    setPropertySearchQuery('');
+                    setPropertyTypeFilter('all');
+                    setPropertyStatusFilter('all');
+                    setPropertyLocationFilter('all');
+                    setPropertyBuilderFilter('all');
+                  }}
+                  startIcon={<Refresh />}
+                  size='small'
+                >
+                  Clear Filters
+                </Button>
+              </Box>
+            </Box>
+
+            {/* Content Section */}
             {propertiesLoading ? (
-              <Box display='flex' justifyContent='center' alignItems='center' minHeight={200}>
-                <CircularProgress />
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  minHeight: 400,
+                }}
+              >
+                <CircularProgress size={60} />
               </Box>
             ) : propertiesError ? (
-              <Alert severity='error'>{propertiesError}</Alert>
-            ) : properties.length === 0 ? (
+              <Alert severity='error' sx={{ mb: 2 }}>
+                {propertiesError}
+              </Alert>
+            ) : filteredProperties.length === 0 ? (
               <Box
-                textAlign='center'
-                py={6}
-                borderRadius={2}
-                bgcolor='background.default'
-                border='2px dashed'
-                borderColor='divider'
+                sx={{
+                  textAlign: 'center',
+                  py: 6,
+                  borderRadius: 2,
+                  bgcolor: 'background.default',
+                  border: '2px dashed',
+                  borderColor: 'divider',
+                }}
               >
+                <Business sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
                 <Typography variant='h6' color='text.secondary' gutterBottom>
-                  No properties found
+                  {properties.length === 0
+                    ? 'No properties found'
+                    : 'No properties match your filters'}
                 </Typography>
                 <Typography variant='body2' color='text.secondary'>
-                  Properties will appear here once they are added.
+                  {properties.length === 0
+                    ? 'Create your first property to get started'
+                    : 'Try adjusting your search criteria or filters'}
                 </Typography>
+                {properties.length === 0 ? (
+                  <Button
+                    variant='contained'
+                    startIcon={<Business />}
+                    onClick={() => setShowCreateProperty(true)}
+                    sx={{ mt: 2 }}
+                  >
+                    Add First Property
+                  </Button>
+                ) : (
+                  <Button
+                    variant='outlined'
+                    onClick={() => {
+                      setPropertySearchQuery('');
+                      setPropertyTypeFilter('all');
+                      setPropertyStatusFilter('all');
+                      setPropertyLocationFilter('all');
+                      setPropertyBuilderFilter('all');
+                    }}
+                    sx={{ mt: 2 }}
+                  >
+                    Clear All Filters
+                  </Button>
+                )}
               </Box>
             ) : (
-              <TableContainer>
-                <Table size='small'>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Property</TableCell>
-                      <TableCell>Type</TableCell>
-                      <TableCell>Location</TableCell>
-                      <TableCell>Price/Sq.Ft</TableCell>
-                      <TableCell>Units</TableCell>
-                      <TableCell>Status</TableCell>
-                      <TableCell>Builder</TableCell>
-                      <TableCell>Lead Requests</TableCell>
-                      <TableCell align='right'>Actions</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {properties.map(property => (
-                      <TableRow key={property._id} sx={{ opacity: property.isDeleted ? 0.5 : 1 }}>
-                        <TableCell>
-                          <Box>
-                            <Typography
-                              variant='subtitle1'
-                              fontWeight={700}
-                              sx={{ mb: 0, lineHeight: 1.2 }}
-                            >
-                              {property.name}
-                            </Typography>
-                            {property.configuration && (
-                              <Typography
-                                variant='body2'
-                                color='text.secondary'
-                                sx={{ fontSize: 13, mt: 0.2, ml: 0.5 }}
-                              >
-                                • {property.configuration}
-                              </Typography>
-                            )}
-                          </Box>
-                        </TableCell>
-                        <TableCell>
-                          <Chip
-                            label={property.type?.toUpperCase()}
-                            size='small'
-                            color='primary'
-                            variant='outlined'
-                            sx={{ fontWeight: 600, letterSpacing: 0.5 }}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Box>
-                            <Typography variant='body1'>{property.location}</Typography>
-                            {property.area && (
-                              <Typography
-                                variant='body2'
-                                color='text.secondary'
-                                sx={{ fontSize: 13 }}
-                              >
-                                {property.area}
-                              </Typography>
-                            )}
-                          </Box>
-                        </TableCell>
-                        <TableCell>
-                          <Typography
-                            variant='body1'
-                            sx={{ color: 'success.main', fontWeight: 600 }}
-                          >
-                            ₹{property.pricePerSqft}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Box>
-                            <Typography variant='body2' sx={{ fontWeight: 500 }}>
-                              Available: {property.availableUnits}
-                            </Typography>
-                            <Typography
-                              variant='body2'
-                              color='text.secondary'
-                              sx={{ fontSize: 13 }}
-                            >
-                              Total: {property.totalUnits}
-                            </Typography>
-                          </Box>
-                        </TableCell>
-                        <TableCell>
-                          <Chip
-                            label={property.status?.toUpperCase()}
-                            size='small'
+              <Box>
+                {/* Desktop Table View */}
+                {!isMobile && (
+                  <TableContainer
+                    sx={{ borderRadius: 2, border: '1px solid', borderColor: 'divider' }}
+                  >
+                    <Table>
+                      <TableHead
+                        sx={{
+                          bgcolor: 'primary.main',
+                          '& .MuiTableCell-head': {
+                            color: 'white',
+                            fontWeight: 600,
+                            fontSize: '0.875rem',
+                          },
+                        }}
+                      >
+                        <TableRow>
+                          <TableCell>Property Details</TableCell>
+                          <TableCell>Type & Location</TableCell>
+                          <TableCell>Pricing</TableCell>
+                          <TableCell>Units</TableCell>
+                          <TableCell>Status</TableCell>
+                          <TableCell>Builder</TableCell>
+                          <TableCell>Leads</TableCell>
+                          <TableCell align='center'>Actions</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {filteredProperties.map((property, index) => (
+                          <TableRow
+                            key={property._id}
                             sx={{
+                              opacity: property.isDeleted ? 0.5 : 1,
+                              '&:hover': { backgroundColor: 'action.hover' },
                               backgroundColor:
-                                property.status === 'UNDER CONSTRUCTION' ? '#FFA726' : '#E0E0E0',
-                              color: property.status === 'UNDER CONSTRUCTION' ? '#fff' : '#333',
-                              fontWeight: 600,
-                              borderRadius: 2,
-                              px: 2,
+                                index % 2 === 0 ? 'background.default' : 'background.paper',
                             }}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Typography variant='body2' color='text.secondary'>
-                            {property.builderName || '-'}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography
-                            variant='body1'
-                            sx={{ color: '#1976d2', fontWeight: 600, cursor: 'pointer' }}
-                            onClick={() => handleViewLeads(property)}
                           >
-                            {property.leadRequests || 0}
-                          </Typography>
-                        </TableCell>
-                        <TableCell align='right'>
-                          <Stack direction='row' spacing={1} justifyContent='flex-end'>
-                            <Tooltip title='View'>
-                              <span>
-                                <IconButton
-                                  onClick={() => setViewProperty(property)}
-                                  sx={{ color: '#90caf9' }}
+                            <TableCell>
+                              <Box>
+                                <Typography
+                                  variant='subtitle1'
+                                  fontWeight={700}
+                                  sx={{ mb: 0.5, lineHeight: 1.2, color: 'primary.main' }}
                                 >
-                                  <Visibility />
-                                </IconButton>
-                              </span>
-                            </Tooltip>
-                            <Tooltip title='Edit'>
-                              <span>
-                                <IconButton
-                                  onClick={() => handleEditProperty(property)}
-                                  disabled={propertyActionLoading}
-                                  sx={{ color: '#f48fb1' }}
+                                  {property.name}
+                                </Typography>
+                                {property.configuration && (
+                                  <Chip
+                                    label={property.configuration}
+                                    size='small'
+                                    variant='outlined'
+                                    sx={{ fontSize: '0.7rem', height: 20 }}
+                                  />
+                                )}
+                                {property.area && (
+                                  <Typography
+                                    variant='caption'
+                                    color='text.secondary'
+                                    sx={{ display: 'block', mt: 0.5 }}
+                                  >
+                                    Area: {property.area} sq.ft
+                                  </Typography>
+                                )}
+                              </Box>
+                            </TableCell>
+                            <TableCell>
+                              <Box>
+                                <Chip
+                                  label={property.type?.toUpperCase()}
+                                  size='small'
+                                  color='primary'
+                                  sx={{ fontWeight: 600, letterSpacing: 0.5, mb: 1 }}
+                                />
+                                <Typography variant='body2' sx={{ fontWeight: 500 }}>
+                                  {property.location}
+                                </Typography>
+                              </Box>
+                            </TableCell>
+                            <TableCell>
+                              <Box>
+                                <Typography
+                                  variant='h6'
+                                  sx={{ color: 'success.main', fontWeight: 700, fontSize: '1rem' }}
                                 >
-                                  <Edit />
-                                </IconButton>
-                              </span>
-                            </Tooltip>
-                          </Stack>
-                        </TableCell>
-                      </TableRow>
+                                  ₹{property.pricePerSqft}/sq.ft
+                                </Typography>
+                                {property.price && (
+                                  <Typography variant='caption' color='text.secondary'>
+                                    Total: ₹{property.price}
+                                  </Typography>
+                                )}
+                              </Box>
+                            </TableCell>
+                            <TableCell>
+                              <Box>
+                                <Typography
+                                  variant='body2'
+                                  sx={{ fontWeight: 600, color: 'primary.main' }}
+                                >
+                                  Available: {property.availableUnits}
+                                </Typography>
+                                <Typography variant='caption' color='text.secondary'>
+                                  Total: {property.totalUnits}
+                                </Typography>
+                              </Box>
+                            </TableCell>
+                            <TableCell>
+                              <Chip
+                                label={property.status?.replace('_', ' ').toUpperCase()}
+                                size='small'
+                                sx={{
+                                  backgroundColor: property.status
+                                    ?.toLowerCase()
+                                    .includes('construction')
+                                    ? 'warning.main'
+                                    : property.status?.toLowerCase().includes('completed')
+                                      ? 'success.main'
+                                      : property.status?.toLowerCase().includes('planning')
+                                        ? 'info.main'
+                                        : 'grey.500',
+                                  color: 'white',
+                                  fontWeight: 600,
+                                  borderRadius: 2,
+                                  px: 1.5,
+                                }}
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <Avatar
+                                  sx={{
+                                    width: 32,
+                                    height: 32,
+                                    bgcolor: 'secondary.main',
+                                    fontSize: '0.875rem',
+                                  }}
+                                >
+                                  {(property.builderName || property.builder || 'B')
+                                    .charAt(0)
+                                    .toUpperCase()}
+                                </Avatar>
+                                <Typography variant='body2'>
+                                  {property.builderName || property.builder || '-'}
+                                </Typography>
+                              </Box>
+                            </TableCell>
+                            <TableCell>
+                              <Box
+                                sx={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                }}
+                              >
+                                <Chip
+                                  label={property.leadRequests || 0}
+                                  size='small'
+                                  color='info'
+                                  sx={{
+                                    cursor: 'pointer',
+                                    fontWeight: 600,
+                                    minWidth: 40,
+                                  }}
+                                  onClick={() => handleViewLeads(property)}
+                                />
+                              </Box>
+                            </TableCell>
+                            <TableCell align='center'>
+                              <Stack direction='row' spacing={1} justifyContent='center'>
+                                <Tooltip title='View Details'>
+                                  <IconButton
+                                    size='small'
+                                    onClick={() => setViewProperty(property)}
+                                    sx={{
+                                      color: 'info.main',
+                                      '&:hover': { bgcolor: 'info.light', color: 'white' },
+                                    }}
+                                  >
+                                    <Visibility fontSize='small' />
+                                  </IconButton>
+                                </Tooltip>
+                                <Tooltip title='Edit Property'>
+                                  <IconButton
+                                    size='small'
+                                    onClick={() => handleEditProperty(property)}
+                                    disabled={propertyActionLoading}
+                                    sx={{
+                                      color: 'warning.main',
+                                      '&:hover': { bgcolor: 'warning.light', color: 'white' },
+                                    }}
+                                  >
+                                    <Edit fontSize='small' />
+                                  </IconButton>
+                                </Tooltip>
+                                <Tooltip title='View Leads'>
+                                  <IconButton
+                                    size='small'
+                                    onClick={() => handleViewLeads(property)}
+                                    sx={{
+                                      color: 'success.main',
+                                      '&:hover': { bgcolor: 'success.light', color: 'white' },
+                                    }}
+                                  >
+                                    <TrendingUp fontSize='small' />
+                                  </IconButton>
+                                </Tooltip>
+                              </Stack>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                )}
+
+                {/* Mobile Card View */}
+                {isMobile && (
+                  <Box sx={{ display: 'grid', gridTemplateColumns: '1fr', gap: 2 }}>
+                    {filteredProperties.map(property => (
+                      <Card
+                        key={property._id}
+                        sx={{
+                          border: '1px solid',
+                          borderColor: 'divider',
+                          opacity: property.isDeleted ? 0.5 : 1,
+                          '&:hover': {
+                            boxShadow: 3,
+                            borderColor: 'primary.main',
+                          },
+                        }}
+                      >
+                        <CardContent sx={{ p: 2 }}>
+                          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                            <Box sx={{ flex: 1 }}>
+                              <Typography
+                                variant='h6'
+                                sx={{ fontWeight: 700, color: 'primary.main', mb: 1 }}
+                              >
+                                {property.name}
+                              </Typography>
+                              <Box sx={{ display: 'flex', gap: 1, mb: 1, flexWrap: 'wrap' }}>
+                                <Chip
+                                  label={property.type?.toUpperCase()}
+                                  size='small'
+                                  color='primary'
+                                  sx={{ fontSize: '0.6875rem' }}
+                                />
+                                <Chip
+                                  label={property.status?.replace('_', ' ').toUpperCase()}
+                                  size='small'
+                                  sx={{
+                                    backgroundColor: property.status
+                                      ?.toLowerCase()
+                                      .includes('construction')
+                                      ? 'warning.main'
+                                      : 'grey.500',
+                                    color: 'white',
+                                    fontSize: '0.6875rem',
+                                  }}
+                                />
+                              </Box>
+                            </Box>
+                            <Avatar
+                              sx={{
+                                bgcolor: 'secondary.main',
+                                width: 40,
+                                height: 40,
+                                fontSize: '1rem',
+                              }}
+                            >
+                              {(property.builderName || property.builder || 'B')
+                                .charAt(0)
+                                .toUpperCase()}
+                            </Avatar>
+                          </Box>
+
+                          <Box
+                            sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, mb: 2 }}
+                          >
+                            <Box>
+                              <Typography variant='caption' color='text.secondary'>
+                                Location
+                              </Typography>
+                              <Typography variant='body2' sx={{ fontWeight: 500 }}>
+                                {property.location}
+                              </Typography>
+                            </Box>
+                            <Box>
+                              <Typography variant='caption' color='text.secondary'>
+                                Price/Sq.Ft
+                              </Typography>
+                              <Typography
+                                variant='body2'
+                                sx={{ fontWeight: 700, color: 'success.main' }}
+                              >
+                                ₹{property.pricePerSqft}
+                              </Typography>
+                            </Box>
+                            <Box>
+                              <Typography variant='caption' color='text.secondary'>
+                                Available Units
+                              </Typography>
+                              <Typography variant='body2' sx={{ fontWeight: 500 }}>
+                                {property.availableUnits} / {property.totalUnits}
+                              </Typography>
+                            </Box>
+                            <Box>
+                              <Typography variant='caption' color='text.secondary'>
+                                Lead Requests
+                              </Typography>
+                              <Typography
+                                variant='body2'
+                                sx={{ fontWeight: 600, color: 'info.main', cursor: 'pointer' }}
+                                onClick={() => handleViewLeads(property)}
+                              >
+                                {property.leadRequests || 0}
+                              </Typography>
+                            </Box>
+                          </Box>
+
+                          <Box
+                            sx={{
+                              display: 'grid',
+                              gridTemplateColumns: 'repeat(3, 1fr)',
+                              gap: 1,
+                              mt: 2,
+                            }}
+                          >
+                            <Button
+                              size='small'
+                              variant='outlined'
+                              startIcon={<Visibility />}
+                              onClick={() => setViewProperty(property)}
+                              sx={{ fontSize: '0.75rem', py: 0.5 }}
+                            >
+                              View
+                            </Button>
+                            <Button
+                              size='small'
+                              variant='outlined'
+                              color='warning'
+                              startIcon={<Edit />}
+                              onClick={() => handleEditProperty(property)}
+                              disabled={propertyActionLoading}
+                              sx={{ fontSize: '0.75rem', py: 0.5 }}
+                            >
+                              Edit
+                            </Button>
+                            <Button
+                              size='small'
+                              variant='outlined'
+                              color='success'
+                              startIcon={<TrendingUp />}
+                              onClick={() => handleViewLeads(property)}
+                              sx={{ fontSize: '0.75rem', py: 0.5 }}
+                            >
+                              Leads
+                            </Button>
+                          </Box>
+                        </CardContent>
+                      </Card>
                     ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+                  </Box>
+                )}
+
+                {/* Pagination */}
+                <TablePagination
+                  component='div'
+                  count={filteredProperties.length}
+                  page={pagination.page}
+                  onPageChange={(_, newPage) => setPagination(prev => ({ ...prev, page: newPage }))}
+                  rowsPerPage={pagination.rowsPerPage}
+                  onRowsPerPageChange={event =>
+                    setPagination({ page: 0, rowsPerPage: parseInt(event.target.value, 10) })
+                  }
+                  rowsPerPageOptions={[5, 10, 25, 50]}
+                  sx={{ mt: 2, borderTop: '1px solid', borderColor: 'divider' }}
+                />
+              </Box>
             )}
 
             <Dialog

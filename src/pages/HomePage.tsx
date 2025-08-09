@@ -135,12 +135,27 @@ const HomePage: React.FC = () => {
   ];
 
   const stats = [
-    { number: '₹150Cr+', label: 'Loans Disbursed' },
-    { number: '10K+', label: 'Happy Customers' },
-    { number: '10+', label: 'Partner Banks' },
-    { number: '4.8★', label: 'Customer Rating' },
+    {
+      icon: <Speed sx={{ color: 'inherit' }} />,
+      title: 'Hassle-Free Process',
+      label: 'We handle the process, you relax',
+    },
+    {
+      icon: <AccountBalance sx={{ color: 'inherit' }} />,
+      title: 'No Hidden Charges',
+      label: 'We never charge you',
+    },
+    {
+      icon: <Timeline sx={{ color: 'inherit' }} />,
+      title: 'Real-Time Tracking',
+      label: 'Track your application in real time',
+    },
+    {
+      icon: <TrendingUpSharp sx={{ color: 'inherit' }} />,
+      title: 'Best Rate Guarantee',
+      label: '50+ Bank & NBFC Partners',
+    },
   ];
-
   const processSteps = [
     {
       step: '01',
@@ -202,7 +217,6 @@ const HomePage: React.FC = () => {
           scaleX: scrollYProgress,
         }}
       />
-
       {/* Hero Section - no parallax, just static with internal animations */}
       <Box
         className='hero-section'
@@ -216,15 +230,19 @@ const HomePage: React.FC = () => {
           paddingTop: '10px',
         }}
       >
-        {/* Animated background elements */}
+        {/* Enhanced Animated background elements */}
+        {/* Floating circles */}
         <motion.div
           animate={{
             rotate: 360,
             scale: [1, 1.2, 1],
+            x: [0, 50, 0],
+            y: [0, -30, 0],
           }}
           transition={{
             duration: 20,
             repeat: Infinity,
+            ease: 'easeInOut',
           }}
           style={{
             position: 'absolute',
@@ -233,7 +251,7 @@ const HomePage: React.FC = () => {
             width: '300px',
             height: '300px',
             borderRadius: '50%',
-            background: 'rgba(255, 255, 255, 0.05)',
+            background: 'rgba(255, 255, 255, 0.08)',
             zIndex: 0,
           }}
         />
@@ -242,10 +260,13 @@ const HomePage: React.FC = () => {
           animate={{
             rotate: -360,
             scale: [1, 0.8, 1],
+            x: [0, -40, 0],
+            y: [0, 40, 0],
           }}
           transition={{
             duration: 25,
             repeat: Infinity,
+            ease: 'easeInOut',
           }}
           style={{
             position: 'absolute',
@@ -254,7 +275,144 @@ const HomePage: React.FC = () => {
             width: '200px',
             height: '200px',
             borderRadius: '50%',
-            background: 'rgba(255, 255, 255, 0.03)',
+            background: 'rgba(255, 255, 255, 0.05)',
+            zIndex: 0,
+          }}
+        />
+
+        {/* Additional floating elements */}
+        <motion.div
+          animate={{
+            rotate: 180,
+            scale: [0.8, 1.1, 0.8],
+            x: [0, 30, 0],
+          }}
+          transition={{
+            duration: 15,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+          style={{
+            position: 'absolute',
+            top: '60%',
+            right: '5%',
+            width: '150px',
+            height: '150px',
+            borderRadius: '50%',
+            background: 'rgba(255, 215, 0, 0.1)',
+            zIndex: 0,
+          }}
+        />
+
+        <motion.div
+          animate={{
+            rotate: -180,
+            scale: [1, 0.7, 1],
+            y: [0, -50, 0],
+          }}
+          transition={{
+            duration: 18,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+          style={{
+            position: 'absolute',
+            top: '20%',
+            left: '15%',
+            width: '100px',
+            height: '100px',
+            borderRadius: '50%',
+            background: 'rgba(255, 255, 255, 0.06)',
+            zIndex: 0,
+          }}
+        />
+
+        {/* Geometric shapes */}
+        <motion.div
+          animate={{
+            rotate: [0, 90, 180, 270, 360],
+            scale: [1, 1.2, 1],
+          }}
+          transition={{
+            duration: 30,
+            repeat: Infinity,
+            ease: 'linear',
+          }}
+          style={{
+            position: 'absolute',
+            top: '40%',
+            left: '8%',
+            width: '80px',
+            height: '80px',
+            background: 'rgba(255, 167, 38, 0.1)',
+            transform: 'rotate(45deg)',
+            zIndex: 0,
+          }}
+        />
+
+        <motion.div
+          animate={{
+            rotate: [360, 270, 180, 90, 0],
+            x: [0, 20, 0, -20, 0],
+          }}
+          transition={{
+            duration: 22,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+          style={{
+            position: 'absolute',
+            bottom: '30%',
+            right: '15%',
+            width: '60px',
+            height: '60px',
+            background: 'rgba(255, 255, 255, 0.07)',
+            borderRadius: '20%',
+            zIndex: 0,
+          }}
+        />
+
+        {/* Subtle gradient overlay animations */}
+        <motion.div
+          animate={{
+            opacity: [0.3, 0.6, 0.3],
+            scale: [1, 1.1, 1],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background:
+              'radial-gradient(circle at 30% 70%, rgba(255, 215, 0, 0.1) 0%, transparent 50%)',
+            zIndex: 0,
+          }}
+        />
+
+        <motion.div
+          animate={{
+            opacity: [0.2, 0.5, 0.2],
+            scale: [1.2, 1, 1.2],
+          }}
+          transition={{
+            duration: 12,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background:
+              'radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.05) 0%, transparent 60%)',
             zIndex: 0,
           }}
         />
@@ -266,13 +424,14 @@ const HomePage: React.FC = () => {
               flexDirection: { xs: 'column', lg: 'row' },
               alignItems: 'center',
               minHeight: {
-                xs: 'calc(100vh - 100px)',
-                sm: 'calc(100vh - 120px)',
-                md: 'calc(100vh - 140px)',
+                xs: 'calc(100vh - 120px)',
+                sm: 'calc(100vh - 140px)',
+                md: 'calc(100vh - 160px)',
               },
-              gap: { xs: 4, sm: 6, lg: 8 },
-              py: { xs: 4, sm: 6, md: 8 },
+              gap: { xs: 3, sm: 4, lg: 6 },
+              py: { xs: 3, sm: 4, md: 6 },
               textAlign: { xs: 'center', lg: 'left' },
+              justifyContent: 'center',
             }}
           >
             {/* Left Content with animations */}
@@ -290,10 +449,10 @@ const HomePage: React.FC = () => {
               >
                 <Typography
                   sx={{
-                    fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem', lg: '3.5rem' },
+                    fontSize: { xs: '1.75rem', sm: '2.25rem', md: '2.75rem', lg: '3.25rem' },
                     fontWeight: 800,
-                    lineHeight: 1.2,
-                    mb: { xs: 2, sm: 3 },
+                    lineHeight: { xs: 1.3, md: 1.2 },
+                    mb: { xs: 1.5, sm: 2, md: 3 },
                     color: 'white',
                   }}
                 >
@@ -308,6 +467,7 @@ const HomePage: React.FC = () => {
                       WebkitBackgroundClip: 'text',
                       WebkitTextFillColor: 'transparent',
                       backgroundClip: 'text',
+                      marginTop: '0.25rem',
                     }}
                   >
                     Lowest Interest Rates
@@ -322,10 +482,12 @@ const HomePage: React.FC = () => {
               >
                 <Typography
                   sx={{
-                    fontSize: { xs: '1rem', sm: '1.125rem', md: '1.25rem' },
-                    mb: { xs: 3, sm: 4 },
+                    fontSize: { xs: '0.95rem', sm: '1.05rem', md: '1.15rem', lg: '1.25rem' },
+                    mb: { xs: 2.5, sm: 3, md: 4 },
                     color: 'rgba(255, 255, 255, 0.9)',
-                    lineHeight: 1.6,
+                    lineHeight: { xs: 1.5, md: 1.6 },
+                    maxWidth: { xs: '100%', sm: '90%', md: '85%' },
+                    margin: { xs: '0 auto 20px', lg: '0 0 32px' },
                   }}
                 >
                   Compare home loans from 10+ banks and 50+ NBFCs. Get pre-approved Loan in 24 hours
@@ -339,10 +501,11 @@ const HomePage: React.FC = () => {
                 transition={{ duration: 0.8, delay: 0.8 }}
                 style={{
                   display: 'flex',
-                  gap: 16,
+                  gap: 12,
                   flexWrap: 'wrap',
-                  marginBottom: 32,
+                  marginBottom: 24,
                   justifyContent: 'center',
+                  alignItems: 'center',
                 }}
               >
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
@@ -351,13 +514,14 @@ const HomePage: React.FC = () => {
                     size='large'
                     onClick={() => navigate('/eligibility-checker')}
                     sx={{
-                      minWidth: { xs: 160, sm: 180, md: 200 },
-                      px: { xs: 2, sm: 3 },
-                      py: { xs: 1, sm: 1.5 },
-                      fontSize: { xs: '0.9rem', sm: '1rem' },
+                      minWidth: { xs: 140, sm: 180, md: 220 },
+                      px: { xs: 2, sm: 3, md: 4 },
+                      py: { xs: 1.2, sm: 1.5, md: 1.8 },
+                      fontSize: { xs: '0.85rem', sm: '0.95rem', md: '1rem' },
                       background: 'linear-gradient(135deg, #FFD700 0%, #FFA726 100%)',
                       color: '#000',
                       fontWeight: 700,
+                      borderRadius: 2,
                       '&:hover': {
                         background: 'linear-gradient(135deg, #FFA726 0%, #FFD700 100%)',
                       },
@@ -373,13 +537,14 @@ const HomePage: React.FC = () => {
                     size='large'
                     onClick={() => navigate('/emi-calculator')}
                     sx={{
-                      minWidth: { xs: 160, sm: 180, md: 200 },
-                      px: { xs: 2, sm: 3 },
-                      py: { xs: 1, sm: 1.5 },
-                      fontSize: { xs: '0.9rem', sm: '1rem' },
+                      minWidth: { xs: 140, sm: 180, md: 220 },
+                      px: { xs: 2, sm: 3, md: 4 },
+                      py: { xs: 1.2, sm: 1.5, md: 1.8 },
+                      fontSize: { xs: '0.85rem', sm: '0.95rem', md: '1rem' },
                       border: '2px solid white',
                       color: 'white',
                       fontWeight: 700,
+                      borderRadius: 2,
                       '&:hover': {
                         backgroundColor: 'white',
                         color: '#304FFE',
@@ -396,19 +561,20 @@ const HomePage: React.FC = () => {
                     size='large'
                     onClick={() => setOpenApplicationPopup(true)}
                     sx={{
-                      minWidth: { xs: 160, sm: 180, md: 200 },
-                      px: { xs: 2, sm: 3 },
-                      py: { xs: 1, sm: 1.5 },
-                      fontSize: { xs: '0.9rem', sm: '1rem' },
-                      background: 'linear-gradient(135deg, #FF6B35 0%, #F7931E 100%)',
+                      minWidth: { xs: 140, sm: 180, md: 220 },
+                      px: { xs: 2, sm: 3, md: 4 },
+                      py: { xs: 1.2, sm: 1.5, md: 1.8 },
+                      fontSize: { xs: '0.85rem', sm: '0.95rem', md: '1rem' },
+                      background: 'linear-gradient(135deg, #304FFE 0%, #5C6FFF 100%)',
                       color: 'white',
                       fontWeight: 700,
+                      borderRadius: 2,
                       '&:hover': {
-                        background: 'linear-gradient(135deg, #F7931E 0%, #FF6B35 100%)',
+                        background: 'linear-gradient(135deg, #5C6FFF 0%, #304FFE 100%)',
                       },
                     }}
                   >
-                    Apply for Home Loan
+                    Direct Apply Now
                   </Button>
                 </motion.div>
               </motion.div>
@@ -421,10 +587,11 @@ const HomePage: React.FC = () => {
                 transition={{ duration: 1, delay: 1.2 }}
                 sx={{
                   display: 'flex',
-                  gap: { xs: 2, sm: 3, md: 4 }, // Responsive gap
+                  gap: { xs: 1.5, sm: 2, md: 3 },
                   flexWrap: 'wrap',
-                  justifyContent: 'center', // Always center the stats
-                  mt: { xs: 2, sm: 3 }, // Add top margin for better spacing
+                  justifyContent: 'center',
+                  mt: { xs: 1.5, sm: 2, md: 3 },
+                  alignItems: 'center',
                 }}
               >
                 {[
@@ -439,24 +606,27 @@ const HomePage: React.FC = () => {
                     transition={{ duration: 0.6, delay: 1.4 + index * 0.2 }}
                     style={{
                       textAlign: 'center',
-                      minWidth: '80px', // Ensure consistent width
-                      flex: '0 0 auto', // Prevent shrinking
+                      minWidth: '70px',
+                      flex: '0 0 auto',
+                      padding: '8px',
                     }}
                   >
                     <Typography
                       sx={{
-                        fontSize: { xs: '1.25rem', sm: '1.4rem', md: '1.5rem' },
+                        fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.4rem' },
                         fontWeight: 700,
                         color: 'white',
+                        lineHeight: 1.2,
                       }}
                     >
                       {stat.value}
                     </Typography>
                     <Typography
                       sx={{
-                        fontSize: { xs: '0.75rem', sm: '0.8rem', md: '0.875rem' },
+                        fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.8rem' },
                         color: 'rgba(255,255,255,0.8)',
-                        lineHeight: 1.2,
+                        lineHeight: 1.3,
+                        mt: 0.25,
                       }}
                     >
                       {stat.label}
@@ -508,7 +678,7 @@ const HomePage: React.FC = () => {
                     mb: 2,
                   }}
                 >
-                  Home Loan Solutions
+                  Our Journey, Your Home
                 </Typography>
                 <Typography
                   sx={{
@@ -516,60 +686,113 @@ const HomePage: React.FC = () => {
                     fontSize: '1rem',
                   }}
                 >
-                  Trusted by 2L+ customers
+                  Making home loans easy and stress-free
                 </Typography>
               </motion.div>
             </Box>
           </Box>
         </Container>
       </Box>
-
       {/* All other sections - independent scroll animations */}
-      {/* Animated Stats Section */}
+      {/* Professional Stats Section */}
       <AnimatedSection animation={staggerContainer}>
-        <Box sx={{ py: 8, backgroundColor: 'var(--bg-secondary)' }}>
+        <Box
+          sx={{
+            py: { xs: 6, md: 8 },
+            backgroundColor: 'var(--bg-secondary)',
+            borderTop: '1px solid var(--border-light)',
+            borderBottom: '1px solid var(--border-light)',
+          }}
+        >
           <Container maxWidth='lg'>
+            {/* Compact Stats Grid */}
             <Box
               sx={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                gap: 4,
-                textAlign: 'center',
+                gridTemplateColumns: {
+                  xs: '1fr',
+                  sm: 'repeat(2, 1fr)',
+                  md: 'repeat(4, 1fr)',
+                },
+                gap: { xs: 3, sm: 4, md: 3 },
               }}
             >
               {stats.map((stat, index) => (
                 <motion.div
                   key={index}
                   variants={fadeInUp}
-                  whileHover={{ scale: 1.05 }}
-                  style={{ textAlign: 'center' }}
+                  whileHover={{
+                    scale: 1.02,
+                    transition: { duration: 0.2 },
+                  }}
                 >
-                  <Typography
+                  <Box
                     sx={{
-                      fontSize: '2.5rem',
-                      fontWeight: 800,
-                      color: '#304FFE',
-                      mb: 1,
+                      p: { xs: 3, md: 3.5 },
+                      borderRadius: '8px',
+                      border: '1px solid var(--border-light)',
+                      backgroundColor: 'var(--bg-primary)',
+                      textAlign: 'center',
+                      transition: 'all 0.2s ease',
+                      minHeight: { xs: '150px', md: '160px' },
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      '&:hover': {
+                        borderColor: 'var(--primary-color)',
+                        backgroundColor: 'var(--bg-secondary)',
+                        boxShadow: '0 4px 12px var(--shadow-light)',
+                        transform: 'translateY(-2px)',
+                      },
                     }}
                   >
-                    {stat.number}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      fontSize: '1rem',
-                      color: 'var(--text-secondary)',
-                      fontWeight: 600,
-                    }}
-                  >
-                    {stat.label}
-                  </Typography>
+                    {/* Simple Icon */}
+                    <Box
+                      sx={{
+                        mb: 1.5,
+                        color: 'var(--primary-color)',
+                        '& svg': {
+                          fontSize: { xs: 30, md: 32 },
+                        },
+                      }}
+                    >
+                      {stat.icon}
+                    </Box>
+
+                    {/* Title */}
+                    <Typography
+                      variant='h6'
+                      sx={{
+                        fontSize: { xs: '0.95rem', md: '1rem' },
+                        fontWeight: 600,
+                        color: 'var(--text-primary)',
+                        lineHeight: 1.3,
+                        mb: 0.8,
+                      }}
+                    >
+                      {stat.title}
+                    </Typography>
+
+                    {/* Label */}
+                    <Typography
+                      variant='body2'
+                      sx={{
+                        fontSize: { xs: '0.75rem', md: '0.8rem' },
+                        color: 'var(--text-secondary)',
+                        lineHeight: 1.4,
+                        fontWeight: 400,
+                        opacity: 0.8,
+                      }}
+                    >
+                      {stat.label}
+                    </Typography>
+                  </Box>
                 </motion.div>
               ))}
             </Box>
           </Container>
         </Box>
-      </AnimatedSection>
-
+      </AnimatedSection>{' '}
       {/* Animated Features Section */}
       <AnimatedSection animation={staggerContainer}>
         <Box sx={{ py: 12, backgroundColor: 'var(--bg-primary)' }}>
@@ -583,7 +806,7 @@ const HomePage: React.FC = () => {
                   color: 'var(--text-primary)',
                 }}
               >
-                Why Choose Mittra?
+                Why Choose Home Loan Mittra?
               </Typography>
               <Typography
                 sx={{
@@ -668,7 +891,6 @@ const HomePage: React.FC = () => {
           </Container>
         </Box>
       </AnimatedSection>
-
       {/* Animated Loan Types Section */}
       <AnimatedSection animation={staggerContainer}>
         <Box sx={{ py: 12, backgroundColor: 'var(--bg-secondary)' }}>
@@ -682,7 +904,7 @@ const HomePage: React.FC = () => {
                   color: 'var(--text-primary)',
                 }}
               >
-                Home Loan Products
+                Our Home Loan Products
               </Typography>
               <Typography
                 sx={{
@@ -793,7 +1015,6 @@ const HomePage: React.FC = () => {
           </Container>
         </Box>
       </AnimatedSection>
-
       {/* Animated Process Section */}
       <AnimatedSection animation={staggerContainer}>
         <Box sx={{ py: 12, backgroundColor: 'var(--bg-primary)' }}>
@@ -900,7 +1121,6 @@ const HomePage: React.FC = () => {
           </Container>
         </Box>
       </AnimatedSection>
-
       {/* Animated CTA Section */}
       <AnimatedSection animation={staggerContainer}>
         <Box
@@ -977,11 +1197,12 @@ const HomePage: React.FC = () => {
                     size='large'
                     onClick={() => navigate('/eligibility-checker')}
                     sx={{
-                      minWidth: 250,
+                      minWidth: { xs: 200, sm: 220, md: 250 },
+                      px: { xs: 3, sm: 4 },
+                      py: { xs: 1.5, sm: 2 },
+                      fontSize: { xs: '1rem', sm: '1.1rem' },
                       background: 'linear-gradient(135deg, #304FFE 0%, #5C6FFF 100%)',
                       fontWeight: 700,
-                      fontSize: '1.1rem',
-                      py: 2,
                       '&:hover': {
                         background: 'linear-gradient(135deg, #5C6FFF 0%, #304FFE 100%)',
                       },
@@ -1001,12 +1222,13 @@ const HomePage: React.FC = () => {
                     size='large'
                     onClick={() => navigate('/emi-calculator')}
                     sx={{
-                      minWidth: 250,
+                      minWidth: { xs: 200, sm: 220, md: 250 },
+                      px: { xs: 3, sm: 4 },
+                      py: { xs: 1.5, sm: 2 },
+                      fontSize: { xs: '1rem', sm: '1.1rem' },
                       background: 'linear-gradient(135deg, #FFD700 0%, #FFA726 100%)',
                       color: '#000',
                       fontWeight: 700,
-                      fontSize: '1.1rem',
-                      py: 2,
                       '&:hover': {
                         background: 'linear-gradient(135deg, #FFA726 0%, #FFD700 100%)',
                       },
@@ -1015,12 +1237,37 @@ const HomePage: React.FC = () => {
                     Calculate EMI
                   </Button>
                 </motion.div>
+
+                <motion.div
+                  variants={fadeInUp}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Button
+                    variant='contained'
+                    size='large'
+                    onClick={() => setOpenApplicationPopup(true)}
+                    sx={{
+                      minWidth: { xs: 200, sm: 220, md: 250 },
+                      px: { xs: 3, sm: 4 },
+                      py: { xs: 1.5, sm: 2 },
+                      fontSize: { xs: '1rem', sm: '1.1rem' },
+                      background: 'linear-gradient(135deg, #4CAF50 0%, #45A049 100%)',
+                      color: 'white',
+                      fontWeight: 700,
+                      '&:hover': {
+                        background: 'linear-gradient(135deg, #45A049 0%, #4CAF50 100%)',
+                      },
+                    }}
+                  >
+                    Apply Directly
+                  </Button>
+                </motion.div>
               </motion.div>
             </motion.div>
           </Container>
         </Box>
       </AnimatedSection>
-
       {/* Loan Application Popup */}
       <LoanApplicationPopup
         open={openApplicationPopup}
