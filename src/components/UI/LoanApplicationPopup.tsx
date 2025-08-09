@@ -17,7 +17,7 @@ import {
   Link,
   useTheme,
 } from '@mui/material';
-import { Close, Email, Phone, Person, Work, CheckCircle } from '@mui/icons-material';
+import { Close, Email, Phone, Person, Work } from '@mui/icons-material';
 import { Link as RouterLink } from 'react-router-dom';
 import { loanAPI } from '../../services/api';
 
@@ -54,7 +54,6 @@ const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
   selectedBank = '',
 }) => {
   const theme = useTheme();
-  const isDarkMode = theme.palette.mode === 'dark';
 
   const [formData, setFormData] = useState<FormData>({
     fullName: '',
@@ -77,8 +76,6 @@ const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submittedApplicationNumber, setSubmittedApplicationNumber] = useState<string | null>(null);
-  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
   const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat('en-IN', {
@@ -89,13 +86,11 @@ const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
   };
 
   const handleFormSubmit = async () => {
-    // Prevent multiple submissions
     if (isSubmitting) return;
 
     try {
       setIsSubmitting(true);
 
-      // Validate required fields
       if (!formData.fullName || !formData.email || !formData.phone) {
         setSnackbar({
           open: true,
@@ -105,7 +100,6 @@ const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
         return;
       }
 
-      // Email validation
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(formData.email)) {
         setSnackbar({
@@ -116,7 +110,6 @@ const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
         return;
       }
 
-      // Phone validation
       const phoneRegex = /^[6-9]\d{9}$/;
       if (!phoneRegex.test(formData.phone)) {
         setSnackbar({
@@ -127,7 +120,6 @@ const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
         return;
       }
 
-      // Terms & Conditions validation
       if (!formData.acceptedTerms) {
         setSnackbar({
           open: true,
@@ -137,11 +129,10 @@ const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
         return;
       }
 
-      // Prepare application data with optimized structure
       const applicationData = {
         ...formData,
         source: showEligibilitySummary ? 'eligibility-checker' : 'homepage',
-        timestamp: new Date().toISOString(), // Add timestamp for better tracking
+        timestamp: new Date().toISOString(),
         eligibilityDetails:
           showEligibilitySummary && eligibilityData
             ? {
@@ -151,70 +142,53 @@ const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
             : null,
       };
 
-      // Show immediate success feedback
       setSnackbar({
         open: true,
         message: 'Submitting application...',
         severity: 'success',
       });
 
-      // Send to backend API with timeout for better UX
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 8000);
 
-      try {
-        const result = await Promise.race([
-          loanAPI.submitEligibilityForm(applicationData),
-          new Promise((_, reject) => setTimeout(() => reject(new Error('Request timeout')), 8000)),
-        ]);
+      const result = await Promise.race([
+        loanAPI.submitEligibilityForm(applicationData),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Request timeout')), 8000)),
+      ]);
 
-        clearTimeout(timeoutId);
+      clearTimeout(timeoutId);
 
-        if (result.success) {
-          // Capture the application number from the response
-          if (result.data?.applicationNumber) {
-            setSubmittedApplicationNumber(result.data.applicationNumber);
-            setShowSuccessDialog(true);
-          } else {
-            // Fallback to snackbar if no application number
-            setSnackbar({
-              open: true,
-              message:
-                'Application submitted successfully! You will receive a confirmation email shortly.',
-              severity: 'success',
-            });
+      if (result.success) {
+        setSnackbar({
+          open: true,
+          message:
+            'Eligibility details submitted successfully! Our team will contact you within 24 hours.',
+          severity: 'success',
+        });
 
-            // Close modal after short delay
-            setTimeout(() => {
-              onClose();
-            }, 2000);
-          }
+        setTimeout(() => {
+          onClose();
+        }, 2000);
 
-          // Reset form
-          setFormData({
-            fullName: '',
-            email: '',
-            phone: '',
-            panNumber: '',
-            occupation: '',
-            companyName: '',
-            workExperience: '',
-            currentAddress: '',
-            propertyLocation: '',
-            bankName: selectedBank,
-            acceptedTerms: false,
-          });
-        } else {
-          throw new Error(result.message || 'Failed to submit application');
-        }
-      } catch (networkError) {
-        clearTimeout(timeoutId);
-        throw networkError;
+        setFormData({
+          fullName: '',
+          email: '',
+          phone: '',
+          panNumber: '',
+          occupation: '',
+          companyName: '',
+          workExperience: '',
+          currentAddress: '',
+          propertyLocation: '',
+          bankName: selectedBank,
+          acceptedTerms: false,
+        });
+      } else {
+        throw new Error(result.message || 'Failed to submit application');
       }
     } catch (error: any) {
       console.error('Form submission error:', error);
 
-      // Enhanced error messaging
       let errorMessage = 'Failed to submit application. Please try again.';
       if (error?.message === 'Request timeout') {
         errorMessage =
@@ -442,7 +416,6 @@ const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
               />
             </Box>
 
-            {/* Display Eligibility Summary only when requested */}
             {showEligibilitySummary && eligibilityData && (
               <Paper
                 sx={{
@@ -507,7 +480,6 @@ const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
               </Paper>
             )}
 
-            {/* Terms & Conditions Checkbox */}
             <Box sx={{ mt: 3, mb: 2 }}>
               <FormControlLabel
                 control={
@@ -584,142 +556,6 @@ const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
         </DialogActions>
       </Dialog>
 
-      {/* Success Dialog with Application Number */}
-      <Dialog
-        open={showSuccessDialog}
-        onClose={() => {
-          setShowSuccessDialog(false);
-          setSubmittedApplicationNumber(null);
-          onClose();
-        }}
-        maxWidth='sm'
-        fullWidth
-        sx={{
-          '& .MuiDialog-paper': {
-            borderRadius: 3,
-            textAlign: 'center',
-            p: 2,
-          },
-        }}
-      >
-        <DialogContent sx={{ pt: 4, pb: 2 }}>
-          <Box sx={{ mb: 3 }}>
-            <Box
-              sx={{
-                width: 80,
-                height: 80,
-                borderRadius: '50%',
-                backgroundColor: 'success.main',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                mx: 'auto',
-                mb: 2,
-              }}
-            >
-              <CheckCircle sx={{ fontSize: 50, color: 'white' }} />
-            </Box>
-
-            <Typography variant='h5' sx={{ fontWeight: 600, mb: 1, color: 'success.main' }}>
-              Application Submitted Successfully!
-            </Typography>
-
-            <Typography variant='body1' sx={{ color: 'text.secondary', mb: 3 }}>
-              Your home loan application has been received and is being processed.
-            </Typography>
-          </Box>
-
-          {submittedApplicationNumber && (
-            <Paper
-              elevation={6}
-              sx={{
-                p: 4,
-                backgroundColor: isDarkMode ? '#1a1a1a' : '#f8f9fa',
-                border: '3px solid',
-                borderColor: isDarkMode ? '#4CAF50' : '#2196F3',
-                borderRadius: 3,
-                mb: 3,
-                background: isDarkMode
-                  ? 'linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%)'
-                  : 'linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%)',
-                boxShadow: isDarkMode
-                  ? '0 8px 32px rgba(76, 175, 80, 0.3)'
-                  : '0 8px 32px rgba(33, 150, 243, 0.3)',
-              }}
-            >
-              <Typography
-                variant='subtitle1'
-                sx={{
-                  color: isDarkMode ? '#4CAF50' : '#1976d2',
-                  mb: 2,
-                  fontWeight: 600,
-                  textAlign: 'center',
-                }}
-              >
-                Your Application Number
-              </Typography>
-              <Typography
-                variant='h3'
-                sx={{
-                  fontFamily: 'monospace',
-                  fontWeight: 800,
-                  color: isDarkMode ? '#4CAF50' : '#1976d2',
-                  letterSpacing: 2,
-                  textAlign: 'center',
-                  textShadow: isDarkMode
-                    ? '0 0 20px rgba(76, 175, 80, 0.5)'
-                    : '0 2px 4px rgba(33, 150, 243, 0.3)',
-                  fontSize: { xs: '1.8rem', sm: '2.5rem', md: '3rem' },
-                }}
-              >
-                {submittedApplicationNumber}
-              </Typography>
-              <Typography
-                variant='body2'
-                sx={{
-                  color: isDarkMode ? '#81C784' : '#1565c0',
-                  mt: 2,
-                  display: 'block',
-                  textAlign: 'center',
-                  fontWeight: 500,
-                  fontSize: '0.95rem',
-                }}
-              >
-                Please save this number for future reference
-              </Typography>
-            </Paper>
-          )}
-
-          <Typography variant='body2' sx={{ color: 'text.secondary', mb: 2 }}>
-            <strong>What happens next?</strong>
-          </Typography>
-          <Typography variant='body2' sx={{ color: 'text.secondary', textAlign: 'left' }}>
-            • You will receive a confirmation email shortly
-            <br />
-            • Our team will review your application within 2-4 hours
-            <br />
-            • We&apos;ll contact you to discuss the best loan offers
-            <br />• Complete documentation support throughout the process
-          </Typography>
-        </DialogContent>
-
-        <DialogActions sx={{ justifyContent: 'center', pb: 3 }}>
-          <Button
-            onClick={() => {
-              setShowSuccessDialog(false);
-              setSubmittedApplicationNumber(null);
-              onClose();
-            }}
-            variant='contained'
-            size='large'
-            sx={{ px: 4 }}
-          >
-            Got it, Thanks!
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Snackbar for notifications */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}
