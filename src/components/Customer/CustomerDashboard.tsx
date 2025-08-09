@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Box,
   Container,
@@ -31,6 +31,7 @@ import {
   Divider,
   Avatar,
   useTheme,
+  Paper,
 } from '@mui/material';
 import {
   Assignment as AssignmentIcon,
@@ -42,10 +43,124 @@ import {
   Refresh,
   TrendingUp,
   AccountBalance as AccountBalanceIcon,
+  History,
+  Schedule,
+  Update,
 } from '@mui/icons-material';
 import applicationApi, { Application } from '../../services/applicationApi';
+import { useAuth } from '../../hooks/useAuth';
+import { formatUserRole, getRoleColor } from '../../utils/roleUtils';
+
+// Utility function to parse timeline descriptions that might be JSON strings
+const parseTimelineDescription = (description: string | any): string => {
+  if (typeof description === 'string') {
+    try {
+      // Try to parse as JSON
+      const parsed = JSON.parse(description);
+
+      // Extract meaningful information from JSON
+      if (parsed.action === 'Status Update') {
+        const oldStatus = parsed.oldStatus || 'Unknown';
+        const newStatus = parsed.newStatus || 'Unknown';
+        const comment = parsed.comment || '';
+
+        // Convert status codes to user-friendly text
+        const statusMap: Record<string, string> = {
+          submitted: 'Application Submitted',
+          under_review: 'Under Review',
+          documents_pending: 'Documents Required',
+          documents_received: 'Documents Received',
+          submitted_to_bank: 'Submitted to Bank',
+          under_bank_review: 'Under Bank Review',
+          approved_by_bank: 'Approved by Bank',
+          rejected_by_bank: 'Rejected by Bank',
+          sanctioned: 'Loan Sanctioned',
+          disbursed: 'Amount Disbursed',
+          rejected: 'Application Rejected',
+        };
+
+        const friendlyOldStatus = statusMap[oldStatus] || oldStatus;
+        const friendlyNewStatus = statusMap[newStatus] || newStatus;
+
+        let result = `Status updated from "${friendlyOldStatus}" to "${friendlyNewStatus}"`;
+        if (comment) {
+          result += `. ${comment}`;
+        }
+        return result;
+      }
+
+      // If it's some other JSON structure, try to extract meaningful text
+      if (parsed.message) {
+        return parsed.message;
+      }
+
+      if (parsed.description) {
+        return parsed.description;
+      }
+
+      // If we can't parse meaningfully, return a generic message
+      return 'Application status updated';
+    } catch (e) {
+      // If it's not valid JSON, return as-is
+      return description;
+    }
+  }
+
+  // If it's already an object or other type, convert to string
+  if (typeof description === 'object' && description !== null) {
+    if (description.action === 'Status Update') {
+      const oldStatus = description.oldStatus || 'Unknown';
+      const newStatus = description.newStatus || 'Unknown';
+      const comment = description.comment || '';
+
+      const statusMap: Record<string, string> = {
+        submitted: 'Application Submitted',
+        under_review: 'Under Review',
+        documents_pending: 'Documents Required',
+        documents_received: 'Documents Received',
+        submitted_to_bank: 'Submitted to Bank',
+        under_bank_review: 'Under Bank Review',
+        approved_by_bank: 'Approved by Bank',
+        rejected_by_bank: 'Rejected by Bank',
+        sanctioned: 'Loan Sanctioned',
+        disbursed: 'Amount Disbursed',
+        rejected: 'Application Rejected',
+      };
+
+      const friendlyOldStatus = statusMap[oldStatus] || oldStatus;
+      const friendlyNewStatus = statusMap[newStatus] || newStatus;
+
+      let result = `Status updated from "${friendlyOldStatus}" to "${friendlyNewStatus}"`;
+      if (comment) {
+        result += `. ${comment}`;
+      }
+      return result;
+    }
+
+    return description.message || description.description || 'Application updated';
+  }
+
+  return String(description);
+};
+
+// Utility function to get user-friendly event names
+const formatEventName = (event: string): string => {
+  const eventMap: Record<string, string> = {
+    'Status Update': 'Status Updated',
+    'Document Upload': 'Documents Uploaded',
+    'Document Request': 'Documents Requested',
+    'Application Submitted': 'Application Submitted',
+    'Bank Review': 'Bank Review Started',
+    Approval: 'Application Approved',
+    Rejection: 'Application Rejected',
+    Disbursement: 'Loan Disbursed',
+  };
+
+  return eventMap[event] || event;
+};
 
 const CustomerDashboard: React.FC = () => {
+  const { user } = useAuth();
   const [tabValue, setTabValue] = useState(0);
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(false);
@@ -187,14 +302,30 @@ const CustomerDashboard: React.FC = () => {
               variant='h5'
               fontWeight='bold'
               color={isDark ? '#fff' : theme.palette.primary.main}
+              sx={{ mb: 0.5 }}
             >
-              Welcome Back!
+              Welcome Back{user?.firstName ? `, ${user.firstName}` : ''}!
             </Typography>
+            {user?.role && (
+              <Box sx={{ mb: 1 }}>
+                <Chip
+                  label={formatUserRole(user.role)}
+                  color={getRoleColor(user.role)}
+                  size='small'
+                  sx={{
+                    fontSize: '0.625rem',
+                    height: 20,
+                    backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)',
+                    color: isDark ? '#fff' : 'inherit',
+                  }}
+                />
+              </Box>
+            )}
             <Typography
               variant='subtitle1'
               color={isDark ? theme.palette.grey[300] : theme.palette.text.secondary}
             >
-              Here’s a summary of your loan journey
+              Here&apos;s a summary of your loan journey
             </Typography>
           </Box>
         </Box>
@@ -385,28 +516,88 @@ const CustomerDashboard: React.FC = () => {
                 <Typography variant='body2' color='#757575' mb={3}>
                   You haven&lsquo;t submitted any loan applications yet.
                 </Typography>
-                <Button variant='contained' sx={{ bgcolor: '#304FFE' }}>
+                <Button
+                  variant='contained'
+                  sx={{
+                    bgcolor: isDark ? theme.palette.primary.dark : '#304FFE',
+                    '&:hover': {
+                      bgcolor: isDark ? theme.palette.primary.main : '#1C3AA9',
+                    },
+                  }}
+                >
                   Apply for Loan
                 </Button>
               </Box>
             ) : (
-              <TableContainer>
+              <TableContainer
+                component={Paper}
+                sx={{
+                  bgcolor: isDark ? theme.palette.background.paper : 'white',
+                  boxShadow: isDark ? 3 : 1,
+                }}
+              >
                 <Table>
-                  <TableHead sx={{ bgcolor: '#F5F7FA' }}>
+                  <TableHead
+                    sx={{
+                      bgcolor: isDark ? theme.palette.grey[800] : '#F5F7FA',
+                    }}
+                  >
                     <TableRow>
-                      <TableCell sx={{ fontWeight: 'bold', color: '#2E2E2E' }}>
+                      <TableCell
+                        sx={{
+                          fontWeight: 'bold',
+                          color: isDark ? theme.palette.text.primary : '#2E2E2E',
+                        }}
+                      >
                         Application #
                       </TableCell>
-                      <TableCell sx={{ fontWeight: 'bold', color: '#2E2E2E' }}>
+                      <TableCell
+                        sx={{
+                          fontWeight: 'bold',
+                          color: isDark ? theme.palette.text.primary : '#2E2E2E',
+                        }}
+                      >
                         Loan Amount
                       </TableCell>
-                      <TableCell sx={{ fontWeight: 'bold', color: '#2E2E2E' }}>Bank</TableCell>
-                      <TableCell sx={{ fontWeight: 'bold', color: '#2E2E2E' }}>Status</TableCell>
-                      <TableCell sx={{ fontWeight: 'bold', color: '#2E2E2E' }}>Progress</TableCell>
-                      <TableCell sx={{ fontWeight: 'bold', color: '#2E2E2E' }}>
+                      <TableCell
+                        sx={{
+                          fontWeight: 'bold',
+                          color: isDark ? theme.palette.text.primary : '#2E2E2E',
+                        }}
+                      >
+                        Bank
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          fontWeight: 'bold',
+                          color: isDark ? theme.palette.text.primary : '#2E2E2E',
+                        }}
+                      >
+                        Status
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          fontWeight: 'bold',
+                          color: isDark ? theme.palette.text.primary : '#2E2E2E',
+                        }}
+                      >
+                        Progress
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          fontWeight: 'bold',
+                          color: isDark ? theme.palette.text.primary : '#2E2E2E',
+                        }}
+                      >
                         Last Updated
                       </TableCell>
-                      <TableCell sx={{ fontWeight: 'bold', color: '#2E2E2E', textAlign: 'center' }}>
+                      <TableCell
+                        sx={{
+                          fontWeight: 'bold',
+                          color: isDark ? theme.palette.text.primary : '#2E2E2E',
+                          textAlign: 'center',
+                        }}
+                      >
                         Actions
                       </TableCell>
                     </TableRow>
@@ -420,25 +611,45 @@ const CustomerDashboard: React.FC = () => {
                           hover
                           sx={{
                             '&:hover': {
-                              bgcolor: '#F8F9FA',
+                              bgcolor: isDark ? theme.palette.action.hover : '#F8F9FA',
                               cursor: 'pointer',
                             },
+                            bgcolor: isDark ? theme.palette.background.paper : 'white',
                           }}
                         >
-                          <TableCell sx={{ fontWeight: 500, color: '#304FFE' }}>
+                          <TableCell
+                            sx={{
+                              fontWeight: 500,
+                              color: isDark ? theme.palette.primary.light : '#304FFE',
+                            }}
+                          >
                             {application.applicationNumber}
                           </TableCell>
                           <TableCell>
-                            <Typography variant='body2' fontWeight={500}>
+                            <Typography
+                              variant='body2'
+                              fontWeight={500}
+                              color={
+                                isDark ? theme.palette.text.primary : theme.palette.text.primary
+                              }
+                            >
                               ₹{application.loanDetails.requestedAmount.toLocaleString()}
                             </Typography>
-                            <Typography variant='caption' color='#757575'>
+                            <Typography
+                              variant='caption'
+                              color={isDark ? theme.palette.text.secondary : '#757575'}
+                            >
                               {application.loanDetails.tenure} years •{' '}
                               {application.loanDetails.interestRate}% p.a.
                             </Typography>
                           </TableCell>
                           <TableCell>
-                            <Typography variant='body2'>
+                            <Typography
+                              variant='body2'
+                              color={
+                                isDark ? theme.palette.text.primary : theme.palette.text.primary
+                              }
+                            >
                               {application.loanDetails.selectedBank}
                             </Typography>
                           </TableCell>
@@ -535,15 +746,34 @@ const CustomerDashboard: React.FC = () => {
                         {application.timeline.map((item, index) => (
                           <Step key={index} completed={true}>
                             <StepLabel>
-                              <Typography variant='body2' fontWeight={500}>
-                                {item.event}
+                              <Typography
+                                variant='body2'
+                                fontWeight={500}
+                                color={
+                                  isDark ? theme.palette.primary.light : theme.palette.primary.main
+                                }
+                              >
+                                {formatEventName(item.event)}
                               </Typography>
                             </StepLabel>
                             <StepContent>
-                              <Typography variant='body2' color='#757575'>
-                                {item.description}
+                              <Typography
+                                variant='body2'
+                                color={
+                                  isDark ? theme.palette.grey[300] : theme.palette.text.secondary
+                                }
+                                sx={{ mb: 1 }}
+                              >
+                                {parseTimelineDescription(item.description)}
                               </Typography>
-                              <Typography variant='caption' color='#757575'>
+                              <Typography
+                                variant='caption'
+                                color={
+                                  isDark ? theme.palette.grey[400] : theme.palette.text.disabled
+                                }
+                                sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+                              >
+                                <Schedule fontSize='small' />
                                 {new Date(item.date).toLocaleString()} • {item.performedBy}
                               </Typography>
                             </StepContent>
@@ -568,26 +798,56 @@ const CustomerDashboard: React.FC = () => {
           '& .MuiDrawer-paper': {
             width: 500,
             maxWidth: '90vw',
+            bgcolor: isDark ? theme.palette.background.default : 'white',
+            color: isDark ? theme.palette.text.primary : theme.palette.text.primary,
           },
         }}
       >
         {selectedApplication && (
           <Box sx={{ p: 3 }}>
             {/* Header */}
-            <Box display='flex' justifyContent='space-between' alignItems='center' mb={3}>
-              <Typography variant='h6' fontWeight='bold'>
+            <Box
+              display='flex'
+              justifyContent='space-between'
+              alignItems='center'
+              mb={3}
+              sx={{
+                borderBottom: `1px solid ${isDark ? theme.palette.divider : '#e0e0e0'}`,
+                pb: 2,
+              }}
+            >
+              <Typography
+                variant='h6'
+                fontWeight='bold'
+                color={isDark ? theme.palette.primary.light : theme.palette.primary.main}
+              >
                 Application Details
               </Typography>
-              <IconButton onClick={() => setDrawerOpen(false)}>
+              <IconButton
+                onClick={() => setDrawerOpen(false)}
+                sx={{
+                  color: isDark ? theme.palette.text.secondary : theme.palette.text.secondary,
+                }}
+              >
                 <Close />
               </IconButton>
             </Box>
 
             {/* Application Info */}
-            <Card sx={{ mb: 3, border: '1px solid #E0E0E0' }}>
+            <Card
+              sx={{
+                mb: 3,
+                border: `1px solid ${isDark ? theme.palette.divider : '#E0E0E0'}`,
+                bgcolor: isDark ? theme.palette.background.paper : 'white',
+              }}
+            >
               <CardContent>
                 <Box display='flex' justifyContent='space-between' alignItems='center' mb={2}>
-                  <Typography variant='subtitle1' fontWeight='bold'>
+                  <Typography
+                    variant='subtitle1'
+                    fontWeight='bold'
+                    color={isDark ? theme.palette.text.primary : theme.palette.text.primary}
+                  >
                     {selectedApplication.applicationNumber}
                   </Typography>
                   <Chip
@@ -676,11 +936,18 @@ const CustomerDashboard: React.FC = () => {
                   Documents
                 </Typography>
                 <Box>
-                  <Typography variant='body2' color='#757575' mb={1}>
+                  <Typography
+                    variant='body2'
+                    color={isDark ? theme.palette.text.secondary : '#757575'}
+                    mb={1}
+                  >
                     Submitted:
                   </Typography>
                   {selectedApplication.documents.submitted.length === 0 ? (
-                    <Typography variant='body2' color='#999'>
+                    <Typography
+                      variant='body2'
+                      color={isDark ? theme.palette.text.disabled : '#999'}
+                    >
                       No documents submitted
                     </Typography>
                   ) : (
@@ -689,18 +956,32 @@ const CustomerDashboard: React.FC = () => {
                         key={index}
                         label={doc}
                         size='small'
-                        sx={{ mr: 1, mb: 1, bgcolor: '#E8F5E8' }}
+                        sx={{
+                          mr: 1,
+                          mb: 1,
+                          bgcolor: isDark ? theme.palette.success.dark : '#E8F5E8',
+                          color: isDark
+                            ? theme.palette.success.contrastText
+                            : theme.palette.success.dark,
+                        }}
                       />
                     ))
                   )}
                 </Box>
-                <Divider sx={{ my: 2 }} />
+                <Divider sx={{ my: 2, borderColor: isDark ? theme.palette.divider : '#e0e0e0' }} />
                 <Box>
-                  <Typography variant='body2' color='#757575' mb={1}>
+                  <Typography
+                    variant='body2'
+                    color={isDark ? theme.palette.text.secondary : '#757575'}
+                    mb={1}
+                  >
                     Pending:
                   </Typography>
                   {selectedApplication.documents.pending.length === 0 ? (
-                    <Typography variant='body2' color='#999'>
+                    <Typography
+                      variant='body2'
+                      color={isDark ? theme.palette.text.disabled : '#999'}
+                    >
                       No pending documents
                     </Typography>
                   ) : (
@@ -709,7 +990,14 @@ const CustomerDashboard: React.FC = () => {
                         key={index}
                         label={doc}
                         size='small'
-                        sx={{ mr: 1, mb: 1, bgcolor: '#FFF3E0' }}
+                        sx={{
+                          mr: 1,
+                          mb: 1,
+                          bgcolor: isDark ? theme.palette.warning.dark : '#FFF3E0',
+                          color: isDark
+                            ? theme.palette.warning.contrastText
+                            : theme.palette.warning.dark,
+                        }}
                       />
                     ))
                   )}
@@ -718,22 +1006,63 @@ const CustomerDashboard: React.FC = () => {
             </Card>
 
             {/* Timeline */}
-            <Card sx={{ border: '1px solid #E0E0E0' }}>
+            <Card
+              sx={{
+                border: `1px solid ${isDark ? theme.palette.divider : '#E0E0E0'}`,
+                bgcolor: isDark ? theme.palette.background.paper : 'white',
+              }}
+            >
               <CardContent>
-                <Typography variant='subtitle1' fontWeight='bold' mb={2}>
+                <Typography
+                  variant='subtitle1'
+                  fontWeight='bold'
+                  mb={2}
+                  color={isDark ? theme.palette.primary.light : theme.palette.primary.main}
+                  sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+                >
+                  <History />
                   Recent Updates
                 </Typography>
                 <List dense>
                   {selectedApplication.timeline.slice(0, 5).map((item, index) => (
-                    <ListItem key={index} sx={{ px: 0 }}>
+                    <ListItem
+                      key={index}
+                      sx={{
+                        px: 0,
+                        py: 1.5,
+                        borderBottom:
+                          index < 4
+                            ? `1px solid ${isDark ? theme.palette.divider : '#f0f0f0'}`
+                            : 'none',
+                      }}
+                    >
                       <ListItemText
-                        primary={item.event}
+                        primary={
+                          <Typography
+                            variant='body2'
+                            fontWeight={500}
+                            color={isDark ? theme.palette.text.primary : theme.palette.text.primary}
+                          >
+                            {formatEventName(item.event)}
+                          </Typography>
+                        }
                         secondary={
-                          <Box>
-                            <Typography variant='body2' color='#757575'>
-                              {item.description}
+                          <Box sx={{ mt: 0.5 }}>
+                            <Typography
+                              variant='body2'
+                              color={
+                                isDark ? theme.palette.grey[300] : theme.palette.text.secondary
+                              }
+                              sx={{ mb: 0.5 }}
+                            >
+                              {parseTimelineDescription(item.description)}
                             </Typography>
-                            <Typography variant='caption' color='#757575'>
+                            <Typography
+                              variant='caption'
+                              color={isDark ? theme.palette.grey[400] : theme.palette.text.disabled}
+                              sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
+                            >
+                              <Update fontSize='small' />
                               {new Date(item.date).toLocaleString()}
                             </Typography>
                           </Box>

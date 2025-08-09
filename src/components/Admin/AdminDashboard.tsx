@@ -30,10 +30,7 @@ import {
   InputLabel,
   useTheme,
   useMediaQuery,
-  SpeedDial,
-  SpeedDialIcon,
-  SpeedDialAction,
-  Backdrop,
+  TablePagination,
   Select,
   MenuItem,
   Snackbar,
@@ -41,6 +38,14 @@ import {
   Divider,
   List,
   ListItem,
+  Drawer,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  SpeedDial,
+  SpeedDialIcon,
+  SpeedDialAction,
+  Backdrop,
 } from '@mui/material';
 import {
   AdminPanelSettings,
@@ -69,8 +74,8 @@ import {
   Group,
   LockReset,
   RestoreFromTrash,
+  Badge,
 } from '@mui/icons-material';
-import Badge from '@mui/material/Badge';
 import {
   getDashboardStats,
   getAllUsers,
@@ -84,7 +89,6 @@ import {
   updateLead,
   deleteLead,
   assignBrokerToLead,
-  assignBuilderToLead,
   restoreLead,
 } from '../../services/adminApi';
 import applicationApi, {
@@ -93,14 +97,12 @@ import applicationApi, {
   Customer,
 } from '../../services/applicationApi';
 import { getAllProperties, createProperty, updateProperty } from '../../services/propertyApi';
+import { formatUserRole, getRoleColor, getAvatarColor } from '../../utils/roleUtils';
 
 const AdminDashboard: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const isTablet = useMediaQuery(theme.breakpoints.between('md', 'lg'));
 
-  // Mobile navigation state
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [tabValue, setTabValue] = useState(0);
 
   const [stats, setStats] = useState<any>({
@@ -124,6 +126,11 @@ const AdminDashboard: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  // UI state variables
+  const [viewProperty, setViewProperty] = useState<any | null>(null);
+  const [pagination, setPagination] = useState({ page: 0, rowsPerPage: 10 });
+  const [speedDialOpen, setSpeedDialOpen] = useState(false);
 
   // Add User Dialog State
   const [addUserDialog, setAddUserDialog] = useState(false);
@@ -180,8 +187,6 @@ const AdminDashboard: React.FC = () => {
   const [statusDialog, setStatusDialog] = useState(false);
   const [deleteLeadDialog, setDeleteLeadDialog] = useState(false);
   const [leadToDelete, setLeadToDelete] = useState<any | null>(null);
-  const [viewProperty, setViewProperty] = useState<any | null>(null);
-  const [pagination, setPagination] = useState({ page: 0, rowsPerPage: 10 });
 
   // Request tracking to prevent excessive API calls
   const [dataFetched, setDataFetched] = useState({
@@ -1229,13 +1234,27 @@ const AdminDashboard: React.FC = () => {
             borderRadius: '12px 12px 0 0',
           }}
         >
-          <Typography
-            variant='h5'
-            fontWeight='bold'
-            sx={{ mb: 2, fontSize: { xs: '1.25rem', md: '1.5rem' } }}
+          <Box
+            sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}
           >
-            Dashboard Navigation
-          </Typography>
+            <Typography
+              variant='h5'
+              fontWeight='bold'
+              sx={{ fontSize: { xs: '1.25rem', md: '1.5rem' } }}
+            >
+              Dashboard Navigation
+            </Typography>
+            {/* Mobile menu button commented out
+            {isMobile && (
+              <IconButton
+                onClick={() => setMobileNavOpen(true)}
+                sx={{ color: 'white' }}
+              >
+                <Menu />
+              </IconButton>
+            )}
+            */}
+          </Box>
 
           {/* Desktop/Tablet Tabs */}
           {!isMobile && (
@@ -1518,12 +1537,7 @@ const AdminDashboard: React.FC = () => {
                               sx={{
                                 width: 56,
                                 height: 56,
-                                bgcolor:
-                                  user.role === 'admin'
-                                    ? 'error.main'
-                                    : user.role === 'builder'
-                                      ? 'warning.main'
-                                      : 'success.main',
+                                bgcolor: getAvatarColor(user.role, theme),
                                 fontSize: '1.25rem',
                                 fontWeight: 600,
                               }}
@@ -1540,15 +1554,9 @@ const AdminDashboard: React.FC = () => {
                                     'Unknown User'}
                                 </Typography>
                                 <Chip
-                                  label={user.role}
+                                  label={formatUserRole(user.role)}
                                   size='small'
-                                  color={
-                                    user.role === 'admin'
-                                      ? 'error'
-                                      : user.role === 'builder'
-                                        ? 'warning'
-                                        : 'success'
-                                  }
+                                  color={getRoleColor(user.role)}
                                   sx={{ textTransform: 'capitalize', fontWeight: 500 }}
                                 />
                                 <Chip
@@ -1654,12 +1662,7 @@ const AdminDashboard: React.FC = () => {
                               sx={{
                                 width: 48,
                                 height: 48,
-                                bgcolor:
-                                  user.role === 'admin'
-                                    ? 'error.main'
-                                    : user.role === 'builder'
-                                      ? 'warning.main'
-                                      : 'success.main',
+                                bgcolor: getAvatarColor(user.role, theme),
                                 fontSize: '1.125rem',
                                 fontWeight: 600,
                                 flexShrink: 0,
@@ -1685,15 +1688,9 @@ const AdminDashboard: React.FC = () => {
                                     'Unknown User'}
                                 </Typography>
                                 <Chip
-                                  label={user.role}
+                                  label={formatUserRole(user.role)}
                                   size='small'
-                                  color={
-                                    user.role === 'admin'
-                                      ? 'error'
-                                      : user.role === 'builder'
-                                        ? 'warning'
-                                        : 'success'
-                                  }
+                                  color={getRoleColor(user.role)}
                                   sx={{
                                     textTransform: 'capitalize',
                                     fontWeight: 500,
@@ -2059,7 +2056,8 @@ const AdminDashboard: React.FC = () => {
                     Lead Management
                   </Typography>
                   <Typography variant='body2' color='text.secondary'>
-                    {filteredLeads.length} of {leads.length} leads
+                    {filteredLeads.length} of {leads.length} leads (Active: {leadStats.activeCount},
+                    Deleted: {leadStats.deletedCount})
                   </Typography>
                 </Box>
               </Box>
@@ -2151,170 +2149,185 @@ const AdminDashboard: React.FC = () => {
                 </Button>
               </Box>
             ) : (
-              <TableContainer>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Lead Details</TableCell>
-                      <TableCell>Contact</TableCell>
-                      <TableCell>Loan Amount</TableCell>
-                      <TableCell>Property</TableCell>
-                      <TableCell>Status</TableCell>
-                      <TableCell>Assigned Broker</TableCell>
-                      <TableCell>Source</TableCell>
-                      <TableCell align='center'>Actions</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {filteredLeads.map(lead => (
-                      <TableRow
-                        key={lead._id}
-                        sx={{ '&:hover': { backgroundColor: 'action.hover' } }}
-                      >
-                        <TableCell>
-                          <Box>
-                            <Typography variant='subtitle2' sx={{ fontWeight: 'bold' }}>
-                              {lead.name}
+              <Box>
+                <TableContainer>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Lead Details</TableCell>
+                        <TableCell>Contact</TableCell>
+                        <TableCell>Loan Amount</TableCell>
+                        <TableCell>Property</TableCell>
+                        <TableCell>Status</TableCell>
+                        <TableCell>Assigned Broker</TableCell>
+                        <TableCell>Source</TableCell>
+                        <TableCell align='center'>Actions</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {filteredLeads.map(lead => (
+                        <TableRow
+                          key={lead._id}
+                          sx={{ '&:hover': { backgroundColor: 'action.hover' } }}
+                        >
+                          <TableCell>
+                            <Box>
+                              <Typography variant='subtitle2' sx={{ fontWeight: 'bold' }}>
+                                {lead.name}
+                              </Typography>
+                              <Typography variant='caption' sx={{ color: 'text.secondary' }}>
+                                ID: {lead._id}
+                              </Typography>
+                            </Box>
+                          </TableCell>
+                          <TableCell>
+                            <Box>
+                              <Typography variant='body2'>{lead.email}</Typography>
+                              <Typography variant='caption' sx={{ color: 'text.secondary' }}>
+                                {lead.contact}
+                              </Typography>
+                            </Box>
+                          </TableCell>
+                          <TableCell>
+                            <Typography variant='body2' sx={{ fontWeight: 'bold' }}>
+                              ₹{(lead.loanAmount / 100000).toFixed(1)}L
                             </Typography>
-                            <Typography variant='caption' sx={{ color: 'text.secondary' }}>
-                              ID: {lead._id}
-                            </Typography>
-                          </Box>
-                        </TableCell>
-                        <TableCell>
-                          <Box>
-                            <Typography variant='body2'>{lead.email}</Typography>
-                            <Typography variant='caption' sx={{ color: 'text.secondary' }}>
-                              {lead.contact}
-                            </Typography>
-                          </Box>
-                        </TableCell>
-                        <TableCell>
-                          <Typography variant='body2' sx={{ fontWeight: 'bold' }}>
-                            ₹{(lead.loanAmount / 100000).toFixed(1)}L
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Box>
-                            <Typography variant='body2'>{lead.propertyDetails}</Typography>
-                            <Typography variant='caption' sx={{ color: 'text.secondary' }}>
-                              {lead.source}
-                            </Typography>
-                          </Box>
-                        </TableCell>
-                        <TableCell>
-                          <Stack direction='column' spacing={0.5}>
-                            <Chip
-                              label={lead.status.toUpperCase()}
-                              color={
-                                lead.status === 'converted'
-                                  ? 'success'
-                                  : lead.status === 'qualified'
-                                    ? 'info'
-                                    : lead.status === 'processing'
-                                      ? 'warning'
-                                      : lead.status === 'contacted'
-                                        ? 'secondary'
-                                        : 'default'
-                              }
-                              size='small'
-                            />
-                            {lead.deletedByBroker && (
+                          </TableCell>
+                          <TableCell>
+                            <Box>
+                              <Typography variant='body2'>{lead.propertyDetails}</Typography>
+                              <Typography variant='caption' sx={{ color: 'text.secondary' }}>
+                                {lead.source}
+                              </Typography>
+                            </Box>
+                          </TableCell>
+                          <TableCell>
+                            <Stack direction='column' spacing={0.5}>
                               <Chip
-                                label='DELETED BY BROKER'
-                                color='error'
-                                variant='outlined'
+                                label={lead.status.toUpperCase()}
+                                color={
+                                  lead.status === 'converted'
+                                    ? 'success'
+                                    : lead.status === 'qualified'
+                                      ? 'info'
+                                      : lead.status === 'processing'
+                                        ? 'warning'
+                                        : lead.status === 'contacted'
+                                          ? 'secondary'
+                                          : 'default'
+                                }
                                 size='small'
-                                sx={{ fontSize: '0.7rem' }}
                               />
+                              {lead.deletedByBroker && (
+                                <Chip
+                                  label='DELETED BY BROKER'
+                                  color='error'
+                                  variant='outlined'
+                                  size='small'
+                                  sx={{ fontSize: '0.7rem' }}
+                                />
+                              )}
+                            </Stack>
+                          </TableCell>
+                          <TableCell>
+                            {lead.brokerId ? (
+                              <Typography variant='body2'>
+                                {typeof lead.brokerId === 'object' && lead.brokerId !== null
+                                  ? `${lead.brokerId.firstName || ''} ${lead.brokerId.lastName || ''}`.trim()
+                                  : (() => {
+                                      const broker = brokers.find(b => b._id === lead.brokerId);
+                                      return broker
+                                        ? `${broker.firstName || ''} ${broker.lastName || ''}`.trim()
+                                        : 'Unknown Broker';
+                                    })()}
+                              </Typography>
+                            ) : (
+                              <Chip label='Unassigned' size='small' variant='outlined' />
                             )}
-                          </Stack>
-                        </TableCell>
-                        <TableCell>
-                          {lead.brokerId ? (
-                            <Typography variant='body2'>
-                              {typeof lead.brokerId === 'object' && lead.brokerId !== null
-                                ? `${lead.brokerId.firstName || ''} ${lead.brokerId.lastName || ''}`.trim()
-                                : (() => {
-                                    const broker = brokers.find(b => b._id === lead.brokerId);
-                                    return broker
-                                      ? `${broker.firstName || ''} ${broker.lastName || ''}`.trim()
-                                      : 'Unknown Broker';
-                                  })()}
-                            </Typography>
-                          ) : (
-                            <Chip label='Unassigned' size='small' variant='outlined' />
-                          )}
-                        </TableCell>
-                        <TableCell>{lead.source}</TableCell>
-                        <TableCell align='center'>
-                          <Stack direction='row' spacing={1} justifyContent='center'>
-                            <Tooltip title='View Details'>
-                              <IconButton
-                                size='small'
-                                onClick={() => {
-                                  setSelectedLead(lead);
-                                  setLeadDialog(true);
-                                }}
-                              >
-                                <Visibility fontSize='small' />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title='Assign Broker'>
-                              <IconButton
-                                size='small'
-                                color='primary'
-                                onClick={() => {
-                                  setSelectedLead(lead);
-                                  setAssignBrokerDialog(true);
-                                }}
-                              >
-                                <Work fontSize='small' />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title='Update Status'>
-                              <IconButton
-                                size='small'
-                                color='warning'
-                                onClick={() => {
-                                  setStatusLead(lead);
-                                  setNewStatus(lead.status);
-                                  setStatusDialog(true);
-                                }}
-                              >
-                                <Edit fontSize='small' />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title='Delete Lead'>
-                              <IconButton
-                                size='small'
-                                color='error'
-                                onClick={() => {
-                                  setDeleteLeadDialog(true);
-                                  setLeadToDelete(lead);
-                                }}
-                              >
-                                <Delete fontSize='small' />
-                              </IconButton>
-                            </Tooltip>
-                            {lead.deletedByBroker && (
-                              <Tooltip title='Restore Lead (Make visible to broker again)'>
+                          </TableCell>
+                          <TableCell>{lead.source}</TableCell>
+                          <TableCell align='center'>
+                            <Stack direction='row' spacing={1} justifyContent='center'>
+                              <Tooltip title='View Details'>
                                 <IconButton
                                   size='small'
-                                  color='success'
-                                  onClick={() => handleRestoreLead(lead._id)}
+                                  onClick={() => {
+                                    setSelectedLead(lead);
+                                    setLeadDialog(true);
+                                  }}
                                 >
-                                  <RestoreFromTrash fontSize='small' />
+                                  <Visibility fontSize='small' />
                                 </IconButton>
                               </Tooltip>
-                            )}
-                          </Stack>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+                              <Tooltip title='Assign Broker'>
+                                <IconButton
+                                  size='small'
+                                  color='primary'
+                                  onClick={() => {
+                                    setSelectedLead(lead);
+                                    setAssignBrokerDialog(true);
+                                  }}
+                                >
+                                  <Work fontSize='small' />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip title='Update Status'>
+                                <IconButton
+                                  size='small'
+                                  color='warning'
+                                  onClick={() => {
+                                    setStatusLead(lead);
+                                    setNewStatus(lead.status);
+                                    setStatusDialog(true);
+                                  }}
+                                >
+                                  <Edit fontSize='small' />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip title='Delete Lead'>
+                                <IconButton
+                                  size='small'
+                                  color='error'
+                                  onClick={() => {
+                                    setDeleteLeadDialog(true);
+                                    setLeadToDelete(lead);
+                                  }}
+                                >
+                                  <Delete fontSize='small' />
+                                </IconButton>
+                              </Tooltip>
+                              {lead.deletedByBroker && (
+                                <Tooltip title='Restore Lead (Make visible to broker again)'>
+                                  <IconButton
+                                    size='small'
+                                    color='success'
+                                    onClick={() => handleRestoreLead(lead._id)}
+                                  >
+                                    <RestoreFromTrash fontSize='small' />
+                                  </IconButton>
+                                </Tooltip>
+                              )}
+                            </Stack>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+
+                {/* Pagination for Leads */}
+                <TablePagination
+                  component='div'
+                  count={filteredLeads.length}
+                  page={pagination.page}
+                  onPageChange={(_, newPage) => setPagination(prev => ({ ...prev, page: newPage }))}
+                  rowsPerPage={pagination.rowsPerPage}
+                  onRowsPerPageChange={event =>
+                    setPagination({ page: 0, rowsPerPage: parseInt(event.target.value, 10) })
+                  }
+                  rowsPerPageOptions={[5, 10, 25, 50]}
+                />
+              </Box>
             )}
           </CardContent>
         </Card>
@@ -2753,12 +2766,7 @@ const AdminDashboard: React.FC = () => {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Avatar
               sx={{
-                bgcolor:
-                  viewUser?.role === 'admin'
-                    ? 'error.main'
-                    : viewUser?.role === 'builder'
-                      ? 'warning.main'
-                      : 'success.main',
+                bgcolor: getAvatarColor(viewUser?.role || 'user', theme),
                 width: 40,
                 height: 40,
               }}
@@ -2812,15 +2820,9 @@ const AdminDashboard: React.FC = () => {
                   </Typography>
                   <Box sx={{ mt: 0.5 }}>
                     <Chip
-                      label={viewUser.role}
+                      label={formatUserRole(viewUser.role)}
                       size='small'
-                      color={
-                        viewUser.role === 'admin'
-                          ? 'error'
-                          : viewUser.role === 'builder'
-                            ? 'warning'
-                            : 'success'
-                      }
+                      color={getRoleColor(viewUser.role)}
                       sx={{ textTransform: 'capitalize', fontWeight: 500 }}
                     />
                   </Box>
@@ -3053,15 +3055,9 @@ const AdminDashboard: React.FC = () => {
                 </Typography>
                 <Box sx={{ mt: 0.5 }}>
                   <Chip
-                    label={editUser.role}
+                    label={formatUserRole(editUser.role)}
                     size='small'
-                    color={
-                      editUser.role === 'admin'
-                        ? 'error'
-                        : editUser.role === 'builder'
-                          ? 'warning'
-                          : 'success'
-                    }
+                    color={getRoleColor(editUser.role)}
                     sx={{ textTransform: 'capitalize', fontWeight: 500 }}
                   />
                   <Typography variant='caption' color='text.secondary' sx={{ ml: 1 }}>
@@ -3488,6 +3484,56 @@ const AdminDashboard: React.FC = () => {
           >
             Delete Lead
           </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Property View Dialog */}
+      <Dialog open={!!viewProperty} onClose={() => setViewProperty(null)} maxWidth='md' fullWidth>
+        <DialogTitle>Property Details</DialogTitle>
+        <DialogContent>
+          {viewProperty && (
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+                gap: 2,
+              }}
+            >
+              <TextField
+                label='Name'
+                value={viewProperty.name || ''}
+                InputProps={{ readOnly: true }}
+              />
+              <TextField
+                label='Location'
+                value={viewProperty.location || ''}
+                InputProps={{ readOnly: true }}
+              />
+              <TextField
+                label='Type'
+                value={viewProperty.type || ''}
+                InputProps={{ readOnly: true }}
+              />
+              <TextField
+                label='Builder'
+                value={viewProperty.builder || ''}
+                InputProps={{ readOnly: true }}
+              />
+              <TextField
+                label='Price'
+                value={viewProperty.price || ''}
+                InputProps={{ readOnly: true }}
+              />
+              <TextField
+                label='Area'
+                value={viewProperty.area || ''}
+                InputProps={{ readOnly: true }}
+              />
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setViewProperty(null)}>Close</Button>
         </DialogActions>
       </Dialog>
 
@@ -4295,8 +4341,9 @@ const ApplicationManagement: React.FC = () => {
                     {selectedApplication.loanDetails.requestedAmount.toLocaleString()}
                   </Typography>
                 </Box>
-                <Alert severity='warning' sx={{ mb: 2 }}>
-                  This action cannot be undone. All application data will be permanently deleted.
+                <Alert severity='info' sx={{ mb: 2 }}>
+                  This application will be hidden from the dashboard but can be restored later if
+                  needed. The data will not be permanently deleted.
                 </Alert>
               </Box>
             )}
@@ -4315,6 +4362,136 @@ const ApplicationManagement: React.FC = () => {
           </DialogActions>
         </Dialog>
       </CardContent>
+
+      {/* Speed Dial for Quick Actions - Commented out due to scoping issues */}
+      {/*
+      <SpeedDial
+        ariaLabel="Admin Quick Actions"
+        sx={{
+          position: 'fixed',
+          bottom: 16,
+          right: 16,
+          '& .MuiFab-primary': {
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          }
+        }}
+        icon={<SpeedDialIcon />}
+        open={speedDialOpen}
+        onClose={() => setSpeedDialOpen(false)}
+        onOpen={() => setSpeedDialOpen(true)}
+      >
+        <SpeedDialAction
+          icon={<PersonAdd />}
+          tooltipTitle="Add User"
+          onClick={() => {
+            setAddUserDialog(true);
+            setSpeedDialOpen(false);
+          }}
+        />
+        <SpeedDialAction
+          icon={<Assignment />}
+          tooltipTitle="View Applications"
+          onClick={() => {
+            setTabValue(4);
+            setSpeedDialOpen(false);
+          }}
+        />
+        <SpeedDialAction
+          icon={<Analytics />}
+          tooltipTitle="View Analytics"
+          onClick={() => {
+            setTabValue(1);
+            setSpeedDialOpen(false);
+          }}
+        />
+        <SpeedDialAction
+          icon={<Refresh />}
+          tooltipTitle="Refresh Data"
+          onClick={() => {
+            fetchUsers();
+            setSpeedDialOpen(false);
+          }}
+        />
+      </SpeedDial>
+
+      <Backdrop
+        open={speedDialOpen}
+        sx={{ zIndex: (theme) => theme.zIndex.speedDial - 1 }}
+      />
+      */}
+
+      {/* Mobile Navigation Drawer - Commented out due to scoping issues */}
+      {/*
+      <Drawer
+        anchor="right"
+        open={mobileNavOpen}
+        onClose={() => setMobileNavOpen(false)}
+        sx={{
+          '& .MuiDrawer-paper': {
+            width: 280,
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            color: 'white',
+          },
+        }}
+      >
+        <Box sx={{ p: 2 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+            <Typography variant="h6" fontWeight="bold">
+              Navigation
+            </Typography>
+            <IconButton
+              onClick={() => setMobileNavOpen(false)}
+              sx={{ color: 'white' }}
+            >
+              <Close />
+            </IconButton>
+          </Box>
+
+          <List>
+            {[
+              { icon: <People />, label: 'Users', value: 0 },
+              { icon: <Analytics />, label: 'Analytics', value: 1 },
+              { icon: <TrendingUp />, label: 'Leads', value: 2 },
+              { icon: <Business />, label: 'Properties', value: 3 },
+              { icon: <Assignment />, label: 'Applications', value: 4 },
+              { icon: <Assessment />, label: 'Reports', value: 5 },
+            ].map((tab) => (
+              <ListItemButton
+                key={tab.value}
+                selected={tabValue === tab.value}
+                onClick={() => {
+                  setTabValue(tab.value);
+                  setMobileNavOpen(false);
+                }}
+                sx={{
+                  borderRadius: 2,
+                  mb: 1,
+                  '&.Mui-selected': {
+                    backgroundColor: 'rgba(255,255,255,0.2)',
+                    '&:hover': {
+                      backgroundColor: 'rgba(255,255,255,0.3)',
+                    },
+                  },
+                  '&:hover': {
+                    backgroundColor: 'rgba(255,255,255,0.1)',
+                  },
+                }}
+              >
+                <ListItemIcon sx={{ color: 'white', minWidth: 40 }}>
+                  {tab.icon}
+                </ListItemIcon>
+                <ListItemText
+                  primary={tab.label}
+                  primaryTypographyProps={{
+                    fontWeight: tabValue === tab.value ? 600 : 400,
+                  }}
+                />
+              </ListItemButton>
+            ))}
+          </List>
+        </Box>
+      </Drawer>
+      */}
     </Card>
   );
 };

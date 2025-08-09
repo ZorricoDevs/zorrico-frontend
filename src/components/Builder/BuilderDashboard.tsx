@@ -24,6 +24,7 @@ import {
   IconButton,
   Tooltip,
   LinearProgress,
+  CircularProgress,
 } from '@mui/material';
 import {
   Business,
@@ -41,6 +42,7 @@ import {
 } from '@mui/icons-material';
 import { useAuth } from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
+import { formatUserRole, getRoleColor } from '../../utils/roleUtils';
 
 interface Property {
   _id?: string; // MongoDB _id (optional)
@@ -310,25 +312,47 @@ const BuilderDashboard: React.FC = () => {
 
   return (
     <Container maxWidth='xl' sx={{ py: { xs: 2, sm: 3, md: 4 } }}>
-      <Typography
-        variant='h4'
-        sx={{
-          mb: { xs: 3, md: 4 },
-          fontWeight: 'bold',
-          display: 'flex',
-          alignItems: 'center',
-          fontSize: { xs: '1.5rem', sm: '2rem', md: '2.125rem' },
-        }}
-      >
-        <Business
+      <Box sx={{ mb: { xs: 3, md: 4 } }}>
+        <Typography
+          variant='h4'
           sx={{
-            mr: { xs: 1, sm: 2 },
-            color: '#28a745',
-            fontSize: { xs: '2rem', sm: '2.5rem' },
+            mb: 1,
+            fontWeight: 'bold',
+            display: 'flex',
+            alignItems: 'center',
+            fontSize: { xs: '1.5rem', sm: '2rem', md: '2.125rem' },
           }}
-        />
-        Builder Dashboard
-      </Typography>
+        >
+          <Business
+            sx={{
+              mr: { xs: 1, sm: 2 },
+              color: '#28a745',
+              fontSize: { xs: '2rem', sm: '2.5rem' },
+            }}
+          />
+          Builder Dashboard
+        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+          <Typography variant='body1' color='text.secondary'>
+            Welcome back, {user?.firstName || 'Builder'}!
+          </Typography>
+          {user?.role && (
+            <Chip
+              label={formatUserRole(user.role)}
+              color={getRoleColor(user.role)}
+              size='small'
+              sx={{ fontSize: '0.75rem' }}
+            />
+          )}
+        </Box>
+      </Box>
+
+      {/* Loading Indicator */}
+      {loading && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
+          <CircularProgress size={40} />
+        </Box>
+      )}
 
       {/* Stats Overview (Builder) */}
       <Box

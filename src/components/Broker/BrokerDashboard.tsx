@@ -64,6 +64,7 @@ import {
   BrokerStats,
   BrokerAnalytics,
 } from '../../services/brokerApi';
+import { formatUserRole, getRoleColor } from '../../utils/roleUtils';
 
 const BrokerDashboard: React.FC = () => {
   const { user } = useAuth();
@@ -215,6 +216,10 @@ const BrokerDashboard: React.FC = () => {
   const handleAddLead = async () => {
     try {
       const newLeadData = await brokerApi.createLead(newLead);
+
+      // Add the new lead to the current leads list for immediate UI update
+      setLeads(prevLeads => [newLeadData, ...prevLeads]);
+
       setOpenAddLeadDialog(false);
       setNewLead({
         name: '',
@@ -225,6 +230,9 @@ const BrokerDashboard: React.FC = () => {
         source: '',
         priority: 'medium',
       });
+
+      // Show success message
+      setError(`Lead "${newLeadData.name}" created successfully!`);
 
       // Refresh leads and stats after adding lead with delay
       setTimeout(() => {
@@ -415,7 +423,7 @@ const BrokerDashboard: React.FC = () => {
               >
                 Broker Dashboard
               </Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
                 <Typography
                   variant='body2'
                   sx={{
@@ -425,6 +433,22 @@ const BrokerDashboard: React.FC = () => {
                 >
                   Welcome back, {user?.firstName || 'Broker'}!
                 </Typography>
+                {user?.role && (
+                  <Chip
+                    label={formatUserRole(user.role)}
+                    color={getRoleColor(user.role)}
+                    size='small'
+                    sx={{
+                      fontSize: '0.625rem',
+                      height: 20,
+                      backgroundColor: alpha(theme.palette.common.white, 0.2),
+                      color: 'white',
+                      '& .MuiChip-label': {
+                        px: 1,
+                      },
+                    }}
+                  />
+                )}
               </Box>
             </Box>
           </Box>
