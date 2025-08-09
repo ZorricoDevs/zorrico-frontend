@@ -72,7 +72,7 @@ const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
-    severity: 'success' as 'success' | 'error',
+    severity: 'success' as 'success' | 'error' | 'info',
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -142,34 +142,25 @@ const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
             : null,
       };
 
+      // Show immediate feedback
       setSnackbar({
         open: true,
-        message: 'Submitting application...',
-        severity: 'success',
+        message: 'Submitting...',
+        severity: 'info',
       });
 
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000);
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
 
       const result = await Promise.race([
         loanAPI.submitEligibilityForm(applicationData),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('Request timeout')), 8000)),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Request timeout')), 5000)),
       ]);
 
       clearTimeout(timeoutId);
 
       if (result.success) {
-        setSnackbar({
-          open: true,
-          message:
-            'Eligibility details submitted successfully! Our team will contact you within 24 hours.',
-          severity: 'success',
-        });
-
-        setTimeout(() => {
-          onClose();
-        }, 2000);
-
+        // Reset form data immediately
         setFormData({
           fullName: '',
           email: '',
@@ -183,6 +174,18 @@ const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
           bankName: selectedBank,
           acceptedTerms: false,
         });
+
+        // Show success message and close dialog quickly
+        setSnackbar({
+          open: true,
+          message: 'Application submitted successfully! Our team will contact you within 24 hours.',
+          severity: 'success',
+        });
+
+        // Close dialog immediately for better UX
+        setTimeout(() => {
+          onClose();
+        }, 800);
       } else {
         throw new Error(result.message || 'Failed to submit application');
       }
