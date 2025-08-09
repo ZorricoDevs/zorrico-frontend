@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useTheme, alpha } from '@mui/material/styles';
 import {
@@ -110,12 +110,23 @@ const BrokerDashboard: React.FC = () => {
   const [editLeadDialog, setEditLeadDialog] = useState(false);
   const [editLeadData, setEditLeadData] = useState<Partial<Lead>>({});
 
+  // Request tracking to prevent multiple simultaneous calls
+  const loadingRef = useRef(false);
+  const refreshingRef = useRef(false);
+
   useEffect(() => {
     loadDashboardData();
   }, []);
 
   const loadDashboardData = useCallback(
     async (showLoading = true) => {
+      // Prevent multiple simultaneous requests
+      if (loadingRef.current) {
+        console.log('⚠️ BrokerDashboard - Skipping load - request already in progress');
+        return;
+      }
+
+      loadingRef.current = true;
       if (showLoading) {
         setLoading(true);
       }
@@ -165,6 +176,7 @@ const BrokerDashboard: React.FC = () => {
         if (showLoading) {
           setLoading(false);
         }
+        loadingRef.current = false;
       }
     },
     [retryCount]
@@ -172,6 +184,13 @@ const BrokerDashboard: React.FC = () => {
 
   // Helper function to refresh leads and stats only
   const refreshLeadsAndStats = useCallback(async () => {
+    // Prevent multiple simultaneous refresh requests
+    if (refreshingRef.current) {
+      console.log('⚠️ BrokerDashboard - Skipping refresh - request already in progress');
+      return;
+    }
+
+    refreshingRef.current = true;
     try {
       const [statsData, leadsData] = await Promise.all([
         brokerApi.getBrokerStats(),
@@ -188,6 +207,8 @@ const BrokerDashboard: React.FC = () => {
       setLeads(validLeadsData);
     } catch (error) {
       console.error('BrokerDashboard Debug - Failed to refresh leads and stats:', error);
+    } finally {
+      refreshingRef.current = false;
     }
   }, []);
 
@@ -205,11 +226,14 @@ const BrokerDashboard: React.FC = () => {
         priority: 'medium',
       });
 
-      // Refresh leads and stats after adding lead
-      await refreshLeadsAndStats();
+      // Refresh leads and stats after adding lead with delay
+      setTimeout(() => {
+        refreshLeadsAndStats();
+      }, 500);
+
       setSnackbarMessage('Lead added successfully!');
       setSnackbarOpen(true);
-      console.log('BrokerDashboard Debug - Data refreshed after adding lead');
+      console.log('BrokerDashboard Debug - Data refresh scheduled after adding lead');
     } catch (error) {
       console.error('BrokerDashboard Debug - Failed to add lead:', error);
       setError('Failed to add lead. Please try again.');
@@ -299,10 +323,12 @@ const BrokerDashboard: React.FC = () => {
         await brokerApi.deleteLead(leadId);
         console.log('BrokerDashboard Debug - Lead deleted successfully, refreshing data...');
 
-        // Refresh the leads list and stats after deletion
-        await refreshLeadsAndStats();
+        // Refresh the leads list and stats after deletion with delay
+        setTimeout(() => {
+          refreshLeadsAndStats();
+        }, 500);
 
-        console.log('BrokerDashboard Debug - Data refreshed after deletion');
+        console.log('BrokerDashboard Debug - Data refresh scheduled after deletion');
       } catch (error) {
         console.error('BrokerDashboard Debug - Failed to delete lead:', error);
         // Handle error (show snackbar, etc.)
@@ -318,9 +344,11 @@ const BrokerDashboard: React.FC = () => {
     try {
       await brokerApi.updateLead(editLeadData._id, editLeadData);
       setEditLeadDialog(false);
-      // Refresh the leads list and stats after editing
-      await refreshLeadsAndStats();
-      console.log('BrokerDashboard Debug - Data refreshed after lead edit');
+      // Refresh the leads list and stats after editing with delay
+      setTimeout(() => {
+        refreshLeadsAndStats();
+      }, 500);
+      console.log('BrokerDashboard Debug - Data refresh scheduled after lead edit');
     } catch (error) {
       console.error('BrokerDashboard Debug - Failed to edit lead:', error);
       // Handle error (show snackbar, etc.)

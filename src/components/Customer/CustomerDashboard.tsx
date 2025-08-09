@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import {
   Box,
   Container,
@@ -55,8 +55,18 @@ const CustomerDashboard: React.FC = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [lastUpdateTime, setLastUpdateTime] = useState(new Date().toISOString());
 
+  // Request tracking to prevent multiple simultaneous calls
+  const fetchingRef = useRef(false);
+
   // Fetch customer applications
   const fetchApplications = useCallback(async () => {
+    // Prevent multiple simultaneous requests
+    if (fetchingRef.current) {
+      console.log('⚠️ CustomerDashboard - Skipping fetch - request already in progress');
+      return;
+    }
+
+    fetchingRef.current = true;
     setLoading(true);
     setError(null);
     try {
@@ -67,15 +77,19 @@ const CustomerDashboard: React.FC = () => {
       setError('Failed to fetch applications');
     } finally {
       setLoading(false);
+      fetchingRef.current = false;
     }
   }, []);
 
-  // Real-time polling for updates
+  // Real-time polling for updates (memoized to prevent recreation)
   const pollForUpdates = useCallback(async () => {
     try {
       const updates = await applicationApi.pollApplicationUpdates(lastUpdateTime);
       if (updates.length > 0) {
-        fetchApplications();
+        // Delay to avoid rate limiting
+        setTimeout(() => {
+          fetchApplications();
+        }, 500);
       }
     } catch (err) {
       console.error('Failed to poll for updates:', err);

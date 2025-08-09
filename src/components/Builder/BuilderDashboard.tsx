@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Box,
   Container,
@@ -100,6 +100,7 @@ const BuilderDashboard: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [tabValue, setTabValue] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [properties, setProperties] = useState<Property[]>([]);
   const [leads, setLeads] = useState<CustomerLead[]>([]);
   const [stats, setStats] = useState<DeveloperStats>({
@@ -133,68 +134,83 @@ const BuilderDashboard: React.FC = () => {
   // Analytics dialog state
   const [analyticsProperty, setAnalyticsProperty] = useState<Property | null>(null);
 
-  useEffect(() => {
-    const fetchBuilderData = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const headers: Record<string, string> = {};
-        if (token) {
-          headers['Authorization'] = `Bearer ${token}`;
-        }
+  // Request tracking to prevent multiple simultaneous calls
+  const fetchingRef = useRef(false);
 
-        // Fetch properties for this builder
-        const propRes = await fetch(`/api/builder/properties?builderId=${user?.id}`, { headers });
-        if (propRes.status === 401 || propRes.status === 403) {
-          alert('Session expired or unauthorized. Please log in again.');
-          localStorage.removeItem('token');
-          navigate('/login');
-          return;
-        }
-        if (!propRes.ok) {
-          throw new Error('Failed to fetch properties');
-        }
-        const propContentType = propRes.headers.get('content-type');
-        if (!propContentType || !propContentType.includes('application/json')) {
-          await propRes.text(); // Read response but don't store unused text
-          throw new Error('Properties API did not return JSON');
-        }
-        const propData = await propRes.json();
-        setProperties(propData);
+  const fetchBuilderData = useCallback(async () => {
+    // Prevent multiple simultaneous requests
+    if (fetchingRef.current) {
+      console.log('⚠️ BuilderDashboard - Skipping fetch - request already in progress');
+      return;
+    }
 
-        // Fetch leads assigned to this builder
-        const leadRes = await fetch(`/api/builder/leads`, { headers });
-        if (leadRes.status === 401 || leadRes.status === 403) {
-          alert('Session expired or unauthorized. Please log in again.');
-          localStorage.removeItem('token');
-          navigate('/login');
-          return;
-        }
-        if (!leadRes.ok) {
-          throw new Error('Failed to fetch leads');
-        }
-        const leadContentType = leadRes.headers.get('content-type');
-        if (!leadContentType || !leadContentType.includes('application/json')) {
-          await leadRes.text(); // Read response but don't store unused text
-          throw new Error('Leads API did not return JSON');
-        }
-        const leadData = await leadRes.json();
-        setLeads(leadData);
-
-        // Optionally, update stats here based on fetched data
-        setStats(prev => ({
-          ...prev,
-          totalProperties: propData.length,
-          totalLeads: leadData.length,
-          // Add more stats calculations as needed
-        }));
-      } catch (error) {
-        // Error handling will be implemented later
+    fetchingRef.current = true;
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      const headers: Record<string, string> = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
       }
-    };
+
+      // Fetch properties for this builder
+      const propRes = await fetch(`/api/builder/properties?builderId=${user?.id}`, { headers });
+      if (propRes.status === 401 || propRes.status === 403) {
+        alert('Session expired or unauthorized. Please log in again.');
+        localStorage.removeItem('token');
+        navigate('/login');
+        return;
+      }
+      if (!propRes.ok) {
+        throw new Error('Failed to fetch properties');
+      }
+      const propContentType = propRes.headers.get('content-type');
+      if (!propContentType || !propContentType.includes('application/json')) {
+        await propRes.text(); // Read response but don't store unused text
+        throw new Error('Properties API did not return JSON');
+      }
+      const propData = await propRes.json();
+      setProperties(propData);
+
+      // Fetch leads assigned to this builder
+      const leadRes = await fetch(`/api/builder/leads`, { headers });
+      if (leadRes.status === 401 || leadRes.status === 403) {
+        alert('Session expired or unauthorized. Please log in again.');
+        localStorage.removeItem('token');
+        navigate('/login');
+        return;
+      }
+      if (!leadRes.ok) {
+        throw new Error('Failed to fetch leads');
+      }
+      const leadContentType = leadRes.headers.get('content-type');
+      if (!leadContentType || !leadContentType.includes('application/json')) {
+        await leadRes.text(); // Read response but don't store unused text
+        throw new Error('Leads API did not return JSON');
+      }
+      const leadData = await leadRes.json();
+      setLeads(leadData);
+
+      // Optionally, update stats here based on fetched data
+      setStats(prev => ({
+        ...prev,
+        totalProperties: propData.length,
+        totalLeads: leadData.length,
+        // Add more stats calculations as needed
+      }));
+    } catch (error) {
+      // Error handling will be implemented later
+    } finally {
+      setLoading(false);
+      fetchingRef.current = false;
+    }
+  }, [user, navigate]);
+
+  useEffect(() => {
     if (user?.id) {
       fetchBuilderData();
     }
-  }, [user, navigate]);
+  }, [user, navigate, fetchBuilderData]);
 
   const handleAddProperty = async () => {
     const newPropertyData: Property = {
@@ -246,6 +262,11 @@ const BuilderDashboard: React.FC = () => {
         amenities: '',
         completionDate: '',
       });
+
+      // Delayed refresh to prevent rate limiting
+      setTimeout(() => {
+        fetchBuilderData();
+      }, 500);
     } catch (err) {
       alert('Error adding property: ' + (err as Error).message);
     }
@@ -843,6 +864,11 @@ const BuilderDashboard: React.FC = () => {
                                       )
                                     );
                                     setEditProperty(null);
+
+                                    // Delayed refresh to prevent rate limiting
+                                    setTimeout(() => {
+                                      fetchBuilderData();
+                                    }, 500);
                                   } catch (err) {
                                     alert('Error updating property: ' + (err as Error).message);
                                   }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import {
   Box,
   Container,
@@ -307,8 +307,13 @@ const AdminDashboard: React.FC = () => {
       });
       setAutoPassword('');
       setSelectedApprovedCustomer('');
-      fetchUsers();
-      fetchDashboardStats();
+
+      // Delay refetch to avoid rate limiting
+      setTimeout(() => {
+        fetchUsers();
+        fetchDashboardStats();
+      }, 500);
+
       setSuccess(
         `${newUserRole.charAt(0).toUpperCase() + newUserRole.slice(1)} created successfully!${customerId ? ` Customer ID: ${customerId}` : ''}`
       );
@@ -583,7 +588,12 @@ const AdminDashboard: React.FC = () => {
         soldUnits: '',
         completionDate: '',
       });
-      fetchProperties();
+
+      // Delay refetch to avoid rate limiting
+      setTimeout(() => {
+        fetchProperties();
+      }, 500);
+
       setSuccess('Property created successfully!');
       // Reset the fetch flag to allow future refreshes
       setDataFetched(prev => ({ ...prev, properties: false }));
@@ -617,7 +627,12 @@ const AdminDashboard: React.FC = () => {
       });
       setEditProperty(null);
       setEditPropertyForm(null);
-      fetchProperties();
+
+      // Delay refetch to avoid rate limiting
+      setTimeout(() => {
+        fetchProperties();
+      }, 500);
+
       setSuccess('Property updated successfully!');
       // Reset the fetch flag to allow future refreshes
       setDataFetched(prev => ({ ...prev, properties: false }));
@@ -650,7 +665,12 @@ const AdminDashboard: React.FC = () => {
     try {
       await updateUser(editUser._id, updatedUser);
       setEditUser(null);
-      fetchUsers();
+
+      // Delay refetch to avoid rate limiting
+      setTimeout(() => {
+        fetchUsers();
+      }, 500);
+
       setSuccess('User updated successfully!');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to update user');
@@ -677,7 +697,12 @@ const AdminDashboard: React.FC = () => {
     try {
       await deleteUser(deleteUserConfirm._id);
       setDeleteUserConfirm(null);
-      fetchUsers();
+
+      // Delay refetch to avoid rate limiting
+      setTimeout(() => {
+        fetchUsers();
+      }, 500);
+
       setSuccess('User deleted successfully!');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to delete user');
@@ -694,7 +719,12 @@ const AdminDashboard: React.FC = () => {
       await assignBrokerToLead(selectedLead._id, brokerId);
       setAssignBrokerDialog(false);
       setSelectedLead(null);
-      fetchLeads();
+
+      // Delay refetch to avoid rate limiting
+      setTimeout(() => {
+        fetchLeads();
+      }, 500);
+
       setSuccess('Broker assigned successfully!');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to assign broker');
@@ -711,7 +741,12 @@ const AdminDashboard: React.FC = () => {
       setStatusDialog(false);
       setStatusLead(null);
       setNewStatus('');
-      fetchLeads();
+
+      // Delay refetch to avoid rate limiting
+      setTimeout(() => {
+        fetchLeads();
+      }, 500);
+
       setSuccess('Lead status updated successfully!');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to update lead status');
@@ -727,7 +762,12 @@ const AdminDashboard: React.FC = () => {
       await deleteLead(leadToDelete._id);
       setDeleteLeadDialog(false);
       setLeadToDelete(null);
-      fetchLeads();
+
+      // Delay refetch to avoid rate limiting
+      setTimeout(() => {
+        fetchLeads();
+      }, 500);
+
       setSuccess('Lead deleted successfully!');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to delete lead');
@@ -740,7 +780,12 @@ const AdminDashboard: React.FC = () => {
     setUserActionLoading(true);
     try {
       await restoreLead(leadId);
-      fetchLeads();
+
+      // Delay refetch to avoid rate limiting
+      setTimeout(() => {
+        fetchLeads();
+      }, 500);
+
       setSuccess('Lead restored successfully! It will now be visible to the broker again.');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to restore lead');
@@ -3495,20 +3540,33 @@ const ApplicationManagement: React.FC = () => {
     processingFee: '',
   });
 
-  // Filters for applications
-  const filters: ApplicationFilters = {
-    status: statusFilter !== 'all' ? statusFilter : undefined,
-    customerName: searchQuery || undefined,
-    dateFrom: dateFromFilter || undefined,
-    dateTo: dateToFilter || undefined,
-    page: pagination.currentPage,
-    limit: 10,
-    sortBy: 'createdAt',
-    sortOrder: 'desc',
-  };
+  // Filters for applications (memoized to prevent infinite re-renders)
+  const filters: ApplicationFilters = useMemo(
+    () => ({
+      status: statusFilter !== 'all' ? statusFilter : undefined,
+      customerName: searchQuery || undefined,
+      dateFrom: dateFromFilter || undefined,
+      dateTo: dateToFilter || undefined,
+      page: pagination.currentPage,
+      limit: 10,
+      sortBy: 'createdAt',
+      sortOrder: 'desc',
+    }),
+    [statusFilter, searchQuery, dateFromFilter, dateToFilter, pagination.currentPage]
+  );
+
+  // Request tracking to prevent multiple simultaneous calls
+  const fetchingRef = useRef(false);
 
   // Fetch Applications
   const fetchApplications = useCallback(async () => {
+    // Prevent multiple simultaneous requests
+    if (fetchingRef.current) {
+      console.log('⚠️ Skipping fetch - request already in progress');
+      return;
+    }
+
+    fetchingRef.current = true;
     setLoading(true);
     setError(null);
     try {
@@ -3519,6 +3577,7 @@ const ApplicationManagement: React.FC = () => {
       setError(err.response?.data?.message || 'Failed to fetch applications');
     } finally {
       setLoading(false);
+      fetchingRef.current = false;
     }
   }, [filters]);
 
@@ -3572,7 +3631,12 @@ const ApplicationManagement: React.FC = () => {
       setSelectedApplication(null);
       setNewStatus('');
       setStatusNotes('');
-      fetchApplications();
+
+      // Delay refetch to avoid rate limiting
+      setTimeout(() => {
+        fetchApplications();
+      }, 500);
+
       setSuccess('Application status updated successfully!');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to update application status');
@@ -3590,7 +3654,12 @@ const ApplicationManagement: React.FC = () => {
       await applicationApi.deleteApplication(selectedApplication._id);
       setDeleteDialog(false);
       setSelectedApplication(null);
-      fetchApplications();
+
+      // Delay refetch to avoid rate limiting
+      setTimeout(() => {
+        fetchApplications();
+      }, 500);
+
       setSuccess('Application deleted successfully!');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to delete application');
@@ -3601,6 +3670,9 @@ const ApplicationManagement: React.FC = () => {
 
   // Handle Create Application
   const handleCreateApplication = async () => {
+    // Prevent double clicks
+    if (actionLoading) return;
+
     setActionLoading(true);
     try {
       const applicationData = {
@@ -3624,9 +3696,15 @@ const ApplicationManagement: React.FC = () => {
         selectedBank: '',
         processingFee: '',
       });
-      fetchApplications();
+
+      // Wait a bit before refetching to avoid rate limiting
+      setTimeout(() => {
+        fetchApplications();
+      }, 500);
+
       setSuccess('Application created successfully!');
     } catch (err: any) {
+      console.error('Create application error:', err);
       setError(err.response?.data?.message || 'Failed to create application');
     } finally {
       setActionLoading(false);
