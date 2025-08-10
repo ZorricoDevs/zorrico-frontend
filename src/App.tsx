@@ -14,6 +14,7 @@ import ChunkErrorBoundary from './components/UI/ChunkErrorBoundary';
 import AuthErrorBoundary from './components/UI/AuthErrorBoundary';
 import Navbar from './components/Layout/Navbar';
 import Footer from './components/Layout/Footer';
+import ScrollToTop from './components/UI/ScrollToTop';
 import RBICompliancePage from './pages/RBICompliancePage';
 import ISO270012022Page from './pages/ISO270012022Page';
 import NBFCGuidelinesPage from './pages/NBFCGuidelinesPage';
@@ -159,6 +160,7 @@ const AppContent: React.FC = () => {
         <AuthErrorBoundary>
           <AuthProvider>
             <Router>
+              <ScrollToTop />
               <div className='App'>
                 <Navbar />
                 <main style={{ minHeight: 'calc(100vh - 88px)' }}>

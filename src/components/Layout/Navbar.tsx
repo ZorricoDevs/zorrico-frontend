@@ -61,12 +61,16 @@ const Navbar: React.FC = () => {
   const handleLogout = async () => {
     await logout();
     handleMenuClose();
-    navigate('/');
+    handleNavigation('/');
   };
 
   const handleNavigation = (path: string) => {
     navigate(path);
     setMobileDrawerOpen(false);
+    // Scroll to top after navigation
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
   };
 
   // Determine dashboard path based on user role
@@ -459,7 +463,7 @@ const Navbar: React.FC = () => {
               pl: { xs: 0, sm: 1 },
               flexShrink: 0,
             }}
-            onClick={() => navigate('/')}
+            onClick={() => handleNavigation('/')}
           >
             <Box
               component='img'
@@ -523,7 +527,7 @@ const Navbar: React.FC = () => {
                 <Button
                   key={item.label}
                   color='inherit'
-                  onClick={() => navigate(item.path)}
+                  onClick={() => handleNavigation(item.path)}
                   sx={{
                     backgroundColor:
                       location.pathname === item.path
@@ -612,7 +616,7 @@ const Navbar: React.FC = () => {
                     <MenuItem
                       onClick={() => {
                         handleMenuClose();
-                        navigate('/profile');
+                        handleNavigation('/profile');
                       }}
                     >
                       <ListItemIcon>
@@ -623,7 +627,7 @@ const Navbar: React.FC = () => {
                     <MenuItem
                       onClick={() => {
                         handleMenuClose();
-                        navigate('/settings');
+                        handleNavigation('/settings');
                       }}
                     >
                       <ListItemIcon>
@@ -634,7 +638,7 @@ const Navbar: React.FC = () => {
                     <MenuItem
                       onClick={() => {
                         handleMenuClose();
-                        navigate('/support');
+                        handleNavigation('/support');
                       }}
                     >
                       <ListItemIcon>

@@ -25,6 +25,15 @@ const HomePage: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [openApplicationPopup, setOpenApplicationPopup] = useState(false);
 
+  // Custom navigation function that scrolls to top
+  const navigateWithScrollToTop = (path: string) => {
+    navigate(path);
+    // Small delay to ensure navigation completes before scrolling
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
+  };
+
   // Scroll progress for the scroll indicator - tracks entire document scroll
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -512,7 +521,7 @@ const HomePage: React.FC = () => {
                   <Button
                     variant='contained'
                     size='large'
-                    onClick={() => navigate('/eligibility-checker')}
+                    onClick={() => navigateWithScrollToTop('/eligibility-checker')}
                     sx={{
                       minWidth: { xs: 140, sm: 180, md: 220 },
                       px: { xs: 2, sm: 3, md: 4 },
@@ -535,7 +544,7 @@ const HomePage: React.FC = () => {
                   <Button
                     variant='outlined'
                     size='large'
-                    onClick={() => navigate('/emi-calculator')}
+                    onClick={() => navigateWithScrollToTop('/emi-calculator')}
                     sx={{
                       minWidth: { xs: 140, sm: 180, md: 220 },
                       px: { xs: 2, sm: 3, md: 4 },
@@ -1195,7 +1204,7 @@ const HomePage: React.FC = () => {
                   <Button
                     variant='contained'
                     size='large'
-                    onClick={() => navigate('/eligibility-checker')}
+                    onClick={() => navigateWithScrollToTop('/eligibility-checker')}
                     sx={{
                       minWidth: { xs: 200, sm: 220, md: 250 },
                       px: { xs: 3, sm: 4 },
@@ -1220,7 +1229,7 @@ const HomePage: React.FC = () => {
                   <Button
                     variant='contained'
                     size='large'
-                    onClick={() => navigate('/emi-calculator')}
+                    onClick={() => navigateWithScrollToTop('/emi-calculator')}
                     sx={{
                       minWidth: { xs: 200, sm: 220, md: 250 },
                       px: { xs: 3, sm: 4 },
