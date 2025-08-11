@@ -19,7 +19,19 @@ export interface Application {
     submitted: string[];
     pending: string[];
   };
-  status: 'submitted' | 'under_review' | 'documents_pending' | 'documents_received' | 'submitted_to_bank' | 'under_bank_review' | 'approved_by_bank' | 'rejected_by_bank' | 'sanctioned' | 'disbursed' | 'rejected';
+  status:
+    | 'submitted'
+    | 'under_review'
+    | 'documents_pending'
+    | 'documents_received'
+    | 'submitted_to_bank'
+    | 'under_bank_review'
+    | 'approved_by_bank'
+    | 'rejected_by_bank'
+    | 'sanctioned'
+    | 'legal_technical'
+    | 'disbursed'
+    | 'rejected';
   timeline: Array<{
     event: string;
     description: string;
@@ -80,7 +92,9 @@ export interface Customer {
 // Application Management API
 export const applicationApi = {
   // Admin endpoints
-  getAllApplications: async (filters: ApplicationFilters = {}): Promise<{
+  getAllApplications: async (
+    filters: ApplicationFilters = {}
+  ): Promise<{
     applications: Application[];
     pagination: {
       currentPage: number;
@@ -130,7 +144,11 @@ export const applicationApi = {
   },
 
   // Document management
-  uploadDocument: async (applicationId: string, file: File, documentType: string): Promise<string> => {
+  uploadDocument: async (
+    applicationId: string,
+    file: File,
+    documentType: string
+  ): Promise<string> => {
     const formData = new FormData();
     formData.append('document', file);
     formData.append('documentType', documentType);
@@ -156,7 +174,7 @@ export const applicationApi = {
       fullName: user.fullName || `${user.firstName || ''} ${user.lastName || ''}`.trim(),
       email: user.email,
       phone: user.phone,
-      customerId: user.customerId
+      customerId: user.customerId,
     }));
   },
 
@@ -171,7 +189,11 @@ export const applicationApi = {
     return response.data;
   },
 
-  uploadMyDocument: async (applicationId: string, file: File, documentType: string): Promise<string> => {
+  uploadMyDocument: async (
+    applicationId: string,
+    file: File,
+    documentType: string
+  ): Promise<string> => {
     const formData = new FormData();
     formData.append('document', file);
     formData.append('documentType', documentType);
@@ -199,7 +221,7 @@ export const applicationApi = {
   }> => {
     const response = await api.get('/admin/applications/stats');
     return response.data.data;
-  }
+  },
 };
 
 export default applicationApi;

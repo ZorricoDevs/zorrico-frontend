@@ -1940,6 +1940,8 @@ const AdminDashboard: React.FC = () => {
                                 case 'sanctioned':
                                 case 'disbursed':
                                   return 'success';
+                                case 'legal_technical':
+                                  return 'info';
                                 case 'rejected':
                                   return 'error';
                                 case 'submitted':
@@ -4249,6 +4251,8 @@ const ApplicationManagement: React.FC = () => {
         return 'success';
       case 'sanctioned':
         return 'success';
+      case 'legal_technical':
+        return 'info';
       case 'disbursed':
         return 'success';
       case 'rejected':
@@ -4329,6 +4333,7 @@ const ApplicationManagement: React.FC = () => {
               <MenuItem value='under_bank_review'>Under Bank Review</MenuItem>
               <MenuItem value='approved_by_bank'>Approved by Bank</MenuItem>
               <MenuItem value='sanctioned'>Sanctioned</MenuItem>
+              <MenuItem value='legal_technical'>Legal Technical</MenuItem>
               <MenuItem value='disbursed'>Disbursed</MenuItem>
               <MenuItem value='rejected'>Rejected</MenuItem>
               <MenuItem value='rejected_by_bank'>Rejected by Bank</MenuItem>
@@ -4682,6 +4687,7 @@ const ApplicationManagement: React.FC = () => {
                     <MenuItem value='under_bank_review'>Under Bank Review</MenuItem>
                     <MenuItem value='approved_by_bank'>Approved by Bank</MenuItem>
                     <MenuItem value='sanctioned'>Sanctioned</MenuItem>
+                    <MenuItem value='legal_technical'>Legal Technical</MenuItem>
                     <MenuItem value='disbursed'>Disbursed</MenuItem>
                     <MenuItem value='rejected'>Rejected</MenuItem>
                     <MenuItem value='rejected_by_bank'>Rejected by Bank</MenuItem>
