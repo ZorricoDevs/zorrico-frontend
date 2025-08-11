@@ -15,8 +15,6 @@ import {
   TableRow,
   Alert,
   CircularProgress,
-  Tabs,
-  Tab,
   LinearProgress,
   Stepper,
   Step,
@@ -46,7 +44,6 @@ import {
   Visibility,
   Close,
   Refresh,
-  TrendingUp,
   AccountBalance as AccountBalanceIcon,
   History,
   Schedule,
@@ -709,7 +706,6 @@ const AnimatedStatusTimeline: React.FC<{ application: Application }> = ({ applic
 
 const CustomerDashboard: React.FC = () => {
   const { user } = useAuth();
-  const [tabValue, setTabValue] = useState(0);
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -788,30 +784,6 @@ const CustomerDashboard: React.FC = () => {
     };
     return configs[status] || { color: '#757575', label: status, icon: '', progress: 0 };
   };
-
-  // Get application statistics
-  const getApplicationStats = () => {
-    const totalApplications = applications.length;
-    const activeApplications = applications.filter(
-      app => !['rejected', 'rejected_by_bank', 'disbursed'].includes(app.status)
-    ).length;
-    const totalLoanAmount = applications
-      .filter(app =>
-        ['approved_by_bank', 'sanctioned', 'legal_technical', 'disbursed'].includes(app.status)
-      )
-      .reduce((sum, app) => sum + app.loanDetails.requestedAmount, 0);
-
-    return {
-      totalApplications,
-      activeApplications,
-      totalLoanAmount,
-      completedApplications: applications.filter(app =>
-        ['approved_by_bank', 'sanctioned', 'legal_technical', 'disbursed'].includes(app.status)
-      ).length,
-    };
-  };
-
-  const stats = getApplicationStats();
 
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
@@ -906,450 +878,225 @@ const CustomerDashboard: React.FC = () => {
         </Button>
       </Box>
 
-      {/* Stats Cards */}
-      <Box display='flex' flexWrap='wrap' gap={3} mb={4}>
-        <Box sx={{ flex: '1 1 100%', maxWidth: { xs: '100%', sm: '50%', md: '25%' } }}>
-          <Card
-            sx={{
-              height: '100%',
-              background: isDark
-                ? 'linear-gradient(135deg, #304FFE 0%, #222B45 100%)'
-                : 'linear-gradient(135deg, #304FFE 0%, #5C6FFF 100%)',
-              color: 'white',
-              borderRadius: 3,
-              boxShadow: isDark ? 6 : 2,
-              transition: 'box-shadow 0.2s',
-              '&:hover': { boxShadow: isDark ? 12 : 6 },
-            }}
-          >
-            <CardContent>
-              <Box display='flex' alignItems='center' gap={2}>
-                <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.14)', width: 48, height: 48 }}>
-                  <AssignmentIcon sx={{ fontSize: 28, color: '#fff' }} />
-                </Avatar>
-                <Box>
-                  <Typography variant='h4' fontWeight='bold' color='white'>
-                    {stats.totalApplications}
-                  </Typography>
-                  <Typography color='rgba(255,255,255,0.8)'>Total Applications</Typography>
-                </Box>
-              </Box>
-            </CardContent>
-          </Card>
+      {/* Application Progress Section */}
+      {applications.length > 0 && (
+        <Box sx={{ mb: 4 }}>
+          {applications.map(application => (
+            <AnimatedStatusTimeline key={application._id} application={application} />
+          ))}
         </Box>
-        <Box sx={{ flex: '1 1 100%', maxWidth: { xs: '100%', sm: '50%', md: '25%' } }}>
-          <Card
-            sx={{
-              height: '100%',
-              background: isDark
-                ? 'linear-gradient(135deg, #00C8C8 0%, #1e293b 100%)'
-                : 'linear-gradient(135deg, #00C8C8 0%, #4DD0E1 100%)',
-              color: 'white',
-              borderRadius: 3,
-              boxShadow: isDark ? 6 : 2,
-              transition: 'box-shadow 0.2s',
-              '&:hover': { boxShadow: isDark ? 12 : 6 },
-            }}
-          >
-            <CardContent>
-              <Box display='flex' alignItems='center' gap={2}>
-                <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.14)', width: 48, height: 48 }}>
-                  <PendingIcon sx={{ fontSize: 28, color: '#fff' }} />
-                </Avatar>
-                <Box>
-                  <Typography variant='h4' fontWeight='bold' color='white'>
-                    {stats.activeApplications}
-                  </Typography>
-                  <Typography color='rgba(255,255,255,0.8)'>Active Applications</Typography>
-                </Box>
-              </Box>
-            </CardContent>
-          </Card>
-        </Box>
-        <Box sx={{ flex: '1 1 100%', maxWidth: { xs: '100%', sm: '50%', md: '25%' } }}>
-          <Card
-            sx={{
-              height: '100%',
-              background: isDark
-                ? 'linear-gradient(135deg, #4CAF50 0%, #1B5E20 100%)'
-                : 'linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%)',
-              color: 'white',
-              borderRadius: 3,
-              boxShadow: isDark ? 6 : 2,
-              transition: 'box-shadow 0.2s',
-              '&:hover': { boxShadow: isDark ? 12 : 6 },
-            }}
-          >
-            <CardContent>
-              <Box display='flex' alignItems='center' gap={2}>
-                <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.14)', width: 48, height: 48 }}>
-                  <CheckCircleIcon sx={{ fontSize: 28, color: '#fff' }} />
-                </Avatar>
-                <Box>
-                  <Typography variant='h4' fontWeight='bold' color='white'>
-                    {stats.completedApplications}
-                  </Typography>
-                  <Typography color='rgba(255,255,255,0.8)'>Completed</Typography>
-                </Box>
-              </Box>
-            </CardContent>
-          </Card>
-        </Box>
-        <Box sx={{ flex: '1 1 100%', maxWidth: { xs: '100%', sm: '50%', md: '25%' } }}>
-          <Card
-            sx={{
-              height: '100%',
-              background: 'linear-gradient(135deg, #FFA726 0%, #FFB74D 100%)',
-              color: 'white',
-            }}
-          >
-            <CardContent>
-              <Box display='flex' alignItems='center'>
-                <TrendingUp sx={{ mr: 2, fontSize: 40, color: 'white' }} />
-                <Box>
-                  <Typography variant='h4' fontWeight='bold' color='white'>
-                    ₹{(stats.totalLoanAmount / 100000).toFixed(1)}L
-                  </Typography>
-                  <Typography color='rgba(255,255,255,0.8)'>Total Sanctioned</Typography>
-                </Box>
-              </Box>
-            </CardContent>
-          </Card>
-        </Box>
-      </Box>
+      )}
 
-      {/* Main Content */}
-      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-        <Tabs
-          value={tabValue}
-          onChange={(_, newValue) => setTabValue(newValue)}
-          variant='scrollable'
-          scrollButtons='auto'
-          allowScrollButtonsMobile
-          sx={{
-            '& .MuiTabs-scrollButtons': {
-              '&.Mui-disabled': { opacity: 0.3 },
-            },
-            '& .MuiTab-root': {
-              textTransform: 'none',
-              fontSize: '1rem',
-              fontWeight: 600,
-              minWidth: { xs: 140, sm: 180 },
-              '&:hover': {
-                backgroundColor: 'rgba(25, 118, 210, 0.04)',
-              },
-            },
-          }}
-        >
-          <Tab label='My Applications' icon={<AssignmentIcon />} />
-          <Tab label='Application History' icon={<TimelineIcon />} />
-        </Tabs>
-      </Box>
-
-      {/* Applications Tab */}
-      {tabValue === 0 && (
-        <Box>
-          {/* Animated Timeline for each application */}
-          {applications.length > 0 && (
-            <Box sx={{ mb: 4 }}>
-              {applications.map(application => (
-                <AnimatedStatusTimeline key={application._id} application={application} />
-              ))}
+      {/* Main Applications Content */}
+      <Card sx={{ border: '1px solid #E0E0E0' }}>
+        <CardContent sx={{ p: 0 }}>
+          {loading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+              <CircularProgress />
             </Box>
-          )}
-
-          <Card sx={{ border: '1px solid #E0E0E0' }}>
-            <CardContent sx={{ p: 0 }}>
-              {loading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
-                  <CircularProgress />
-                </Box>
-              ) : error ? (
-                <Alert severity='error' sx={{ m: 3 }}>
-                  {error}
-                </Alert>
-              ) : applications.length === 0 ? (
-                <Box sx={{ textAlign: 'center', py: 6 }}>
-                  <AssignmentIcon sx={{ fontSize: 64, color: '#E0E0E0', mb: 2 }} />
-                  <Typography variant='h6' color='#757575' gutterBottom>
-                    No applications found
-                  </Typography>
-                  <Typography variant='body2' color='#757575' mb={3}>
-                    You haven&lsquo;t submitted any loan applications yet.
-                  </Typography>
-                  <Button
-                    variant='contained'
-                    sx={{
-                      bgcolor: isDark ? theme.palette.primary.dark : '#304FFE',
-                      '&:hover': {
-                        bgcolor: isDark ? theme.palette.primary.main : '#1C3AA9',
-                      },
-                    }}
-                  >
-                    Apply for Loan
-                  </Button>
-                </Box>
-              ) : (
-                <TableContainer
-                  component={Paper}
+          ) : error ? (
+            <Alert severity='error' sx={{ m: 3 }}>
+              {error}
+            </Alert>
+          ) : applications.length === 0 ? (
+            <Box sx={{ textAlign: 'center', py: 6 }}>
+              <AssignmentIcon sx={{ fontSize: 64, color: '#E0E0E0', mb: 2 }} />
+              <Typography variant='h6' color='#757575' gutterBottom>
+                No applications found
+              </Typography>
+              <Typography variant='body2' color='#757575' mb={3}>
+                You haven&lsquo;t submitted any loan applications yet.
+              </Typography>
+              <Button
+                variant='contained'
+                sx={{
+                  bgcolor: isDark ? theme.palette.primary.dark : '#304FFE',
+                  '&:hover': {
+                    bgcolor: isDark ? theme.palette.primary.main : '#1C3AA9',
+                  },
+                }}
+              >
+                Apply for Loan
+              </Button>
+            </Box>
+          ) : (
+            <TableContainer
+              component={Paper}
+              sx={{
+                bgcolor: isDark ? theme.palette.background.paper : 'white',
+                boxShadow: isDark ? 3 : 1,
+              }}
+            >
+              <Table>
+                <TableHead
                   sx={{
-                    bgcolor: isDark ? theme.palette.background.paper : 'white',
-                    boxShadow: isDark ? 3 : 1,
+                    bgcolor: isDark ? theme.palette.grey[800] : '#F5F7FA',
                   }}
                 >
-                  <Table>
-                    <TableHead
+                  <TableRow>
+                    <TableCell
                       sx={{
-                        bgcolor: isDark ? theme.palette.grey[800] : '#F5F7FA',
+                        fontWeight: 'bold',
+                        color: isDark ? theme.palette.text.primary : '#2E2E2E',
                       }}
                     >
-                      <TableRow>
+                      Application #
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: 'bold',
+                        color: isDark ? theme.palette.text.primary : '#2E2E2E',
+                      }}
+                    >
+                      Loan Amount
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: 'bold',
+                        color: isDark ? theme.palette.text.primary : '#2E2E2E',
+                      }}
+                    >
+                      Bank
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: 'bold',
+                        color: isDark ? theme.palette.text.primary : '#2E2E2E',
+                      }}
+                    >
+                      Status
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: 'bold',
+                        color: isDark ? theme.palette.text.primary : '#2E2E2E',
+                      }}
+                    >
+                      Progress
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: 'bold',
+                        color: isDark ? theme.palette.text.primary : '#2E2E2E',
+                      }}
+                    >
+                      Last Updated
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: 'bold',
+                        color: isDark ? theme.palette.text.primary : '#2E2E2E',
+                        textAlign: 'center',
+                      }}
+                    >
+                      Actions
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {applications.map(application => {
+                    const statusConfig = getStatusConfig(application.status);
+                    return (
+                      <TableRow
+                        key={application._id}
+                        hover
+                        sx={{
+                          '&:hover': {
+                            bgcolor: isDark ? theme.palette.action.hover : '#F8F9FA',
+                            cursor: 'pointer',
+                          },
+                          bgcolor: isDark ? theme.palette.background.paper : 'white',
+                        }}
+                      >
                         <TableCell
                           sx={{
-                            fontWeight: 'bold',
-                            color: isDark ? theme.palette.text.primary : '#2E2E2E',
+                            fontWeight: 500,
+                            color: isDark ? theme.palette.primary.light : '#304FFE',
                           }}
                         >
-                          Application #
+                          {application.applicationNumber}
                         </TableCell>
-                        <TableCell
-                          sx={{
-                            fontWeight: 'bold',
-                            color: isDark ? theme.palette.text.primary : '#2E2E2E',
-                          }}
-                        >
-                          Loan Amount
+                        <TableCell>
+                          <Typography
+                            variant='body2'
+                            fontWeight={500}
+                            color={isDark ? theme.palette.text.primary : theme.palette.text.primary}
+                          >
+                            ₹{application.loanDetails.requestedAmount.toLocaleString()}
+                          </Typography>
+                          <Typography
+                            variant='caption'
+                            color={isDark ? theme.palette.text.secondary : '#757575'}
+                          >
+                            {application.loanDetails.tenure} years •{' '}
+                            {application.loanDetails.interestRate}% p.a.
+                          </Typography>
                         </TableCell>
-                        <TableCell
-                          sx={{
-                            fontWeight: 'bold',
-                            color: isDark ? theme.palette.text.primary : '#2E2E2E',
-                          }}
-                        >
-                          Bank
+                        <TableCell>
+                          <Typography
+                            variant='body2'
+                            color={isDark ? theme.palette.text.primary : theme.palette.text.primary}
+                          >
+                            {application.loanDetails.selectedBank}
+                          </Typography>
                         </TableCell>
-                        <TableCell
-                          sx={{
-                            fontWeight: 'bold',
-                            color: isDark ? theme.palette.text.primary : '#2E2E2E',
-                          }}
-                        >
-                          Status
+                        <TableCell>
+                          <Chip
+                            label={statusConfig.label}
+                            size='small'
+                            sx={{
+                              bgcolor: statusConfig.color,
+                              color: 'white',
+                              fontWeight: 500,
+                            }}
+                          />
                         </TableCell>
-                        <TableCell
-                          sx={{
-                            fontWeight: 'bold',
-                            color: isDark ? theme.palette.text.primary : '#2E2E2E',
-                          }}
-                        >
-                          Progress
+                        <TableCell>
+                          <Box sx={{ width: 100 }}>
+                            <LinearProgress
+                              variant='determinate'
+                              value={statusConfig.progress}
+                              sx={{
+                                height: 6,
+                                borderRadius: 3,
+                                bgcolor: '#E0E0E0',
+                                '& .MuiLinearProgress-bar': {
+                                  bgcolor: statusConfig.color,
+                                  borderRadius: 3,
+                                },
+                              }}
+                            />
+                            <Typography variant='caption' color='#757575' sx={{ mt: 0.5 }}>
+                              {statusConfig.progress}%
+                            </Typography>
+                          </Box>
                         </TableCell>
-                        <TableCell
-                          sx={{
-                            fontWeight: 'bold',
-                            color: isDark ? theme.palette.text.primary : '#2E2E2E',
-                          }}
-                        >
-                          Last Updated
+                        <TableCell>
+                          <Typography variant='body2' color='#757575'>
+                            {new Date(application.updatedAt).toLocaleDateString()}
+                          </Typography>
                         </TableCell>
-                        <TableCell
-                          sx={{
-                            fontWeight: 'bold',
-                            color: isDark ? theme.palette.text.primary : '#2E2E2E',
-                            textAlign: 'center',
-                          }}
-                        >
-                          Actions
+                        <TableCell align='center'>
+                          <IconButton
+                            size='small'
+                            onClick={() => {
+                              setSelectedApplication(application);
+                              setDrawerOpen(true);
+                            }}
+                            sx={{ color: '#304FFE' }}
+                          >
+                            <Visibility fontSize='small' />
+                          </IconButton>
                         </TableCell>
                       </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {applications.map(application => {
-                        const statusConfig = getStatusConfig(application.status);
-                        return (
-                          <TableRow
-                            key={application._id}
-                            hover
-                            sx={{
-                              '&:hover': {
-                                bgcolor: isDark ? theme.palette.action.hover : '#F8F9FA',
-                                cursor: 'pointer',
-                              },
-                              bgcolor: isDark ? theme.palette.background.paper : 'white',
-                            }}
-                          >
-                            <TableCell
-                              sx={{
-                                fontWeight: 500,
-                                color: isDark ? theme.palette.primary.light : '#304FFE',
-                              }}
-                            >
-                              {application.applicationNumber}
-                            </TableCell>
-                            <TableCell>
-                              <Typography
-                                variant='body2'
-                                fontWeight={500}
-                                color={
-                                  isDark ? theme.palette.text.primary : theme.palette.text.primary
-                                }
-                              >
-                                ₹{application.loanDetails.requestedAmount.toLocaleString()}
-                              </Typography>
-                              <Typography
-                                variant='caption'
-                                color={isDark ? theme.palette.text.secondary : '#757575'}
-                              >
-                                {application.loanDetails.tenure} years •{' '}
-                                {application.loanDetails.interestRate}% p.a.
-                              </Typography>
-                            </TableCell>
-                            <TableCell>
-                              <Typography
-                                variant='body2'
-                                color={
-                                  isDark ? theme.palette.text.primary : theme.palette.text.primary
-                                }
-                              >
-                                {application.loanDetails.selectedBank}
-                              </Typography>
-                            </TableCell>
-                            <TableCell>
-                              <Chip
-                                label={statusConfig.label}
-                                size='small'
-                                sx={{
-                                  bgcolor: statusConfig.color,
-                                  color: 'white',
-                                  fontWeight: 500,
-                                }}
-                              />
-                            </TableCell>
-                            <TableCell>
-                              <Box sx={{ width: 100 }}>
-                                <LinearProgress
-                                  variant='determinate'
-                                  value={statusConfig.progress}
-                                  sx={{
-                                    height: 6,
-                                    borderRadius: 3,
-                                    bgcolor: '#E0E0E0',
-                                    '& .MuiLinearProgress-bar': {
-                                      bgcolor: statusConfig.color,
-                                      borderRadius: 3,
-                                    },
-                                  }}
-                                />
-                                <Typography variant='caption' color='#757575' sx={{ mt: 0.5 }}>
-                                  {statusConfig.progress}%
-                                </Typography>
-                              </Box>
-                            </TableCell>
-                            <TableCell>
-                              <Typography variant='body2' color='#757575'>
-                                {new Date(application.updatedAt).toLocaleDateString()}
-                              </Typography>
-                            </TableCell>
-                            <TableCell align='center'>
-                              <IconButton
-                                size='small'
-                                onClick={() => {
-                                  setSelectedApplication(application);
-                                  setDrawerOpen(true);
-                                }}
-                                sx={{ color: '#304FFE' }}
-                              >
-                                <Visibility fontSize='small' />
-                              </IconButton>
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              )}
-            </CardContent>
-          </Card>
-        </Box>
-      )}
-
-      {/* Application History Tab */}
-      {tabValue === 1 && (
-        <Card sx={{ border: '1px solid #E0E0E0' }}>
-          <CardContent>
-            <Typography variant='h6' gutterBottom>
-              Application Timeline
-            </Typography>
-            {applications.length === 0 ? (
-              <Box sx={{ textAlign: 'center', py: 4 }}>
-                <TimelineIcon sx={{ fontSize: 48, color: '#E0E0E0', mb: 2 }} />
-                <Typography color='#757575'>No application history available</Typography>
-              </Box>
-            ) : (
-              <Box>
-                {applications.map(application => (
-                  <Card key={application._id} sx={{ mb: 2, border: '1px solid #E0E0E0' }}>
-                    <CardContent>
-                      <Box display='flex' justifyContent='space-between' alignItems='center' mb={2}>
-                        <Typography variant='subtitle1' fontWeight='bold'>
-                          {application.applicationNumber}
-                        </Typography>
-                        <Chip
-                          label={getStatusConfig(application.status).label}
-                          size='small'
-                          sx={{
-                            bgcolor: getStatusConfig(application.status).color,
-                            color: 'white',
-                          }}
-                        />
-                      </Box>
-                      <Stepper orientation='vertical'>
-                        {application.timeline.map((item, index) => (
-                          <Step key={index} completed={true}>
-                            <StepLabel>
-                              <Typography
-                                variant='body2'
-                                fontWeight={500}
-                                color={
-                                  isDark ? theme.palette.primary.light : theme.palette.primary.main
-                                }
-                              >
-                                {formatEventName(item.event)}
-                              </Typography>
-                            </StepLabel>
-                            <StepContent>
-                              <Typography
-                                variant='body2'
-                                color={
-                                  isDark ? theme.palette.grey[300] : theme.palette.text.secondary
-                                }
-                                sx={{ mb: 1 }}
-                              >
-                                {parseTimelineDescription(item.description)}
-                              </Typography>
-                              <Typography
-                                variant='caption'
-                                color={
-                                  isDark ? theme.palette.grey[400] : theme.palette.text.disabled
-                                }
-                                sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
-                              >
-                                <Schedule fontSize='small' />
-                                {new Date(item.date).toLocaleString()} • {item.performedBy}
-                              </Typography>
-                            </StepContent>
-                          </Step>
-                        ))}
-                      </Stepper>
-                    </CardContent>
-                  </Card>
-                ))}
-              </Box>
-            )}
-          </CardContent>
-        </Card>
-      )}
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Application Details Drawer */}
       <Drawer
