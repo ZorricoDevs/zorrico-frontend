@@ -316,7 +316,7 @@ const Footer: React.FC = () => {
             </Stack>
           </Box>
 
-          {/* Compliance */}
+          {/* Security */}
           <Box
             sx={{
               textAlign: { xs: 'center', sm: 'left' },
@@ -332,14 +332,12 @@ const Footer: React.FC = () => {
                 fontSize: { xs: '1rem', sm: '1.25rem' },
               }}
             >
-              Compliance
+              Security
             </Typography>
             <Stack spacing={1} alignItems={{ xs: 'center', sm: 'flex-start' }}>
               {[
                 { name: 'Security Disclosure', path: '/securitydisclosure' },
-                { name: 'RBI Compliance', path: '/rbicompliance' },
                 { name: 'ISO 27001:2022', path: '/iso270012022' },
-                { name: 'NBFC Guidelines', path: '/nbfcguidelines' },
               ].map(item => (
                 <Link
                   key={item.name}
@@ -428,7 +426,6 @@ const Footer: React.FC = () => {
             >
               {[
                 { label: 'SSL', color: '#1976d2' },
-                { label: 'RBI', color: '#28a745' },
                 { label: 'ISO', color: '#17a2b8' },
               ].map(badge => (
                 <Box

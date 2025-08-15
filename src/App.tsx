@@ -15,9 +15,7 @@ import AuthErrorBoundary from './components/UI/AuthErrorBoundary';
 import Navbar from './components/Layout/Navbar';
 import Footer from './components/Layout/Footer';
 import ScrollToTop from './components/UI/ScrollToTop';
-import RBICompliancePage from './pages/RBICompliancePage';
 import ISO270012022Page from './pages/ISO270012022Page';
-import NBFCGuidelinesPage from './pages/NBFCGuidelinesPage';
 import BuilderLoginPage from './pages/BuilderLoginPage';
 
 // Optimized lazy loading - simpler in development, robust in production
@@ -194,12 +192,10 @@ const AppContent: React.FC = () => {
                       <Route path='/applicationtracker' element={<ApplicationsPage />} />
                       <Route path='/loanadvisory' element={<HomePage />} />
 
-                      {/* Footer Compliance Links */}
+                      {/* Footer Security Links */}
                       <Route path='/securitydisclosure' element={<SecurityDisclosurePage />} />
                       <Route path='/loanaggregation' element={<HomePage />} />
-                      <Route path='/rbicompliance' element={<RBICompliancePage />} />
                       <Route path='/iso270012022' element={<ISO270012022Page />} />
-                      <Route path='/nbfcguidelines' element={<NBFCGuidelinesPage />} />
 
                       {/* Login Routes - Multiple paths */}
                       <Route path='/login' element={<CustomerLoginPage />} />

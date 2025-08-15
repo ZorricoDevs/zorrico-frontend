@@ -10,19 +10,19 @@ const NewsroomPage: React.FC = () => {
   const newsArticles = [
     {
       id: 1,
-      title: 'RBI Keeps Repo Rate Unchanged at 6.5% - Impact on Home Loans',
+      title: 'Home Loan Interest Rates Show Stability in Current Market',
       excerpt:
-        'Reserve Bank of India maintains the policy repo rate at 6.5%, providing stability to home loan interest rates across the banking sector.',
+        'Market analysis shows stable home loan interest rates across major banks, providing predictability for borrowers.',
       date: '2025-08-01',
-      category: 'RBI Policy',
+      category: 'Market Analysis',
       readTime: '4 min read',
       featured: true,
     },
     {
       id: 2,
-      title: 'RBI Issues New Guidelines for Digital Home Loan Processing',
+      title: 'Digital Home Loan Processing Gains Momentum',
       excerpt:
-        'Central bank releases comprehensive framework for digital onboarding and loan approval processes to enhance customer experience.',
+        'Banks accelerate digital transformation in loan processing to enhance customer experience and reduce processing time.',
       date: '2025-07-28',
       category: 'Digital Banking',
       readTime: '5 min read',
@@ -30,19 +30,19 @@ const NewsroomPage: React.FC = () => {
     },
     {
       id: 3,
-      title: 'RBI Announces Relaxation in Home Loan Risk Weights',
+      title: 'Home Loan Market Shows Strong Growth in Q2 2025',
       excerpt:
-        'Risk weight for housing loans up to ₹75 lakh reduced from 35% to 30%, potentially leading to lower interest rates.',
+        'Residential lending sector demonstrates robust performance with increased disbursements across major cities.',
       date: '2025-07-20',
-      category: 'Regulatory',
+      category: 'Market Trends',
       readTime: '3 min read',
       featured: false,
     },
     {
       id: 4,
-      title: 'New RBI Circular on PMAY-Linked Home Loan Benefits',
+      title: 'PMAY Scheme Continues to Boost Affordable Housing',
       excerpt:
-        'Updated guidelines for Pradhan Mantri Awas Yojana beneficiaries with enhanced subsidy calculation methods.',
+        'Government housing scheme benefits continue to drive affordable housing demand with enhanced subsidy structures.',
       date: '2025-07-15',
       category: 'Government Schemes',
       readTime: '4 min read',
@@ -50,39 +50,39 @@ const NewsroomPage: React.FC = () => {
     },
     {
       id: 5,
-      title: 'RBI Mandates Better Home Loan Transparency',
+      title: 'Banks Enhance Home Loan Transparency Measures',
       excerpt:
-        'New regulations require lenders to provide comprehensive cost breakdowns and clearer terms to borrowers.',
+        'Financial institutions implement better disclosure practices for comprehensive cost breakdowns and clearer terms.',
       date: '2025-07-10',
-      category: 'Consumer Protection',
+      category: 'Consumer Benefits',
       readTime: '3 min read',
       featured: false,
     },
     {
       id: 6,
-      title: "RBI's Priority Sector Lending Norms Updated for Housing",
+      title: 'Affordable Housing Finance Shows Steady Growth',
       excerpt:
-        'Revised guidelines increase housing finance allocation under priority sector lending, boosting affordable housing.',
+        'Housing finance sector continues growth trajectory with increased focus on affordable housing segments.',
       date: '2025-07-05',
-      category: 'Priority Sector',
+      category: 'Housing Finance',
       readTime: '4 min read',
       featured: false,
     },
     {
       id: 7,
-      title: 'RBI Working Group Report on Housing Finance',
+      title: 'Technology Innovations Transform Home Loan Processing',
       excerpt:
-        'Comprehensive recommendations to strengthen housing finance ecosystem and improve credit flow to the sector.',
+        'AI and machine learning applications streamline loan approval processes and improve customer experience.',
       date: '2025-06-30',
-      category: 'Research',
+      category: 'Technology',
       readTime: '6 min read',
       featured: false,
     },
     {
       id: 8,
-      title: 'RBI Allows Higher LTV Ratios for Green Housing',
+      title: 'Green Home Loans Gain Popularity Among Borrowers',
       excerpt:
-        'Loan-to-value ratios increased to 90% for energy-efficient homes to promote sustainable housing development.',
+        'Eco-friendly housing finance options see increased adoption as sustainability becomes a priority for homebuyers.',
       date: '2025-06-25',
       category: 'Green Finance',
       readTime: '3 min read',
@@ -93,13 +93,13 @@ const NewsroomPage: React.FC = () => {
   const content = (
     <Stack spacing={4}>
       <Typography variant='h5' component='h2' sx={{ color: '#304FFE', fontWeight: 600 }}>
-        RBI Home Loan News & Updates
+        Home Loan News & Market Updates
       </Typography>
 
       <Typography variant='body1' paragraph sx={{ color: isDarkMode ? '#b0b0b0' : '#666' }}>
-        Stay updated with the latest RBI policies, guidelines, and regulations affecting home loans
-        in India. Get insights into monetary policy decisions, regulatory changes, and their impact
-        on borrowers.
+        Stay updated with the latest market trends, policy changes, and industry developments
+        affecting home loans in India. Get insights into market dynamics, technology innovations,
+        and their impact on borrowers.
       </Typography>
 
       <Box
@@ -127,7 +127,7 @@ const NewsroomPage: React.FC = () => {
             Policy Updates
           </Typography>
           <Typography variant='body2' sx={{ color: isDarkMode ? '#b0b0b0' : '#666' }}>
-            Latest RBI monetary policy and regulatory changes
+            Latest market developments and policy changes
           </Typography>
         </Paper>
 
@@ -166,10 +166,10 @@ const NewsroomPage: React.FC = () => {
             variant='h6'
             sx={{ fontWeight: 600, mb: 1, color: isDarkMode ? '#fff' : '#2E2E2E' }}
           >
-            Regulatory Guidelines
+            Industry Guidelines
           </Typography>
           <Typography variant='body2' sx={{ color: isDarkMode ? '#b0b0b0' : '#666' }}>
-            New RBI guidelines and compliance requirements
+            Best practices and industry standards
           </Typography>
         </Paper>
       </Box>

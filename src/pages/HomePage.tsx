@@ -68,7 +68,7 @@ const HomePage: React.FC = () => {
       icon: <TrendingUp sx={{ fontSize: 40 }} />,
       title: 'Best Interest Rates',
       description:
-        'Compare rates from 50+ banks and NBFCs to find the most competitive home loan rates in the market.',
+        'Compare rates from 50+ banks and financial institutions to find the most competitive home loan rates in the market.',
     },
     {
       icon: <Speed sx={{ fontSize: 40 }} />,
@@ -162,7 +162,7 @@ const HomePage: React.FC = () => {
     {
       icon: <TrendingUpSharp sx={{ color: 'inherit' }} />,
       title: 'Best Rate Guarantee',
-      label: '50+ Bank & NBFC Partners',
+      label: '50+ Banking Partners',
     },
   ];
   const processSteps = [
@@ -499,8 +499,8 @@ const HomePage: React.FC = () => {
                     margin: { xs: '0 auto 20px', lg: '0 0 32px' },
                   }}
                 >
-                  Compare home loans from 10+ banks and 50+ NBFCs. Get pre-approved Loan in 24 hours
-                  at Lowest Interest & Return on Investment.
+                  Compare home loans from 50+ banks and financial institutions. Get pre-approved
+                  Loan in 24 hours at Lowest Interest & Return on Investment.
                 </Typography>
               </motion.div>
 
