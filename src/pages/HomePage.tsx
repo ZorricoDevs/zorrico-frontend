@@ -72,9 +72,9 @@ const HomePage: React.FC = () => {
     },
     {
       icon: <Speed sx={{ fontSize: 40 }} />,
-      title: 'Instant Approval',
+      title: 'Instant Eligibility Check',
       description:
-        'Get pre-approved in minutes with our AI-powered eligibility engine and fast-track documentation.',
+        'Know your loan eligibility in minutes with our AI-powered eligibility engine and faster processing.',
     },
     {
       icon: <Security sx={{ fontSize: 40 }} />,
@@ -183,8 +183,8 @@ const HomePage: React.FC = () => {
     },
     {
       step: '04',
-      title: 'Get Approved',
-      description: 'Receive Pre-Approval in 24 hours',
+      title: 'Connect with Banks',
+      description: 'We connect you with the right bank faster',
     },
   ];
 
@@ -499,8 +499,8 @@ const HomePage: React.FC = () => {
                     margin: { xs: '0 auto 20px', lg: '0 0 32px' },
                   }}
                 >
-                  Compare home loans from 50+ banks and financial institutions. Get pre-approved
-                  Loan in 24 hours at Lowest Interest & Return on Investment.
+                  Compare home loans from 50+ banks and financial institutions. Get faster approvals
+                  with our expert assistance. No Hidden Charges.
                 </Typography>
               </motion.div>
 
@@ -605,7 +605,7 @@ const HomePage: React.FC = () => {
               >
                 {[
                   { value: '7.35%*', label: 'Starting Rate' },
-                  { value: '24hrs', label: 'Pre Approval Time' },
+                  { value: 'Fast', label: 'Processing Time' },
                   { value: '₹30Cr+', label: 'Max Loan Amount' },
                 ].map((stat, index) => (
                   <motion.div

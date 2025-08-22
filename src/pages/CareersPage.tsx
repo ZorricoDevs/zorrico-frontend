@@ -14,9 +14,8 @@ const CareersPage: React.FC = () => {
       </Typography>
 
       <Typography variant='body1' paragraph>
-        Be part of India&apos;s fastest-growing fintech platform that&apos;s revolutionizing the
-        home loan industry. We&apos;re looking for passionate individuals who want to make
-        homeownership dreams accessible to millions.
+        Join a fast-growing fintech platform that&apos;s transforming how people experience home
+        loans. Work with us to empower more families to achieve their dream of homeownership.
       </Typography>
 
       <Box
@@ -39,8 +38,8 @@ const CareersPage: React.FC = () => {
             Innovation First
           </Typography>
           <Typography variant='body2' sx={{ color: isDarkMode ? '#b0b0b0' : '#666' }}>
-            Work with cutting-edge technology and contribute to products that impact millions of
-            users.
+            Work with cutting-edge technology and contribute to products that impact thousands of
+            users and growing.
           </Typography>
         </Paper>
 
@@ -127,8 +126,9 @@ const CareersPage: React.FC = () => {
             mx: 'auto',
           }}
         >
-          We appreciate your interest in joining our team. While we don&apos;t have any open
-          positions at the moment, we encourage you to check back soon for future opportunities.
+          We truly appreciate your interest in joining our team. At the moment, we don&apos;t have
+          any open positions, but we&apos;re always on the lookout for passionate individuals. Feel
+          free to share your resume, and we&apos;ll reach out when a suitable opportunity arises.
         </Typography>
         <Button
           variant='outlined'
@@ -163,8 +163,8 @@ const CareersPage: React.FC = () => {
             }}
           />
           <Typography variant='body1'>
-            <strong>Competitive Compensation:</strong> Market-leading salaries with performance
-            bonuses and equity participation.
+            <strong>Competitive Compensation:</strong> Attractive compensation packages with
+            performance-based incentives.
           </Typography>
         </Box>
 
@@ -180,8 +180,8 @@ const CareersPage: React.FC = () => {
             }}
           />
           <Typography variant='body1'>
-            <strong>Learning & Development:</strong> Regular training programs, conference
-            attendance, and certification support.
+            <strong>Learning & Development:</strong> Ongoing training programs, skill development
+            workshops, and certification support to help you grow.
           </Typography>
         </Box>
 
@@ -197,8 +197,8 @@ const CareersPage: React.FC = () => {
             }}
           />
           <Typography variant='body1'>
-            <strong>Health & Wellness:</strong> Comprehensive health insurance, wellness programs,
-            and mental health support.
+            <strong>Health & Wellness:</strong> We value well-being with a positive, supportive work
+            environment and wellness initiatives.
           </Typography>
         </Box>
 
