@@ -42,8 +42,6 @@ const Navbar: React.FC = () => {
   const isDark = muiTheme.palette.mode === 'dark';
   const [scrolled, setScrolled] = useState(false);
   const isMobile = useMediaQuery(muiTheme.breakpoints.down('md'));
-  const isTablet = useMediaQuery(muiTheme.breakpoints.between('md', 'lg'));
-  const isSmallMobile = useMediaQuery(muiTheme.breakpoints.down('sm'));
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
