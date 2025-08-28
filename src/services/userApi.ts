@@ -90,7 +90,10 @@ export const userApi = {
   // Change password
   changePassword: async (passwordData: ChangePasswordData): Promise<void> => {
     try {
-      await api.put('/user/change-password', passwordData);
+      await api.put('/user/password', {
+        currentPassword: passwordData.currentPassword,
+        newPassword: passwordData.newPassword,
+      });
     } catch (error) {
       console.error('Error changing password:', error);
       throw error;
@@ -100,8 +103,17 @@ export const userApi = {
   // Get notification settings
   getNotificationSettings: async (): Promise<NotificationSettings> => {
     try {
-      const response = await api.get('/user/notification-settings');
-      return response.data.data;
+      const response = await api.get('/user/settings/notifications');
+      // Map backend response to frontend interface
+      const backendSettings = response.data.data;
+      return {
+        emailNotifications: backendSettings.emailNotifications,
+        smsNotifications: backendSettings.smsNotifications,
+        pushNotifications: true, // Default values for settings not in backend
+        marketingEmails: false,
+        loanUpdates: true,
+        securityAlerts: true,
+      };
     } catch (error) {
       console.error('Error fetching notification settings:', error);
       throw error;
@@ -109,10 +121,20 @@ export const userApi = {
   },
 
   // Update notification settings
-  updateNotificationSettings: async (settings: NotificationSettings): Promise<NotificationSettings> => {
+  updateNotificationSettings: async (
+    settings: NotificationSettings
+  ): Promise<NotificationSettings> => {
     try {
-      const response = await api.put('/user/notification-settings', settings);
-      return response.data.data;
+      const response = await api.put('/user/settings/notifications', {
+        emailNotifications: settings.emailNotifications,
+        smsNotifications: settings.smsNotifications,
+      });
+      // Return the updated settings
+      return {
+        ...settings,
+        emailNotifications: response.data.data.emailNotifications,
+        smsNotifications: response.data.data.smsNotifications,
+      };
     } catch (error) {
       console.error('Error updating notification settings:', error);
       throw error;
@@ -166,7 +188,7 @@ export const userApi = {
       console.error('Error resending verification email:', error);
       throw error;
     }
-  }
+  },
 };
 
 export default userApi;

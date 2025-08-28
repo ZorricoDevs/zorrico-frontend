@@ -335,7 +335,7 @@ const SecurityDisclosurePage: React.FC = () => {
 
         <Stack spacing={2}>
           <Typography variant='body2'>
-            <strong>Security Email:</strong> service@zorrico.com
+            <strong>Security Email:</strong> support@zorrico.com
           </Typography>
           <Typography variant='body2'>
             <strong>Emergency Hotline:</strong> +91 84228 89910 (24/7)

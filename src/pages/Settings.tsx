@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Container,
@@ -12,239 +12,458 @@ import {
   Button,
   Card,
   CardContent,
-  Divider,
   TextField,
   Alert,
-  Snackbar
+  Snackbar,
+  CircularProgress,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Chip,
 } from '@mui/material';
+import {
+  ExpandMore as ExpandMoreIcon,
+  Security as SecurityIcon,
+  Notifications as NotificationsIcon,
+  Palette as PaletteIcon,
+  AccountBox as AccountBoxIcon,
+  Delete as DeleteIcon,
+  Lock as LockIcon,
+} from '@mui/icons-material';
+import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { userApi } from '../services/userApi';
+
+interface NotificationSettings {
+  emailNotifications: boolean;
+  smsNotifications: boolean;
+  pushNotifications: boolean;
+  marketingEmails: boolean;
+  loanUpdates: boolean;
+  securityAlerts: boolean;
+}
 
 const Settings: React.FC = () => {
+  const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
-  const [notifications, setNotifications] = useState({
-    email: true,
-    sms: false,
-    push: true,
-    marketing: false
+  const [loading, setLoading] = useState(false);
+  const [notifications, setNotifications] = useState<NotificationSettings>({
+    emailNotifications: true,
+    smsNotifications: false,
+    pushNotifications: true,
+    marketingEmails: false,
+    loanUpdates: true,
+    securityAlerts: true,
   });
-  const [language, setLanguage] = useState('en');
-  const [currency, setCurrency] = useState('INR');
-  const [showAlert, setShowAlert] = useState(false);
+  const [passwordDialog, setPasswordDialog] = useState(false);
+  const [deleteDialog, setDeleteDialog] = useState(false);
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
+  const [snackbar, setSnackbar] = useState<{
+    open: boolean;
+    message: string;
+    severity: 'success' | 'error';
+  }>({
+    open: false,
+    message: '',
+    severity: 'success',
+  });
 
-  const handleNotificationChange = (type: keyof typeof notifications) => {
-    setNotifications(prev => ({
-      ...prev,
-      [type]: !prev[type]
-    }));
+  const showSnackbar = (message: string, severity: 'success' | 'error') => {
+    setSnackbar({ open: true, message, severity });
   };
 
-  const handleSaveSettings = () => {
-    // Save settings logic here
-    setShowAlert(true);
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
+
+  // Load notification settings
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        // Load user settings from API if available
+        const settings = await userApi.getNotificationSettings();
+        setNotifications(settings);
+      } catch (error) {
+        console.error('Failed to load settings:', error);
+      }
+    };
+
+    if (user) {
+      loadSettings();
+    }
+  }, [user]);
+
+  const handleNotificationChange = async (setting: keyof NotificationSettings, value: boolean) => {
+    try {
+      const updatedSettings = { ...notifications, [setting]: value };
+      setNotifications(updatedSettings);
+
+      await userApi.updateNotificationSettings(updatedSettings);
+      showSnackbar('Notification preferences updated', 'success');
+    } catch (error) {
+      console.error('Failed to update notifications:', error);
+      showSnackbar('Failed to update notification preferences', 'error');
+      // Revert the change
+      setNotifications(notifications);
+    }
+  };
+
+  const handlePasswordChange = async () => {
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      showSnackbar('New passwords do not match', 'error');
+      return;
+    }
+
+    if (passwordData.newPassword.length < 6) {
+      showSnackbar('Password must be at least 6 characters long', 'error');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await userApi.changePassword({
+        currentPassword: passwordData.currentPassword,
+        newPassword: passwordData.newPassword,
+        confirmPassword: passwordData.confirmPassword,
+      });
+
+      setPasswordDialog(false);
+      setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      showSnackbar('Password changed successfully', 'success');
+    } catch (error: any) {
+      console.error('Failed to change password:', error);
+      showSnackbar(error?.response?.data?.message || 'Failed to change password', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      setLoading(true);
+      await userApi.deleteAccount();
+      setDeleteDialog(false);
+      showSnackbar('Account deletion request submitted', 'success');
+      // Logout user after account deletion request
+      setTimeout(() => {
+        logout();
+      }, 2000);
+    } catch (error: any) {
+      console.error('Failed to delete account:', error);
+      showSnackbar(error?.response?.data?.message || 'Failed to delete account', 'error');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <Box sx={{
-      minHeight: '100vh',
-      backgroundColor: theme === 'dark' ? '#121212' : '#f5f5f5',
-      py: 4
-    }}>
-      <Container maxWidth="lg">
-        <Typography variant="h4" sx={{ mb: 4, fontWeight: 'bold' }}>
+    <Container maxWidth='lg' sx={{ py: 4 }}>
+      <Box sx={{ mb: 4 }}>
+        <Typography variant='h4' component='h1' gutterBottom>
           Settings
         </Typography>
+        <Typography variant='body1' color='text.secondary'>
+          Manage your application preferences and account settings
+        </Typography>
+      </Box>
 
-        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3, flexWrap: 'wrap' }}>
-          {/* Appearance Settings */}
-          <Box sx={{ flex: 1, minWidth: { xs: '100%', md: '48%' }, mb: { xs: 3, md: 0 } }}>
-            <Card>
-              <CardContent sx={{ p: 3 }}>
-                <Typography variant="h6" sx={{ mb: 3 }}>
-                  Appearance
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        {/* Appearance Settings */}
+        <Card>
+          <Accordion defaultExpanded>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <PaletteIcon sx={{ mr: 1 }} />
+                <Typography variant='h6'>Appearance</Typography>
+              </Box>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                <FormControlLabel
+                  control={<Switch checked={theme === 'dark'} onChange={toggleTheme} />}
+                  label='Dark Mode'
+                />
+                <Typography variant='body2' color='text.secondary'>
+                  Toggle between light and dark theme
                 </Typography>
+              </Box>
+            </AccordionDetails>
+          </Accordion>
+        </Card>
 
+        {/* Notification Settings */}
+        <Card>
+          <Accordion defaultExpanded>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <NotificationsIcon sx={{ mr: 1 }} />
+                <Typography variant='h6'>Notifications</Typography>
+              </Box>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                 <FormControlLabel
                   control={
                     <Switch
-                      checked={theme === 'dark'}
-                      onChange={toggleTheme}
-                      color="primary"
+                      checked={notifications.emailNotifications}
+                      onChange={e =>
+                        handleNotificationChange('emailNotifications', e.target.checked)
+                      }
                     />
                   }
-                  label="Dark Mode"
-                  sx={{ mb: 2 }}
+                  label='Email Notifications'
                 />
-
-                <FormControl fullWidth sx={{ mb: 2 }}>
-                  <InputLabel>Language</InputLabel>
-                  <Select
-                    value={language}
-                    onChange={(e) => setLanguage(e.target.value)}
-                    label="Language"
-                  >
-                    <MenuItem value="en">English</MenuItem>
-                    <MenuItem value="hi">हिंदी</MenuItem>
-                    <MenuItem value="mr">मराठी</MenuItem>
-                  </Select>
-                </FormControl>
-
-                <FormControl fullWidth>
-                  <InputLabel>Currency</InputLabel>
-                  <Select
-                    value={currency}
-                    onChange={(e) => setCurrency(e.target.value)}
-                    label="Currency"
-                  >
-                    <MenuItem value="INR">Indian Rupee (₹)</MenuItem>
-                    <MenuItem value="USD">US Dollar ($)</MenuItem>
-                    <MenuItem value="EUR">Euro (€)</MenuItem>
-                  </Select>
-                </FormControl>
-              </CardContent>
-            </Card>
-          </Box>
-
-          {/* Notification Settings */}
-          <Box sx={{ flex: 1, minWidth: { xs: '100%', md: '48%' }, mb: { xs: 3, md: 0 } }}>
-            <Card>
-              <CardContent sx={{ p: 3 }}>
-                <Typography variant="h6" sx={{ mb: 3 }}>
-                  Notifications
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={notifications.smsNotifications}
+                      onChange={e => handleNotificationChange('smsNotifications', e.target.checked)}
+                    />
+                  }
+                  label='SMS Notifications'
+                />
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={notifications.pushNotifications}
+                      onChange={e =>
+                        handleNotificationChange('pushNotifications', e.target.checked)
+                      }
+                    />
+                  }
+                  label='Push Notifications'
+                />
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={notifications.marketingEmails}
+                      onChange={e => handleNotificationChange('marketingEmails', e.target.checked)}
+                    />
+                  }
+                  label='Marketing Emails'
+                />
+                <Typography variant='body2' color='text.secondary'>
+                  Control how you receive notifications about your applications and account updates
                 </Typography>
+              </Box>
+            </AccordionDetails>
+          </Accordion>
+        </Card>
 
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={notifications.email}
-                      onChange={() => handleNotificationChange('email')}
-                      color="primary"
-                    />
-                  }
-                  label="Email Notifications"
-                  sx={{ mb: 2, display: 'block' }}
-                />
-
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={notifications.sms}
-                      onChange={() => handleNotificationChange('sms')}
-                      color="primary"
-                    />
-                  }
-                  label="SMS Notifications"
-                  sx={{ mb: 2, display: 'block' }}
-                />
-
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={notifications.push}
-                      onChange={() => handleNotificationChange('push')}
-                      color="primary"
-                    />
-                  }
-                  label="Push Notifications"
-                  sx={{ mb: 2, display: 'block' }}
-                />
-
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={notifications.marketing}
-                      onChange={() => handleNotificationChange('marketing')}
-                      color="primary"
-                    />
-                  }
-                  label="Marketing Communications"
-                  sx={{ display: 'block' }}
-                />
-              </CardContent>
-            </Card>
-          </Box>
-
-          {/* Security Settings */}
-          <Box sx={{ width: '100%', mb: 3 }}>
-            <Card>
-              <CardContent sx={{ p: 3 }}>
-                <Typography variant="h6" sx={{ mb: 3 }}>
-                  Security
-                </Typography>
-
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-                  <Box sx={{ flex: 1, minWidth: { xs: '100%', sm: '48%' } }}>
-                    <TextField
+        {/* Security Settings */}
+        <Card>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <SecurityIcon sx={{ mr: 1 }} />
+                <Typography variant='h6'>Security</Typography>
+              </Box>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Box
+                sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 3 }}
+              >
+                <Box>
+                  <Typography variant='subtitle1' sx={{ mb: 2 }}>
+                    Password & Authentication
+                  </Typography>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <Button
+                      variant='outlined'
+                      startIcon={<LockIcon />}
+                      onClick={() => setPasswordDialog(true)}
                       fullWidth
-                      label="Current Password"
-                      type="password"
-                      variant="outlined"
-                    />
-                  </Box>
-                  <Box sx={{ flex: 1, minWidth: { xs: '100%', sm: '48%' } }}>
-                    <TextField
-                      fullWidth
-                      label="New Password"
-                      type="password"
-                      variant="outlined"
-                    />
-                  </Box>
-                  <Box sx={{ flex: 1, minWidth: { xs: '100%', sm: '48%' } }}>
-                    <TextField
-                      fullWidth
-                      label="Confirm New Password"
-                      type="password"
-                      variant="outlined"
-                    />
+                    >
+                      Change Password
+                    </Button>
+                    <Typography variant='body2' color='text.secondary'>
+                      Update your account password to keep your account secure
+                    </Typography>
                   </Box>
                 </Box>
 
-                <Divider sx={{ my: 3 }} />
-
-                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                  <Button variant="outlined" color="primary">
-                    Change Password
-                  </Button>
-                  <Button variant="outlined" color="secondary">
-                    Enable Two-Factor Authentication
-                  </Button>
-                  <Button variant="outlined" color="warning">
-                    Download Account Data
-                  </Button>
+                <Box>
+                  <Typography variant='subtitle1' sx={{ mb: 2 }}>
+                    Account Management
+                  </Typography>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <Button
+                      variant='outlined'
+                      color='error'
+                      startIcon={<DeleteIcon />}
+                      onClick={() => setDeleteDialog(true)}
+                      fullWidth
+                    >
+                      Delete Account
+                    </Button>
+                    <Typography variant='body2' color='text.secondary'>
+                      Permanently delete your account and all associated data
+                    </Typography>
+                  </Box>
                 </Box>
-              </CardContent>
-            </Card>
-          </Box>
+              </Box>
+            </AccordionDetails>
+          </Accordion>
+        </Card>
 
-          {/* Save Settings */}
-          <Box sx={{ width: '100%', mt: 3 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-              <Button variant="outlined" color="secondary">
-                Reset to Defaults
-              </Button>
-              <Button variant="contained" color="primary" onClick={handleSaveSettings}>
-                Save All Settings
-              </Button>
+        {/* Account Overview */}
+        <Card>
+          <CardContent sx={{ p: 3 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+              <AccountBoxIcon sx={{ mr: 1 }} />
+              <Typography variant='h6'>Account Overview</Typography>
             </Box>
-          </Box>
-        </Box>
 
-        {/* Success Alert */}
-        <Snackbar
-          open={showAlert}
-          autoHideDuration={3000}
-          onClose={() => setShowAlert(false)}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        >
-          <Alert
-            onClose={() => setShowAlert(false)}
-            severity="success"
-            sx={{ width: '100%' }}
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
+                gap: 2,
+              }}
+            >
+              <Box>
+                <Typography variant='body2' color='text.secondary'>
+                  Account Type
+                </Typography>
+                <Chip label={user?.role || 'Customer'} color='primary' size='small' />
+              </Box>
+              <Box>
+                <Typography variant='body2' color='text.secondary'>
+                  Status
+                </Typography>
+                <Chip label={user?.status || 'Active'} color='success' size='small' />
+              </Box>
+              <Box>
+                <Typography variant='body2' color='text.secondary'>
+                  Member Since
+                </Typography>
+                <Typography variant='body1'>
+                  {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
+                </Typography>
+              </Box>
+              <Box>
+                <Typography variant='body2' color='text.secondary'>
+                  Last Login
+                </Typography>
+                <Typography variant='body1'>{new Date().toLocaleDateString()}</Typography>
+              </Box>
+            </Box>
+          </CardContent>
+        </Card>
+      </Box>
+
+      {/* Password Change Dialog */}
+      <Dialog
+        open={passwordDialog}
+        onClose={() => setPasswordDialog(false)}
+        maxWidth='sm'
+        fullWidth
+      >
+        <DialogTitle>Change Password</DialogTitle>
+        <DialogContent>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
+            <TextField
+              fullWidth
+              label='Current Password'
+              type='password'
+              value={passwordData.currentPassword}
+              onChange={e => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+            />
+            <TextField
+              fullWidth
+              label='New Password'
+              type='password'
+              value={passwordData.newPassword}
+              onChange={e => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+            />
+            <TextField
+              fullWidth
+              label='Confirm New Password'
+              type='password'
+              value={passwordData.confirmPassword}
+              onChange={e => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setPasswordDialog(false)}>Cancel</Button>
+          <Button
+            onClick={handlePasswordChange}
+            variant='contained'
+            disabled={
+              loading ||
+              !passwordData.currentPassword ||
+              !passwordData.newPassword ||
+              !passwordData.confirmPassword
+            }
           >
-            Settings saved successfully!
-          </Alert>
-        </Snackbar>
-      </Container>
-    </Box>
+            {loading ? <CircularProgress size={20} /> : 'Change Password'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Delete Account Dialog */}
+      <Dialog open={deleteDialog} onClose={() => setDeleteDialog(false)} maxWidth='sm' fullWidth>
+        <DialogTitle color='error'>Delete Account</DialogTitle>
+        <DialogContent>
+          <Typography variant='body1' gutterBottom>
+            Are you sure you want to delete your account? This action cannot be undone.
+          </Typography>
+          <Typography variant='body2' color='text.secondary'>
+            All your data, applications, and settings will be permanently removed.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteDialog(false)}>Cancel</Button>
+          <Button
+            onClick={handleDeleteAccount}
+            color='error'
+            variant='contained'
+            disabled={loading}
+          >
+            {loading ? <CircularProgress size={20} /> : 'Delete Account'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+
+      {loading && (
+        <Box
+          sx={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 9999,
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      )}
+    </Container>
   );
 };
 

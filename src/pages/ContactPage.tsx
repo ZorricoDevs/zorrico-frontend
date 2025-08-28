@@ -101,7 +101,7 @@ const ContactPage: React.FC = () => {
             </Typography>
           </Box>
           <Typography variant='body1' sx={{ mb: 1 }}>
-            <strong>General Queries:</strong> service@zorrico.com
+            <strong>General Queries:</strong> support@zorrico.com
           </Typography>
           <Typography variant='body1' sx={{ mb: 1 }}>
             <strong>Loan Applications:</strong> sales@zorrico.com
