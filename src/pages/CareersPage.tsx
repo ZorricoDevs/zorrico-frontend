@@ -10,7 +10,7 @@ const CareersPage: React.FC = () => {
   const content = (
     <Stack spacing={4}>
       <Typography variant='h5' component='h2' sx={{ color: '#304FFE', fontWeight: 600 }}>
-        Join the HomeLoanMittra Team
+        Join the Zorrico Team
       </Typography>
 
       <Typography variant='body1' paragraph>
@@ -140,14 +140,14 @@ const CareersPage: React.FC = () => {
               color: '#fff',
             },
           }}
-          onClick={() => (window.location.href = 'mailto:careers@homeloanmittra.com')}
+          onClick={() => (window.location.href = 'mailto:marketing@zorrico.com')}
         >
           Send us your resume
         </Button>
       </Paper>
 
       <Typography variant='h5' component='h2' sx={{ color: '#1976d2', fontWeight: 600 }}>
-        Why HomeLoanMittra?
+        Why Zorrico?
       </Typography>
 
       <Stack spacing={2}>

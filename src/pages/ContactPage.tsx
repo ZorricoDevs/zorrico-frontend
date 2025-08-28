@@ -17,7 +17,7 @@ const ContactPage: React.FC = () => {
           fontWeight: 600,
         }}
       >
-        Get in Touch with Home Loan Mittra
+        Get in Touch with Zorrico
       </Typography>
 
       <Typography
@@ -59,7 +59,7 @@ const ContactPage: React.FC = () => {
               color: isDarkMode ? theme.palette.text.primary : '#2E2E2E',
             }}
           >
-            <strong style={{ color: '#304FFE' }}>Customer Support:</strong> 1800-200-3344
+            <strong style={{ color: '#304FFE' }}>Customer Support:</strong> +91 84228 89910
           </Typography>
           <Typography
             variant='body1'
@@ -68,7 +68,7 @@ const ContactPage: React.FC = () => {
               color: isDarkMode ? theme.palette.text.primary : '#2E2E2E',
             }}
           >
-            <strong style={{ color: '#304FFE' }}>Loan Assistance:</strong> +91-11-4167-2200
+            <strong style={{ color: '#304FFE' }}>Loan Assistance:</strong> +91 84228 89910
           </Typography>
           <Typography
             variant='body2'
@@ -101,10 +101,10 @@ const ContactPage: React.FC = () => {
             </Typography>
           </Box>
           <Typography variant='body1' sx={{ mb: 1 }}>
-            <strong>General Queries:</strong> support@homeloanmittra.com
+            <strong>General Queries:</strong> service@zorrico.com
           </Typography>
           <Typography variant='body1' sx={{ mb: 1 }}>
-            <strong>Loan Applications:</strong> sales@homeloanmittra.com
+            <strong>Loan Applications:</strong> sales@zorrico.com
           </Typography>
           <Typography variant='body2' sx={{ color: '#666' }}>
             Response within 24 hours
@@ -195,7 +195,7 @@ const ContactPage: React.FC = () => {
 
         <Paper elevation={1} sx={{ p: 2 }}>
           <Typography variant='subtitle1' sx={{ fontWeight: 600, mb: 1 }}>
-            Is there any processing fee for using Home Loan Mittra services?
+            Is there any processing fee for using Zorrico services?
           </Typography>
           <Typography variant='body2' sx={{ color: '#666' }}>
             Our comparison and application services are completely free for customers. You only pay

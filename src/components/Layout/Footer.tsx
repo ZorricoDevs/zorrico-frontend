@@ -293,7 +293,7 @@ const Footer: React.FC = () => {
             <Stack spacing={1} alignItems={{ xs: 'center', sm: 'flex-start' }}>
               {[
                 { name: 'EMI Calculator', path: '/emi-calculator' },
-                { name: 'Home Loans', path: '/homeloans' },
+                { name: 'Home Loan Eligibility Checker', path: '/eligibility-checker' },
               ].map(item => (
                 <Link
                   key={item.name}
@@ -443,7 +443,7 @@ const Footer: React.FC = () => {
                 fontSize: { xs: '0.8rem', sm: '0.875rem' },
               }}
             >
-              © 2025 Zorrico Technologies All rights reserved.
+              © 2025 Zorrico Finance LLP All rights reserved.
             </Typography>
             <Box
               sx={{

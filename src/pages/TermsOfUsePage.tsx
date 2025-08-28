@@ -21,9 +21,9 @@ const TermsOfUsePage: React.FC = () => {
       </Typography>
 
       <Typography variant='body1' paragraph sx={{ color: isDarkMode ? '#e0e0e0' : '#333' }}>
-        Welcome to HomeLoanMittra. These Terms of Use (&quot;Terms&quot;) govern your use of our
-        website, mobile application, and services. By accessing or using our platform, you agree to
-        be bound by these Terms.
+        Welcome to Zorrico. These Terms of Use (&quot;Terms&quot;) govern your use of our website,
+        mobile application, and services. By accessing or using our platform, you agree to be bound
+        by these Terms.
       </Typography>
 
       <Box
@@ -90,9 +90,9 @@ const TermsOfUsePage: React.FC = () => {
         </Typography>
 
         <Typography variant='body2' paragraph sx={{ color: isDarkMode ? '#e0e0e0' : '#555' }}>
-          By using HomeLoanMittra&apos;s services, you acknowledge that you have read, understood,
-          and agree to be bound by these Terms. If you do not agree to these Terms, please do not
-          use our services.
+          By using Zorrico&apos;s services, you acknowledge that you have read, understood, and
+          agree to be bound by these Terms. If you do not agree to these Terms, please do not use
+          our services.
         </Typography>
 
         <Typography variant='body2' paragraph sx={{ color: isDarkMode ? '#e0e0e0' : '#555' }}>
@@ -115,7 +115,7 @@ const TermsOfUsePage: React.FC = () => {
         </Typography>
 
         <Typography variant='body2' paragraph sx={{ color: isDarkMode ? '#e0e0e0' : '#555' }}>
-          HomeLoanMittra is a digital platform that facilitates home loan applications by:
+          Zorrico is a digital platform that facilitates home loan applications by:
         </Typography>
 
         <Stack spacing={2}>
@@ -145,8 +145,8 @@ const TermsOfUsePage: React.FC = () => {
           }}
         >
           <Typography variant='body2' sx={{ fontWeight: 600 }}>
-            Important: HomeLoanMittra is a loan aggregator and technology platform. We do not lend
-            money directly.
+            Important: Zorrico is a loan aggregator and technology platform. We do not lend money
+            directly.
           </Typography>
         </Box>
       </Paper>
@@ -258,7 +258,7 @@ const TermsOfUsePage: React.FC = () => {
         </Typography>
 
         <Typography variant='body2' paragraph>
-          HomeLoanMittra shall not be liable for:
+          Zorrico shall not be liable for:
         </Typography>
 
         <Stack spacing={2}>
@@ -285,7 +285,7 @@ const TermsOfUsePage: React.FC = () => {
 
         <Stack spacing={2}>
           <Typography variant='body2'>
-            • All content, logos, and trademarks belong to HomeLoanMittra or its licensors
+            • All content, logos, and trademarks belong to Zorrico or its licensors
           </Typography>
           <Typography variant='body2'>
             • You may not use our intellectual property without written permission
@@ -350,14 +350,14 @@ const TermsOfUsePage: React.FC = () => {
 
         <Stack spacing={1}>
           <Typography variant='body2'>
-            <strong>Email:</strong> legal@homeloanmittra.com
+            <strong>Email:</strong> legal@Zorrico.com
           </Typography>
           <Typography variant='body2'>
             <strong>Phone:</strong> 1800-200-3344
           </Typography>
           <Typography variant='body2'>
-            <strong>Address:</strong> HomeLoanMittra Technologies Pvt. Ltd., 123 Business District,
-            Sector 62, Noida - 201301
+            <strong>Address:</strong> Zorrico Technologies Pvt. Ltd., 123 Business District, Sector
+            62, Noida - 201301
           </Typography>
         </Stack>
       </Paper>

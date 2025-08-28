@@ -27,8 +27,8 @@ const AboutUsPage: React.FC = () => {
           color: isDarkMode ? theme.palette.text.primary : '#2E2E2E',
         }}
       >
-        HomeLoanMittra helps you find the right home loan faster. Compare offers from leading banks
-        & financial institutions, check your eligibility instantly, and enjoy a smooth, hassle-free
+        Zorrico helps you find the right home loan faster. Compare offers from leading banks &
+        financial institutions, check your eligibility instantly, and enjoy a smooth, hassle-free
         application journey.
       </Typography>
 
@@ -170,7 +170,7 @@ const AboutUsPage: React.FC = () => {
           mt: 4,
         }}
       >
-        Why Choose HomeLoanMittra?
+        Why Choose Zorrico?
       </Typography>
 
       <Stack spacing={2}>
@@ -223,7 +223,7 @@ const AboutUsPage: React.FC = () => {
     </Stack>
   );
 
-  return <GenericPage title='About Us' content={content} breadcrumb='About HomeLoanMittra' />;
+  return <GenericPage title='About Us' content={content} breadcrumb='About Zorrico' />;
 };
 
 export default AboutUsPage;

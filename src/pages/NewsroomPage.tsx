@@ -276,7 +276,7 @@ const NewsroomPage: React.FC = () => {
                   }}
                   onClick={() =>
                     window.open(
-                      'mailto:media@homeloanmittra.com?subject=Press Release Request',
+                      'mailto:marketing@zorrico.com?subject=Press Release Request',
                       '_blank'
                     )
                   }
@@ -318,7 +318,7 @@ const NewsroomPage: React.FC = () => {
               },
             }}
             onClick={() =>
-              window.open('mailto:media@homeloanmittra.com?subject=Media Inquiry', '_blank')
+              window.open('mailto:marketing@zorrico.com?subject=Media Inquiry', '_blank')
             }
           >
             Contact Media Team
@@ -336,7 +336,7 @@ const NewsroomPage: React.FC = () => {
               },
             }}
             onClick={() =>
-              window.open('mailto:media@homeloanmittra.com?subject=Press Kit Request', '_blank')
+              window.open('mailto:marketing@zorrico.com?subject=Press Kit Request', '_blank')
             }
           >
             Download Press Kit
@@ -358,37 +358,37 @@ const NewsroomPage: React.FC = () => {
       >
         <Paper elevation={1} sx={{ p: 3 }}>
           <Typography variant='h4' sx={{ color: '#1976d2', fontWeight: 700, mb: 1 }}>
-            10K+
+            Hassle-Free Process
           </Typography>
           <Typography variant='body2' sx={{ color: '#666' }}>
-            Happy Customers
+            We handle the process, you relax
           </Typography>
         </Paper>
 
         <Paper elevation={1} sx={{ p: 3 }}>
           <Typography variant='h4' sx={{ color: '#28a745', fontWeight: 700, mb: 1 }}>
-            ₹50 Cr+
+            No Hidden Charges
           </Typography>
           <Typography variant='body2' sx={{ color: '#666' }}>
-            Loans Disbursed
+            We never charge you hidden fees
           </Typography>
         </Paper>
 
         <Paper elevation={1} sx={{ p: 3 }}>
           <Typography variant='h4' sx={{ color: '#ff9800', fontWeight: 700, mb: 1 }}>
-            50+
+            Real-Time Tracking
           </Typography>
           <Typography variant='body2' sx={{ color: '#666' }}>
-            Partner Banks
+            Track your application in real time
           </Typography>
         </Paper>
 
         <Paper elevation={1} sx={{ p: 3 }}>
           <Typography variant='h4' sx={{ color: '#dc3545', fontWeight: 700, mb: 1 }}>
-            50+
+            Best Rate Guarantee
           </Typography>
           <Typography variant='body2' sx={{ color: '#666' }}>
-            Cities Covered
+            50+ Banking Partners
           </Typography>
         </Paper>
       </Box>
@@ -399,8 +399,8 @@ const NewsroomPage: React.FC = () => {
         </Typography>
 
         <Typography variant='body1' paragraph>
-          Stay connected with HomeLoanMittra&apos;s growth story and get the latest updates on our
-          social media channels:
+          Stay connected with Zorrico&apos;s growth story and get the latest updates on our social
+          media channels:
         </Typography>
 
         <Stack spacing={2}>

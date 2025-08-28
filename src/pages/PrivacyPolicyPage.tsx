@@ -21,9 +21,9 @@ const PrivacyPolicyPage: React.FC = () => {
       </Typography>
 
       <Typography variant='body1' paragraph sx={{ color: isDarkMode ? '#e0e0e0' : '#333' }}>
-        At HomeLoanMittra, we are committed to protecting your privacy and ensuring the security of
-        your personal information. This Privacy Policy explains how we collect, use, share, and
-        protect your information when you use our services.
+        At Zorrico, we are committed to protecting your privacy and ensuring the security of your
+        personal information. This Privacy Policy explains how we collect, use, share, and protect
+        your information when you use our services.
       </Typography>
 
       <Box
@@ -343,14 +343,14 @@ const PrivacyPolicyPage: React.FC = () => {
 
         <Stack spacing={1}>
           <Typography variant='body2' sx={{ color: isDarkMode ? '#e0e0e0' : '#555' }}>
-            <strong>Email:</strong> privacy@homeloanmittra.com
+            <strong>Email:</strong> privacy@Zorrico.com
           </Typography>
           <Typography variant='body2' sx={{ color: isDarkMode ? '#e0e0e0' : '#555' }}>
             <strong>Phone:</strong> 1800-200-3344
           </Typography>
           <Typography variant='body2' sx={{ color: isDarkMode ? '#e0e0e0' : '#555' }}>
-            <strong>Address:</strong> HomeLoanMittra Technologies Pvt. Ltd., 123 Business District,
-            Sector 62, Noida - 201301
+            <strong>Address:</strong> Zorrico Technologies Pvt. Ltd., 123 Business District, Sector
+            62, Noida - 201301
           </Typography>
         </Stack>
       </Paper>
