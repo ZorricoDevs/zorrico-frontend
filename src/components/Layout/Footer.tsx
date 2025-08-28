@@ -1,10 +1,32 @@
 import React from 'react';
-import { Box, Container, Typography, Link, Stack, Divider, keyframes } from '@mui/material';
-import { LocationOn, LinkedIn, Twitter, TrendingUp, Security, Speed } from '@mui/icons-material';
+import {
+  Box,
+  Container,
+  Typography,
+  Link,
+  Stack,
+  Divider,
+  keyframes,
+  useTheme,
+} from '@mui/material';
+import {
+  LocationOn,
+  LinkedIn,
+  Facebook,
+  Instagram,
+  YouTube,
+  TrendingUp,
+  Security,
+  Speed,
+} from '@mui/icons-material';
 import { Link as RouterLink } from 'react-router-dom';
-import logo from '../../assets/logo.png';
+import logo from '../../assets/logo.svg';
+import logoDark from '../../assets/logo-dark.svg'; // Dark theme logo
 
 const Footer: React.FC = () => {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === 'dark';
+
   // Animation keyframes
   const float = keyframes`
     0% { transform: translateY(0px) rotate(0deg); }
@@ -17,15 +39,15 @@ const Footer: React.FC = () => {
     <Box
       component='footer'
       sx={{
-        backgroundColor: '#f8f9fa',
-        borderTop: '1px solid #e9ecef',
+        backgroundColor: isDark ? '#1e293b' : '#f8f9fa',
+        borderTop: `1px solid ${isDark ? '#334155' : '#e9ecef'}`,
         mt: 'auto',
         py: { xs: 4, sm: 6 },
         position: 'relative',
         overflow: 'hidden',
       }}
     >
-      {/* Simplified Background Elements */}
+      {/* Theme-aware Background Elements */}
       <Box
         sx={{
           position: 'absolute',
@@ -41,7 +63,9 @@ const Footer: React.FC = () => {
             left: '10%',
             width: '80px',
             height: '80px',
-            background: 'linear-gradient(45deg, rgba(25, 118, 210, 0.1), rgba(25, 118, 210, 0.05))',
+            background: isDark
+              ? 'linear-gradient(45deg, rgba(96, 165, 250, 0.2), rgba(96, 165, 250, 0.1))'
+              : 'linear-gradient(45deg, rgba(25, 118, 210, 0.1), rgba(25, 118, 210, 0.05))',
             borderRadius: '50%',
             animation: `${float} 8s ease-in-out infinite`,
           },
@@ -52,7 +76,9 @@ const Footer: React.FC = () => {
             right: '15%',
             width: '60px',
             height: '60px',
-            background: 'linear-gradient(135deg, rgba(40, 167, 69, 0.1), rgba(40, 167, 69, 0.05))',
+            background: isDark
+              ? 'linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.1))'
+              : 'linear-gradient(135deg, rgba(40, 167, 69, 0.1), rgba(40, 167, 69, 0.05))',
             borderRadius: '50%',
             animation: `${float} 10s ease-in-out infinite reverse`,
           },
@@ -67,10 +93,10 @@ const Footer: React.FC = () => {
             gridTemplateColumns: {
               xs: '1fr',
               sm: 'repeat(2, 1fr)',
-              md: 'repeat(3, 1fr)',
-              lg: '2fr 1fr 1fr 1fr 2fr',
+              md: 'repeat(4, 1fr)',
+              lg: '2fr 1fr 1fr 1fr 1fr',
             },
-            gap: { xs: 3, sm: 4, md: 4, lg: 4 },
+            gap: { xs: 3, sm: 4, md: 6, lg: 8 },
             mb: { xs: 3, sm: 4 },
           }}
         >
@@ -86,57 +112,29 @@ const Footer: React.FC = () => {
                 mb: { xs: 2, sm: 3 },
                 display: 'flex',
                 alignItems: 'center',
-                gap: 2,
                 justifyContent: { xs: 'center', sm: 'flex-start' },
-                flexDirection: { xs: 'column', sm: 'row' },
               }}
             >
               <img
-                src={logo}
-                alt='Home Loan Mittra Logo'
+                src={isDark ? logoDark : logo}
+                alt='Zorrico Logo'
                 style={{
-                  height: '40px',
+                  height: '100px',
                   width: 'auto',
-                  filter: 'brightness(1.1)',
+                  maxWidth: '250px',
                 }}
               />
-              <Box sx={{ textAlign: { xs: 'center', sm: 'left' } }}>
-                <Typography
-                  variant='h5'
-                  sx={{
-                    fontWeight: 'bold',
-                    color: '#1976d2',
-                    fontFamily: 'Arial, sans-serif',
-                    letterSpacing: '-0.02em',
-                    mb: 0.5,
-                    fontSize: { xs: '1.2rem', sm: '1.5rem' },
-                  }}
-                >
-                  Home Loan Mittra
-                </Typography>
-                <Typography
-                  variant='caption'
-                  sx={{
-                    color: '#6c757d',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.1em',
-                    fontSize: { xs: '0.7rem', sm: '0.75rem' },
-                  }}
-                >
-                  Making Home Loans Effortless
-                </Typography>
-              </Box>
             </Box>
 
             <Box
               sx={{
                 display: 'flex',
                 alignItems: 'center',
-                color: '#6c757d',
+                color: isDark ? '#94a3b8' : '#6c757d',
                 mt: 2,
                 justifyContent: { xs: 'center', sm: 'flex-start' },
                 '&:hover': {
-                  color: '#1976d2',
+                  color: isDark ? '#60a5fa' : '#1976d2',
                   transition: 'color 0.3s ease',
                 },
               }}
@@ -246,7 +244,7 @@ const Footer: React.FC = () => {
               variant='h6'
               sx={{
                 fontWeight: 600,
-                color: '#495057',
+                color: isDark ? '#f8fafc' : '#495057',
                 mb: 2,
                 fontSize: { xs: '1rem', sm: '1.25rem' },
               }}
@@ -259,12 +257,12 @@ const Footer: React.FC = () => {
                   key={item}
                   href={`/${item.toLowerCase().replace(' ', '')}`}
                   sx={{
-                    color: '#6c757d',
+                    color: isDark ? '#94a3b8' : '#6c757d',
                     textDecoration: 'none',
                     fontSize: { xs: '0.8rem', sm: '0.875rem' },
                     transition: 'color 0.3s ease',
                     '&:hover': {
-                      color: '#1976d2',
+                      color: isDark ? '#60a5fa' : '#1976d2',
                     },
                   }}
                 >
@@ -285,7 +283,7 @@ const Footer: React.FC = () => {
               variant='h6'
               sx={{
                 fontWeight: 600,
-                color: '#495057',
+                color: isDark ? '#f8fafc' : '#495057',
                 mb: 2,
                 fontSize: { xs: '1rem', sm: '1.25rem' },
               }}
@@ -301,12 +299,12 @@ const Footer: React.FC = () => {
                   key={item.name}
                   href={item.path}
                   sx={{
-                    color: '#6c757d',
+                    color: isDark ? '#94a3b8' : '#6c757d',
                     textDecoration: 'none',
                     fontSize: { xs: '0.8rem', sm: '0.875rem' },
                     transition: 'color 0.3s ease',
                     '&:hover': {
-                      color: '#28a745',
+                      color: isDark ? '#22c55e' : '#28a745',
                     },
                   }}
                 >
@@ -320,14 +318,14 @@ const Footer: React.FC = () => {
           <Box
             sx={{
               textAlign: { xs: 'center', sm: 'left' },
-              gridColumn: { xs: '1', sm: '1', md: '1', lg: '4' },
+              gridColumn: { xs: '1', sm: '1', md: '4', lg: '4' },
             }}
           >
             <Typography
               variant='h6'
               sx={{
                 fontWeight: 600,
-                color: '#495057',
+                color: isDark ? '#f8fafc' : '#495057',
                 mb: 2,
                 fontSize: { xs: '1rem', sm: '1.25rem' },
               }}
@@ -343,12 +341,12 @@ const Footer: React.FC = () => {
                   key={item.name}
                   href={item.path}
                   sx={{
-                    color: '#6c757d',
+                    color: isDark ? '#94a3b8' : '#6c757d',
                     textDecoration: 'none',
                     fontSize: { xs: '0.8rem', sm: '0.875rem' },
                     transition: 'color 0.3s ease',
                     '&:hover': {
-                      color: '#dc3545',
+                      color: isDark ? '#f87171' : '#dc3545',
                     },
                   }}
                 >
@@ -362,14 +360,14 @@ const Footer: React.FC = () => {
           <Box
             sx={{
               textAlign: { xs: 'center', sm: 'left' },
-              gridColumn: { xs: '1', sm: '2', md: '2', lg: '5' },
+              gridColumn: { xs: '1', sm: '2', md: '1', lg: '5' },
             }}
           >
             <Typography
               variant='h6'
               sx={{
                 fontWeight: 600,
-                color: '#495057',
+                color: isDark ? '#f8fafc' : '#495057',
                 mb: 2,
                 fontSize: { xs: '1rem', sm: '1.25rem' },
               }}
@@ -387,7 +385,7 @@ const Footer: React.FC = () => {
                   key={item.name}
                   href={item.path}
                   sx={{
-                    color: '#6c757d',
+                    color: isDark ? '#94a3b8' : '#6c757d',
                     textDecoration: 'none',
                     fontSize: { xs: '0.8rem', sm: '0.875rem' },
                     transition: 'color 0.3s ease',
@@ -412,49 +410,10 @@ const Footer: React.FC = () => {
                 </Link>
               ))}
             </Stack>
-
-            {/* Certification Badges */}
-            <Box
-              sx={{
-                mt: 3,
-                display: 'flex',
-                gap: { xs: 1, sm: 2 },
-                alignItems: 'center',
-                flexWrap: 'wrap',
-                justifyContent: { xs: 'center', sm: 'flex-start' },
-              }}
-            >
-              {[
-                { label: 'SSL', color: '#1976d2' },
-                { label: 'ISO', color: '#17a2b8' },
-              ].map(badge => (
-                <Box
-                  key={badge.label}
-                  sx={{
-                    width: { xs: 32, sm: 40 },
-                    height: { xs: 32, sm: 40 },
-                    borderRadius: '50%',
-                    backgroundColor: badge.color,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white',
-                    fontSize: { xs: '8px', sm: '10px' },
-                    fontWeight: 'bold',
-                    transition: 'transform 0.3s ease',
-                    '&:hover': {
-                      transform: 'scale(1.1)',
-                    },
-                  }}
-                >
-                  {badge.label}
-                </Box>
-              ))}
-            </Box>
           </Box>
         </Box>
 
-        <Divider sx={{ my: { xs: 2, sm: 3 }, borderColor: '#e9ecef' }} />
+        <Divider sx={{ my: { xs: 2, sm: 3 }, borderColor: isDark ? '#374151' : '#e9ecef' }} />
 
         {/* Bottom Footer */}
         <Box
@@ -480,7 +439,7 @@ const Footer: React.FC = () => {
             <Typography
               variant='body2'
               sx={{
-                color: '#6c757d',
+                color: isDark ? '#94a3b8' : '#6c757d',
                 fontSize: { xs: '0.8rem', sm: '0.875rem' },
               }}
             >
@@ -502,12 +461,12 @@ const Footer: React.FC = () => {
                     component={RouterLink}
                     to={route}
                     sx={{
-                      color: '#6c757d',
+                      color: isDark ? '#94a3b8' : '#6c757d',
                       textDecoration: 'none',
                       fontSize: { xs: '0.8rem', sm: '0.875rem' },
                       transition: 'color 0.3s ease',
                       '&:hover': {
-                        color: '#1976d2',
+                        color: isDark ? '#60a5fa' : '#1976d2',
                       },
                     }}
                   >
@@ -528,23 +487,44 @@ const Footer: React.FC = () => {
             }}
           >
             {[
-              { icon: <LinkedIn fontSize='small' />, href: 'https://linkedin.com' },
-              { icon: <Twitter fontSize='small' />, href: 'https://twitter.com' },
+              {
+                icon: <Facebook fontSize='small' />,
+                href: 'https://www.facebook.com/profile.php?id=61579629820945',
+                color: '#1877f2',
+              },
+              {
+                icon: <Instagram fontSize='small' />,
+                href: 'https://www.instagram.com/zorrico_official',
+                color: '#e4405f',
+              },
+              {
+                icon: <LinkedIn fontSize='small' />,
+                href: 'https://www.linkedin.com/company/zorrico',
+                color: '#0a66c2',
+              },
+              {
+                icon: <YouTube fontSize='small' />,
+                href: 'https://www.youtube.com/@zorrico',
+                color: '#ff0000',
+              },
             ].map(social => (
               <Link
                 key={social.href}
                 href={social.href}
                 target='_blank'
                 sx={{
-                  color: '#6c757d',
+                  color: isDark ? '#94a3b8' : '#6c757d',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  width: { xs: 28, sm: 32 },
-                  height: { xs: 28, sm: 32 },
-                  transition: 'color 0.3s ease',
+                  width: { xs: 32, sm: 36 },
+                  height: { xs: 32, sm: 36 },
+                  borderRadius: '50%',
+                  transition: 'all 0.3s ease',
                   '&:hover': {
-                    color: '#1976d2',
+                    color: social.color,
+                    backgroundColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
+                    transform: 'translateY(-2px)',
                   },
                 }}
               >

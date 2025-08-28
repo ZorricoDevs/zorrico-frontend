@@ -815,7 +815,7 @@ const HomePage: React.FC = () => {
                   color: 'var(--text-primary)',
                 }}
               >
-                Why Choose Home Loan Mittra?
+                Why Choose Zorrico?
               </Typography>
               <Typography
                 sx={{

@@ -34,7 +34,8 @@ import {
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import logo from '../../assets/logo.png';
+import logo from '../../assets/logo.svg';
+import logoDark from '../../assets/logo-dark.svg'; // Dark theme logo
 
 const Navbar: React.FC = () => {
   const muiTheme = muiUseTheme();
@@ -150,7 +151,7 @@ const Navbar: React.FC = () => {
         {/* Enhanced Mobile Header */}
         <Box
           sx={{
-            p: 3,
+            p: { xs: 2, sm: 3 },
             background: isDark
               ? 'linear-gradient(135deg, #1e293b 0%, #334155 100%)'
               : 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
@@ -158,43 +159,15 @@ const Navbar: React.FC = () => {
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-            <Box
-              component='img'
-              src={logo}
-              alt='Home Loan Mittra Logo'
-              sx={{
-                height: 40,
+            <img
+              src={isDark ? logoDark : logo}
+              alt='Zorrico Logo'
+              style={{
+                height: 50,
                 width: 'auto',
-                maxWidth: 80,
-                borderRadius: 2,
-                objectFit: 'contain',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                marginRight: 12,
               }}
             />
-            <Box>
-              <Typography
-                variant='h6'
-                sx={{
-                  fontWeight: 700,
-                  color: isDark ? '#60a5fa' : '#1976d2',
-                  lineHeight: 1.2,
-                  fontSize: 18,
-                }}
-              >
-                Home Loan Mittra
-              </Typography>
-              <Typography
-                variant='caption'
-                sx={{
-                  color: isDark ? '#94A3B8' : '#64748B',
-                  fontWeight: 500,
-                  letterSpacing: 0.5,
-                  fontSize: 11,
-                }}
-              >
-                Making Home Loans Effortless
-              </Typography>
-            </Box>
           </Box>
 
           {user && (
@@ -392,19 +365,7 @@ const Navbar: React.FC = () => {
 
           {/* App Info Section */}
           <ListItem sx={{ pt: 1, pb: 2 }}>
-            <Box sx={{ textAlign: 'center', width: '100%' }}>
-              <Typography
-                variant='caption'
-                sx={{
-                  color: isDark ? '#94A3B8' : '#94A3B8',
-                  fontSize: 11,
-                  fontWeight: 400,
-                  letterSpacing: 0.5,
-                }}
-              >
-                Home Loan Mittra v1.0
-              </Typography>
-            </Box>
+            <Box sx={{ textAlign: 'center', width: '100%' }}>{/* Version info removed */}</Box>
           </ListItem>
         </List>
       </Box>
@@ -452,61 +413,32 @@ const Navbar: React.FC = () => {
             </IconButton>
           )}
 
-          {/* Logo and Business Name */}
+          {/* Logo */}
           <Box
             sx={{
               display: 'flex',
               alignItems: 'center',
               gap: { xs: 1, sm: 1.5 },
               cursor: 'pointer',
-              minWidth: { xs: 'auto', sm: 200, md: 260 },
-              pl: { xs: 0, sm: 1 },
+              minWidth: { lg: 'auto', sm: 280, md: 420 },
+              pl: { xs: 1, sm: 2 },
+              pr: { xs: 1, sm: 2 },
               flexShrink: 0,
             }}
             onClick={() => handleNavigation('/')}
           >
             <Box
               component='img'
-              src={logo}
-              alt='Home Loan Mittra Logo'
+              src={isDark ? logoDark : logo}
+              alt='Zorrico Logo'
               sx={{
-                height: { xs: 32, sm: 40, md: 48 },
+                height: { xs: 40, sm: 50, md: 60, lg: 70 },
                 width: 'auto',
-                maxWidth: { xs: 80, sm: 100, md: 120 },
-                borderRadius: 2,
-                boxShadow: '0 2px 8px 0 rgba(30,41,59,0.10)',
+                maxWidth: { xs: 120, sm: 150, md: 180, lg: 200 },
                 objectFit: 'contain',
                 display: 'block',
               }}
             />
-            {!isSmallMobile && (
-              <Box>
-                <Typography
-                  variant='h6'
-                  sx={{
-                    fontWeight: 700,
-                    color: isDark ? '#60a5fa' : '#1976d2',
-                    lineHeight: 1,
-                    fontSize: { xs: 16, sm: 20, md: 24 },
-                    display: { xs: 'none', sm: 'block' },
-                  }}
-                >
-                  Home Loan Mittra
-                </Typography>
-                <Typography
-                  variant='caption'
-                  sx={{
-                    color: isDark ? '#CBD5E1' : '#64748B',
-                    fontWeight: 500,
-                    letterSpacing: 1,
-                    fontSize: { xs: 10, sm: 12 },
-                    display: { xs: 'none', md: 'block' },
-                  }}
-                >
-                  MAKING HOME LOANS EFFORTLESS
-                </Typography>
-              </Box>
-            )}
           </Box>
 
           {/* Spacer to push nav to right */}

@@ -20,7 +20,7 @@ const FinanceLoader: React.FC = () => {
         justifyContent: 'center',
         background: 'linear-gradient(135deg, #1976d2 0%, #42a5f5 50%, #304FFE 100%)',
         zIndex: 9999,
-        overflow: 'hidden'
+        overflow: 'hidden',
       }}
     >
       {/* Floating background icons - full screen positioned */}
@@ -31,22 +31,23 @@ const FinanceLoader: React.FC = () => {
         transition={{
           duration: 4,
           repeat: Infinity,
-          ease: "easeInOut"
+          ease: 'easeInOut',
         }}
         style={{
           position: 'absolute',
           top: '15%',
           left: '10%',
           opacity: 0.15,
-          zIndex: 1
+          zIndex: 1,
         }}
       >
-        <AccountBalance sx={{
-          fontSize: { xs: 48, sm: 64, md: 80 },
-          color: 'white'
-        }} />
+        <AccountBalance
+          sx={{
+            fontSize: { xs: 48, sm: 64, md: 80 },
+            color: 'white',
+          }}
+        />
       </motion.div>
-
       <motion.div
         animate={{
           y: [-15, 15, -15],
@@ -54,23 +55,24 @@ const FinanceLoader: React.FC = () => {
         transition={{
           duration: 3.5,
           repeat: Infinity,
-          ease: "easeInOut",
-          delay: 0.5
+          ease: 'easeInOut',
+          delay: 0.5,
         }}
         style={{
           position: 'absolute',
           top: '25%',
           right: '15%',
           opacity: 0.15,
-          zIndex: 1
+          zIndex: 1,
         }}
       >
-        <Security sx={{
-          fontSize: { xs: 40, sm: 56, md: 72 },
-          color: 'white'
-        }} />
+        <Security
+          sx={{
+            fontSize: { xs: 40, sm: 56, md: 72 },
+            color: 'white',
+          }}
+        />
       </motion.div>
-
       <motion.div
         animate={{
           y: [-25, 25, -25],
@@ -78,23 +80,24 @@ const FinanceLoader: React.FC = () => {
         transition={{
           duration: 4.5,
           repeat: Infinity,
-          ease: "easeInOut",
-          delay: 1
+          ease: 'easeInOut',
+          delay: 1,
         }}
         style={{
           position: 'absolute',
           bottom: '20%',
           left: '15%',
           opacity: 0.15,
-          zIndex: 1
+          zIndex: 1,
         }}
       >
-        <TrendingUp sx={{
-          fontSize: { xs: 44, sm: 60, md: 76 },
-          color: 'white'
-        }} />
+        <TrendingUp
+          sx={{
+            fontSize: { xs: 44, sm: 60, md: 76 },
+            color: 'white',
+          }}
+        />
       </motion.div>
-
       <motion.div
         animate={{
           y: [-18, 18, -18],
@@ -102,22 +105,25 @@ const FinanceLoader: React.FC = () => {
         transition={{
           duration: 3.8,
           repeat: Infinity,
-          ease: "easeInOut",
-          delay: 1.5
+          ease: 'easeInOut',
+          delay: 1.5,
         }}
         style={{
           position: 'absolute',
           bottom: '25%',
           right: '10%',
           opacity: 0.15,
-          zIndex: 1
+          zIndex: 1,
         }}
       >
-        <Home sx={{
-          fontSize: { xs: 42, sm: 58, md: 74 },
-          color: 'white'
-        }} />
-      </motion.div>      {/* Main content container - centered in full screen */}
+        <Home
+          sx={{
+            fontSize: { xs: 42, sm: 58, md: 74 },
+            color: 'white',
+          }}
+        />
+      </motion.div>{' '}
+      {/* Main content container - centered in full screen */}
       <motion.div
         animate={{
           scale: [1, 1.02, 1],
@@ -125,14 +131,14 @@ const FinanceLoader: React.FC = () => {
         transition={{
           duration: 3,
           repeat: Infinity,
-          ease: "easeInOut"
+          ease: 'easeInOut',
         }}
         style={{
           textAlign: 'center',
           zIndex: 2,
           maxWidth: '500px',
           width: '90%',
-          position: 'relative'
+          position: 'relative',
         }}
       >
         <Box
@@ -146,74 +152,77 @@ const FinanceLoader: React.FC = () => {
             padding: { xs: '15px', sm: '20px' },
             backdropFilter: 'blur(15px)',
             border: '2px solid rgba(255, 255, 255, 0.3)',
-            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2)'
+            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2)',
           }}
         >
-          <Home sx={{
-            fontSize: { xs: 36, sm: 48, md: 56 },
-            color: 'white',
-            filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.3))'
-          }} />
+          <Home
+            sx={{
+              fontSize: { xs: 36, sm: 48, md: 56 },
+              color: 'white',
+              filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.3))',
+            }}
+          />
         </Box>
 
         <motion.div
           animate={{
             textShadow: [
-              "0 0 8px rgba(255,255,255,0.6)",
-              "0 0 20px rgba(255,255,255,0.9)",
-              "0 0 8px rgba(255,255,255,0.6)"
-            ]
+              '0 0 8px rgba(255,255,255,0.6)',
+              '0 0 20px rgba(255,255,255,0.9)',
+              '0 0 8px rgba(255,255,255,0.6)',
+            ],
           }}
           transition={{
             duration: 2.5,
-            repeat: Infinity
+            repeat: Infinity,
           }}
         >
           <Typography
-            variant="h4"
+            variant='h4'
             sx={{
               color: 'white',
               fontWeight: 'bold',
               mb: { xs: 1, sm: 2 },
               letterSpacing: '0.5px',
               fontSize: { xs: '1.5rem', sm: '2rem', md: '2.25rem' },
-              textAlign: 'center'
+              textAlign: 'center',
             }}
           >
-            Home Loan Mittra
+            Zorrico
           </Typography>
         </motion.div>
 
         <Typography
-          variant="h6"
+          variant='h6'
           sx={{
             color: 'rgba(255, 255, 255, 0.95)',
             fontWeight: 400,
             letterSpacing: '0.5px',
             mb: { xs: 3, sm: 4 },
             fontSize: { xs: '0.875rem', sm: '1rem', md: '1.125rem' },
-            textAlign: 'center'
+            textAlign: 'center',
           }}
         >
-          MAKING HOME LOANS EFFORTLESS
+          From Finding Homes to Making Them Yours
         </Typography>
       </motion.div>
-
       {/* Progress indicator - component sized */}
-      <Box sx={{
-        position: 'relative',
-        display: 'inline-flex',
-        mb: { xs: 2, sm: 3 },
-        zIndex: 2
-      }}>
+      <Box
+        sx={{
+          position: 'relative',
+          display: 'inline-flex',
+          mb: { xs: 2, sm: 3 },
+          zIndex: 2,
+        }}
+      >
         <motion.div
           animate={{
-            rotate: 360
+            rotate: 360,
           }}
           transition={{
             duration: 2,
             repeat: Infinity,
-            ease: "linear"
+            ease: 'linear',
           }}
         >
           <CircularProgress
@@ -223,8 +232,8 @@ const FinanceLoader: React.FC = () => {
               color: 'white',
               '& .MuiCircularProgress-circle': {
                 strokeLinecap: 'round',
-                filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.5))'
-              }
+                filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.5))',
+              },
             }}
           />
         </motion.div>
@@ -241,40 +250,41 @@ const FinanceLoader: React.FC = () => {
           }}
         >
           <Typography
-            variant="caption"
+            variant='caption'
             sx={{
               color: 'white',
               fontWeight: 'bold',
               fontSize: { xs: '0.625rem', sm: '0.75rem' },
-              letterSpacing: '1px'
+              letterSpacing: '1px',
             }}
           >
             LOADING
           </Typography>
         </Box>
       </Box>
-
       {/* Loading text with dots - compact */}
-      <Box sx={{
-        display: 'flex',
-        gap: 0.5,
-        alignItems: 'center',
-        mb: { xs: 2, sm: 3 },
-        zIndex: 2
-      }}>
+      <Box
+        sx={{
+          display: 'flex',
+          gap: 0.5,
+          alignItems: 'center',
+          mb: { xs: 2, sm: 3 },
+          zIndex: 2,
+        }}
+      >
         <Typography
-          variant="body2"
+          variant='body2'
           sx={{
             color: 'white',
             mr: 1,
             fontSize: { xs: '0.875rem', sm: '1rem' },
             fontWeight: 400,
-            letterSpacing: '0.25px'
+            letterSpacing: '0.25px',
           }}
         >
           Preparing your experience
         </Typography>
-        {[0, 1, 2].map((index) => (
+        {[0, 1, 2].map(index => (
           <motion.div
             key={index}
             animate={{
@@ -291,12 +301,11 @@ const FinanceLoader: React.FC = () => {
               height: 6,
               backgroundColor: 'white',
               borderRadius: '50%',
-              boxShadow: '0 0 6px rgba(255,255,255,0.4)'
+              boxShadow: '0 0 6px rgba(255,255,255,0.4)',
             }}
           />
         ))}
       </Box>
-
       {/* Simple bottom tagline */}
       <motion.div
         initial={{ opacity: 0 }}
@@ -305,16 +314,16 @@ const FinanceLoader: React.FC = () => {
         style={{
           textAlign: 'center',
           zIndex: 2,
-          marginTop: '1rem'
+          marginTop: '1rem',
         }}
       >
         <Typography
-          variant="caption"
+          variant='caption'
           sx={{
             color: 'rgba(255, 255, 255, 0.8)',
             fontStyle: 'italic',
             fontSize: { xs: '0.75rem', sm: '0.825rem' },
-            fontWeight: 300
+            fontWeight: 300,
           }}
         >
           Your trusted partner in home financing
