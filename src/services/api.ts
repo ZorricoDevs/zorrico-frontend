@@ -4,7 +4,7 @@ import axios from 'axios';
 const getApiBaseUrl = (): string => {
   // Use environment variable if available, fallback to production URL
   const envApiUrl = process.env.REACT_APP_API_URL;
-  const defaultUrl = 'https://api.zorrico.com/api';
+  const defaultUrl = 'https://api.zorrico.com/api/';
 
   if (envApiUrl) {
     // Only log in development mode
