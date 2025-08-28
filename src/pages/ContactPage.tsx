@@ -122,7 +122,7 @@ const ContactPage: React.FC = () => {
         <Typography variant='body1' sx={{ mb: 2 }}>
           <strong>Head Office:</strong>
           <br />
-          HLM Technologies Pvt. Ltd.
+          Zorrico Technologies Pvt. Ltd.
           <br />
           123, Business District,
           <br />

@@ -1,4 +1,4 @@
-# 🚀 STARTUP-READY: HomeLoanMittra Frontend Docker Configuration
+# 🚀 STARTUP-READY: Zorrico Frontend Docker Configuration
 FROM node:18-alpine as builder
 
 # Set working directory

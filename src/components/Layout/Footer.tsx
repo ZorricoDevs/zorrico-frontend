@@ -484,7 +484,7 @@ const Footer: React.FC = () => {
                 fontSize: { xs: '0.8rem', sm: '0.875rem' },
               }}
             >
-              © 2025 HLM Technologies All rights reserved.
+              © 2025 Zorrico Technologies All rights reserved.
             </Typography>
             <Box
               sx={{

@@ -14,7 +14,7 @@ This guide explains how to set up and use different environments for frontend de
 ### 🏠 Local Development (Frontend + Backend both local)
 
 ```bash
-# Start backend locally first (from homeloanmittra-backend folder)
+# Start backend locally first (from zorrico-backend folder)
 npm run dev
 
 # Start frontend with local backend
