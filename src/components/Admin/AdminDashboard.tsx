@@ -102,6 +102,7 @@ const AdminDashboard: React.FC = () => {
     totalCustomers: 0,
     totalBrokers: 0,
     totalBuilders: 0,
+    totalBankers: 0,
     totalAdmins: 0,
     activeUsers: 0,
     pendingApprovals: 0,
@@ -136,6 +137,9 @@ const AdminDashboard: React.FC = () => {
     password: '',
     companyName: '',
     licenseNumber: '',
+    bankName: '',
+    employeeId: '',
+    designation: '',
   });
   const [autoPassword, setAutoPassword] = useState('');
   const [creatingUser, setCreatingUser] = useState(false);
@@ -293,6 +297,13 @@ const AdminDashboard: React.FC = () => {
               licenseNumber: manualUser.licenseNumber,
             }
           : {}),
+        ...(newUserRole === 'banker'
+          ? {
+              bankName: manualUser.bankName,
+              employeeId: manualUser.employeeId,
+              designation: manualUser.designation,
+            }
+          : {}),
       };
 
       await createUser(userData);
@@ -307,6 +318,9 @@ const AdminDashboard: React.FC = () => {
         password: '',
         companyName: '',
         licenseNumber: '',
+        bankName: '',
+        employeeId: '',
+        designation: '',
       });
       setAutoPassword('');
       setSelectedApprovedCustomer('');
@@ -911,6 +925,9 @@ const AdminDashboard: React.FC = () => {
                 password: '',
                 companyName: '',
                 licenseNumber: '',
+                bankName: '',
+                employeeId: '',
+                designation: '',
               });
               setAutoPassword('');
               setSelectedApprovedCustomer('');
@@ -937,6 +954,7 @@ const AdminDashboard: React.FC = () => {
                 <MenuItem value='customer'>Customer</MenuItem>
                 <MenuItem value='broker'>Broker</MenuItem>
                 <MenuItem value='builder'>Builder</MenuItem>
+                <MenuItem value='banker'>Banker</MenuItem>
                 <MenuItem value='admin'>Admin</MenuItem>
               </Select>
             </FormControl>
@@ -960,6 +978,9 @@ const AdminDashboard: React.FC = () => {
                         password: '',
                         companyName: '',
                         licenseNumber: '',
+                        bankName: '',
+                        employeeId: '',
+                        designation: '',
                       });
                     }
                   }}
@@ -1024,6 +1045,31 @@ const AdminDashboard: React.FC = () => {
               />
             </Box>
           )}
+          {newUserRole === 'banker' && (
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mt: 2 }}>
+              <TextField
+                fullWidth
+                label='Bank Name'
+                value={manualUser.bankName}
+                onChange={e => setManualUser((u: any) => ({ ...u, bankName: e.target.value }))}
+                required
+              />
+              <TextField
+                fullWidth
+                label='Employee ID'
+                value={manualUser.employeeId}
+                onChange={e => setManualUser((u: any) => ({ ...u, employeeId: e.target.value }))}
+                required
+              />
+              <TextField
+                fullWidth
+                label='Designation'
+                value={manualUser.designation}
+                onChange={e => setManualUser((u: any) => ({ ...u, designation: e.target.value }))}
+                placeholder='e.g., Branch Manager, Loan Officer, Credit Analyst'
+              />
+            </Box>
+          )}
           <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mt: 2 }}>
             <TextField
               fullWidth
@@ -1051,7 +1097,10 @@ const AdminDashboard: React.FC = () => {
               !manualUser.lastName ||
               !manualUser.email ||
               !manualUser.phone ||
-              !(manualUser.password || autoPassword)
+              !(manualUser.password || autoPassword) ||
+              (newUserRole === 'broker' && !manualUser.companyName) ||
+              (newUserRole === 'builder' && !manualUser.companyName) ||
+              (newUserRole === 'banker' && (!manualUser.bankName || !manualUser.employeeId))
             }
             startIcon={creatingUser ? <Refresh /> : <Save />}
           >
@@ -1148,6 +1197,27 @@ const AdminDashboard: React.FC = () => {
                     {stats.totalBuilders}
                   </Typography>
                   <Typography color='rgba(255,255,255,0.8)'>Builders</Typography>
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
+        </Box>
+        <Box sx={{ flex: '1 1 200px', minWidth: '200px' }}>
+          <Card
+            sx={{
+              height: '100%',
+              background: 'linear-gradient(135deg, #00BCD4 0%, #4DD0E1 100%)',
+              color: 'white',
+            }}
+          >
+            <CardContent>
+              <Box display='flex' alignItems='center'>
+                <AccountBalance sx={{ mr: 2, fontSize: 40, color: 'white' }} />
+                <Box>
+                  <Typography variant='h4' fontWeight='bold' color='white'>
+                    {stats.totalBankers}
+                  </Typography>
+                  <Typography color='rgba(255,255,255,0.8)'>Bankers</Typography>
                 </Box>
               </Box>
             </CardContent>
@@ -1517,6 +1587,9 @@ const AdminDashboard: React.FC = () => {
                       password: '',
                       companyName: '',
                       licenseNumber: '',
+                      bankName: '',
+                      employeeId: '',
+                      designation: '',
                     });
                     setAutoPassword('');
                     setSelectedApprovedCustomer('');

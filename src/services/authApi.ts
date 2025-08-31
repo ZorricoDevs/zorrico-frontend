@@ -15,7 +15,7 @@ export interface LoginResponse {
     lastName: string;
     email: string;
     phone?: string;
-    role: 'customer' | 'broker' | 'lender' | 'admin' | 'builder';
+    role: 'customer' | 'broker' | 'lender' | 'admin' | 'builder' | 'banker';
     lastLogin?: Date;
   };
 }
@@ -86,7 +86,7 @@ export const authAPI = {
   verifyEmail: async (token: string) => {
     const response = await api.post('/auth/verify-email', { token });
     return response.data;
-  }
+  },
 };
 
 export default authAPI;

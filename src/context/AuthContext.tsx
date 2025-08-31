@@ -6,8 +6,8 @@ interface User {
   id: string;
   name: string;
   email: string;
-  role: 'admin' | 'user' | 'customer' | 'broker' | 'lender' | 'builder';
-  userType?: 'customer' | 'broker' | 'lender' | 'admin' | 'builder';
+  role: 'admin' | 'user' | 'customer' | 'broker' | 'lender' | 'builder' | 'banker';
+  userType?: 'customer' | 'broker' | 'lender' | 'admin' | 'builder' | 'banker';
   status: 'pending' | 'approved' | 'rejected';
   avatar?: string;
   firstName?: string;

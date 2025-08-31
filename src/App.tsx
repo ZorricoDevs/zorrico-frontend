@@ -66,6 +66,11 @@ const BuilderDashboard = lazyWithRetry(() => import('./components/Builder/Builde
 const AdminDashboard = lazyWithRetry(() => import('./components/Admin/AdminDashboard'));
 const CustomerLoginPage = lazyWithRetry(() => import('./pages/CustomerLoginPage'));
 const BrokerLoginPage = lazyWithRetry(() => import('./pages/BrokerLoginPage'));
+const BankerLoginPage = lazyWithRetry(() => import('./pages/BankerLoginPage'));
+const BankerDashboardPage = lazyWithRetry(() => import('./pages/BankerDashboardPage'));
+const BankerEligibilityChecker = lazyWithRetry(
+  () => import('./components/Calculators/BankerEligibilityChecker')
+);
 const LenderLoginPage = lazyWithRetry(() => import('./pages/LenderLoginPage'));
 const AdminLoginPage = lazyWithRetry(() => import('./pages/AdminLoginPage'));
 const AboutUsPage = lazyWithRetry(() => import('./pages/AboutUsPage'));
@@ -201,6 +206,7 @@ const AppContent: React.FC = () => {
                       <Route path='/login' element={<CustomerLoginPage />} />
                       <Route path='/login/customer' element={<CustomerLoginPage />} />
                       <Route path='/login/broker' element={<BrokerLoginPage />} />
+                      <Route path='/login/banker' element={<BankerLoginPage />} />
                       <Route path='/login/lender' element={<LenderLoginPage />} />
                       <Route path='/login/admin' element={<AdminLoginPage />} />
 
@@ -208,6 +214,7 @@ const AppContent: React.FC = () => {
                       <Route path='/admin-login' element={<AdminLoginPage />} />
                       <Route path='/customer-login' element={<CustomerLoginPage />} />
                       <Route path='/broker-login' element={<BrokerLoginPage />} />
+                      <Route path='/banker-login' element={<BankerLoginPage />} />
                       <Route path='/lender-login' element={<LenderLoginPage />} />
                       <Route path='/builder-login' element={<BuilderLoginPage />} />
 
@@ -283,6 +290,32 @@ const AppContent: React.FC = () => {
                         element={
                           <ProtectedRoute>
                             <BrokerDashboard />
+                          </ProtectedRoute>
+                        }
+                      />
+
+                      {/* Protected Routes - Banker */}
+                      <Route
+                        path='/dashboard/banker'
+                        element={
+                          <ProtectedRoute>
+                            <BankerDashboardPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path='/banker-dashboard'
+                        element={
+                          <ProtectedRoute>
+                            <BankerDashboardPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path='/banker-eligibility-checker'
+                        element={
+                          <ProtectedRoute>
+                            <BankerEligibilityChecker />
                           </ProtectedRoute>
                         }
                       />

@@ -88,12 +88,14 @@ const Navbar: React.FC = () => {
     if (userRole === 'admin') return '/admin-dashboard';
     if (userRole === 'broker') return '/broker-dashboard';
     if (userRole === 'builder') return '/builder-dashboard';
+    if (userRole === 'banker') return '/banker-dashboard';
     if (userRole === 'customer') return '/customer-dashboard';
 
     // Fallback to userType checking
     if (userType === 'admin') return '/admin-dashboard';
     if (userType === 'broker') return '/broker-dashboard';
     if (userType === 'builder') return '/builder-dashboard';
+    if (userType === 'banker') return '/banker-dashboard';
     if (userType === 'customer') return '/customer-dashboard';
 
     // Default fallback
@@ -107,7 +109,11 @@ const Navbar: React.FC = () => {
     { label: 'Home', path: '/', icon: <Home /> },
     // { label: 'Compare Loans', path: '/compare', icon: <Compare /> }, // Removed as per request
     { label: 'EMI Calculator', path: '/emi-calculator', icon: <Calculate /> },
-    { label: 'Eligibility Checker', path: '/eligibility-checker', icon: <Calculate /> },
+    {
+      label: 'Eligibility Checker',
+      path: user?.role === 'banker' ? '/banker-eligibility-checker' : '/eligibility-checker',
+      icon: <Calculate />,
+    },
   ];
 
   const userMenuItems = user

@@ -15,6 +15,8 @@ export const getRoleColor = (role: string) => {
       return 'warning';
     case 'broker':
       return 'info';
+    case 'banker':
+      return 'primary';
     case 'user':
       return 'success';
     default:
@@ -31,6 +33,8 @@ export const getAvatarColor = (role: string, theme: Theme) => {
       return theme.palette.warning.main;
     case 'broker':
       return theme.palette.info.main;
+    case 'banker':
+      return theme.palette.primary.main;
     case 'user':
       return theme.palette.success.main;
     default:
@@ -47,6 +51,8 @@ export const getRoleIcon = (role: string) => {
       return '🏗️';
     case 'broker':
       return '💼';
+    case 'banker':
+      return '🏦';
     case 'user':
       return '👤';
     default:
@@ -63,6 +69,8 @@ export const getRoleDescription = (role: string): string => {
       return 'Property Builder';
     case 'broker':
       return 'Loan Broker';
+    case 'banker':
+      return 'Bank Officer';
     case 'user':
       return 'Customer';
     default:

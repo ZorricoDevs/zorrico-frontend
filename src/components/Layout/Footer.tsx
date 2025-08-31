@@ -16,7 +16,6 @@ import {
   Instagram,
   YouTube,
   TrendingUp,
-  Security,
   Speed,
 } from '@mui/icons-material';
 import { Link as RouterLink } from 'react-router-dom';
@@ -93,8 +92,8 @@ const Footer: React.FC = () => {
             gridTemplateColumns: {
               xs: '1fr',
               sm: 'repeat(2, 1fr)',
-              md: 'repeat(4, 1fr)',
-              lg: '2fr 1fr 1fr 1fr 1fr',
+              md: 'repeat(3, 1fr)',
+              lg: '2fr 1fr 1fr 1fr',
             },
             gap: { xs: 3, sm: 4, md: 6, lg: 8 },
             mb: { xs: 3, sm: 4 },
@@ -176,32 +175,6 @@ const Footer: React.FC = () => {
                   }}
                 >
                   15K+ Loans
-                </Typography>
-              </Box>
-
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  backgroundColor: 'rgba(40, 167, 69, 0.1)',
-                  padding: { xs: '4px 8px', sm: '6px 12px' },
-                  borderRadius: '12px',
-                  '&:hover': {
-                    backgroundColor: 'rgba(40, 167, 69, 0.15)',
-                    transition: 'background-color 0.3s ease',
-                  },
-                }}
-              >
-                <Security sx={{ fontSize: { xs: 14, sm: 16 }, color: '#28a745', mr: 0.5 }} />
-                <Typography
-                  variant='caption'
-                  sx={{
-                    color: '#28a745',
-                    fontWeight: 600,
-                    fontSize: { xs: '0.65rem', sm: '0.75rem' },
-                  }}
-                >
-                  Bank Grade Security
                 </Typography>
               </Box>
 
@@ -314,53 +287,11 @@ const Footer: React.FC = () => {
             </Stack>
           </Box>
 
-          {/* Security */}
-          <Box
-            sx={{
-              textAlign: { xs: 'center', sm: 'left' },
-              gridColumn: { xs: '1', sm: '1', md: '4', lg: '4' },
-            }}
-          >
-            <Typography
-              variant='h6'
-              sx={{
-                fontWeight: 600,
-                color: isDark ? '#f8fafc' : '#495057',
-                mb: 2,
-                fontSize: { xs: '1rem', sm: '1.25rem' },
-              }}
-            >
-              Security
-            </Typography>
-            <Stack spacing={1} alignItems={{ xs: 'center', sm: 'flex-start' }}>
-              {[
-                { name: 'Security Disclosure', path: '/securitydisclosure' },
-                { name: 'ISO 27001:2022', path: '/iso270012022' },
-              ].map(item => (
-                <Link
-                  key={item.name}
-                  href={item.path}
-                  sx={{
-                    color: isDark ? '#94a3b8' : '#6c757d',
-                    textDecoration: 'none',
-                    fontSize: { xs: '0.8rem', sm: '0.875rem' },
-                    transition: 'color 0.3s ease',
-                    '&:hover': {
-                      color: isDark ? '#f87171' : '#dc3545',
-                    },
-                  }}
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </Stack>
-          </Box>
-
           {/* Login Portal */}
           <Box
             sx={{
               textAlign: { xs: 'center', sm: 'left' },
-              gridColumn: { xs: '1', sm: '2', md: '1', lg: '5' },
+              gridColumn: { xs: '1', sm: '2', md: '1', lg: '4' },
             }}
           >
             <Typography
@@ -380,6 +311,7 @@ const Footer: React.FC = () => {
                 { name: 'Customer Login', path: '/customer-login', color: '#1976d2' },
                 { name: 'Broker Login', path: '/broker-login', color: '#ff9800' },
                 { name: 'Builder Login', path: '/builder-login', color: '#28a745' },
+                { name: 'Banker Login', path: '/banker-login', color: '#6f42c1' },
               ].map(item => (
                 <Link
                   key={item.name}
