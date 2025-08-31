@@ -152,7 +152,7 @@ const HomePage: React.FC = () => {
     {
       icon: <AccountBalance sx={{ color: 'inherit' }} />,
       title: 'No Hidden Charges',
-      label: 'We never charge you',
+      label: 'We ensure lenders never charge you extra',
     },
     {
       icon: <Timeline sx={{ color: 'inherit' }} />,
@@ -161,8 +161,8 @@ const HomePage: React.FC = () => {
     },
     {
       icon: <TrendingUpSharp sx={{ color: 'inherit' }} />,
-      title: 'Best Rate Guarantee',
-      label: '50+ Banking Partners',
+      title: 'More Options, More Savings',
+      label: 'Choose from 50+ lenders',
     },
   ];
   const processSteps = [
