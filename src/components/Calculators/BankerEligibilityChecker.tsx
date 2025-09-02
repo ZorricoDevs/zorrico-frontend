@@ -38,7 +38,6 @@ import {
   ExpandMore,
 } from '@mui/icons-material';
 import { useAuth } from '../../hooks/useAuth';
-import { config } from '../../config/environment';
 
 interface BankerSettings {
   customFOIR: number;
@@ -181,7 +180,6 @@ const BankerEligibilityChecker: React.FC = () => {
 
     setSaving(true);
     try {
-      const token = localStorage.getItem('token');
       const assessmentData = {
         customerDetails: {
           monthlyIncome,
@@ -196,22 +194,15 @@ const BankerEligibilityChecker: React.FC = () => {
         results: calculation,
         assessedBy: user?.email,
         assessmentDate: new Date().toISOString(),
+        assessmentId: `ASSESS_${Date.now()}`,
       };
 
-      const response = await fetch(`${config.apiUrl}/banker/save-assessment`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(assessmentData),
-      });
+      // Save to localStorage only
+      const existingAssessments = JSON.parse(localStorage.getItem('bankerAssessments') || '[]');
+      existingAssessments.push(assessmentData);
+      localStorage.setItem('bankerAssessments', JSON.stringify(existingAssessments));
 
-      if (response.ok) {
-        alert('Assessment saved successfully!');
-      } else {
-        alert('Failed to save assessment');
-      }
+      alert('Assessment saved successfully!');
     } catch (error) {
       console.error('Error saving assessment:', error);
       alert('Error saving assessment');
@@ -221,18 +212,18 @@ const BankerEligibilityChecker: React.FC = () => {
   };
 
   return (
-    <Container maxWidth='xl' sx={{ py: 4 }}>
+    <Container maxWidth='xl' sx={{ py: { xs: 1, sm: 2, md: 3 }, px: { xs: 0.5, sm: 1, md: 2 } }}>
       {/* Enhanced Professional Header with Theme Adaptability */}
       <Paper
         sx={{
-          p: 4,
-          mb: 4,
+          p: { xs: 1.5, sm: 2, md: 3 },
+          mb: { xs: 1.5, sm: 2, md: 3 },
           background:
             theme.palette.mode === 'dark'
               ? `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${alpha(theme.palette.primary.main, 0.8)} 100%)`
               : `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
           color: theme.palette.mode === 'dark' ? theme.palette.common.white : 'white',
-          borderRadius: 3,
+          borderRadius: { xs: 2, sm: 3 },
           position: 'relative',
           overflow: 'hidden',
           boxShadow:
@@ -246,36 +237,64 @@ const BankerEligibilityChecker: React.FC = () => {
             position: 'absolute',
             top: 0,
             right: 0,
-            width: 200,
-            height: 200,
+            width: { xs: 100, sm: 150, md: 200 },
+            height: { xs: 100, sm: 150, md: 200 },
             opacity: theme.palette.mode === 'dark' ? 0.05 : 0.1,
             background: `radial-gradient(circle, ${theme.palette.mode === 'dark' ? theme.palette.common.white : 'white'} 1px, transparent 1px)`,
             backgroundSize: '20px 20px',
+            display: { xs: 'none', sm: 'block' },
           }}
         />
 
         <Box sx={{ position: 'relative', zIndex: 1 }}>
-          <Stack direction='row' alignItems='center' spacing={3} sx={{ mb: 2 }}>
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            alignItems={{ xs: 'flex-start', sm: 'center' }}
+            spacing={{ xs: 2, sm: 3 }}
+            sx={{ mb: 2 }}
+          >
             <Avatar
               sx={{
-                width: 60,
-                height: 60,
+                width: { xs: 40, sm: 50, md: 60 },
+                height: { xs: 40, sm: 50, md: 60 },
                 bgcolor: alpha('#ffffff', 0.2),
                 border: '2px solid rgba(255,255,255,0.3)',
               }}
             >
-              <AccountBalance sx={{ fontSize: 30 }} />
+              <AccountBalance sx={{ fontSize: { xs: 20, sm: 25, md: 30 } }} />
             </Avatar>
             <Box>
-              <Typography variant='h4' sx={{ fontWeight: 700, mb: 0.5 }}>
+              <Typography
+                variant='h4'
+                sx={{
+                  fontWeight: 700,
+                  mb: 0.5,
+                  fontSize: { xs: '1.25rem', sm: '1.5rem', md: '2.125rem' },
+                }}
+              >
                 Professional Eligibility Assessment
               </Typography>
-              <Typography variant='h6' sx={{ opacity: 0.9 }}>
+              <Typography
+                variant='h6'
+                sx={{
+                  opacity: 0.9,
+                  fontSize: { xs: '0.9rem', sm: '1rem', md: '1.25rem' },
+                }}
+              >
                 Advanced Banking Tools for Loan Evaluation
               </Typography>
             </Box>
           </Stack>
-          <Typography variant='body1' sx={{ opacity: 0.9, maxWidth: 600, mb: 2 }}>
+          <Typography
+            variant='body1'
+            sx={{
+              opacity: 0.9,
+              maxWidth: { xs: '100%', sm: 600 },
+              mb: { xs: 1, sm: 2 },
+              fontSize: { xs: '0.85rem', sm: '0.9rem', md: '1rem' },
+              lineHeight: { xs: 1.4, sm: 1.5 },
+            }}
+          >
             Comprehensive loan assessment platform with customizable FOIR, interest rates, and
             professional risk evaluation tools
           </Typography>
@@ -287,6 +306,7 @@ const BankerEligibilityChecker: React.FC = () => {
               color: 'white',
               fontWeight: 600,
               '& .MuiChip-icon': { color: 'white' },
+              fontSize: { xs: '0.75rem', sm: '0.875rem' },
             }}
           />
         </Box>
@@ -295,9 +315,9 @@ const BankerEligibilityChecker: React.FC = () => {
       {/* Progress Stepper with Theme Adaptability */}
       <Paper
         sx={{
-          p: 3,
-          mb: 4,
-          borderRadius: 3,
+          p: { xs: 1.5, sm: 2, md: 3 },
+          mb: { xs: 1.5, sm: 2, md: 3 },
+          borderRadius: { xs: 2, sm: 3 },
           bgcolor:
             theme.palette.mode === 'dark'
               ? alpha(theme.palette.background.paper, 0.8)
@@ -308,7 +328,16 @@ const BankerEligibilityChecker: React.FC = () => {
               : 'none',
         }}
       >
-        <Stepper activeStep={activeStep} alternativeLabel>
+        <Stepper
+          activeStep={activeStep}
+          alternativeLabel={window.innerWidth >= 600}
+          orientation={window.innerWidth < 600 ? 'vertical' : 'horizontal'}
+          sx={{
+            '& .MuiStepConnector-root': {
+              display: { xs: 'none', sm: 'block' },
+            },
+          }}
+        >
           {steps.map((label, index) => (
             <Step key={label}>
               <StepLabel
@@ -317,6 +346,11 @@ const BankerEligibilityChecker: React.FC = () => {
                   cursor: 'pointer',
                   '& .MuiStepLabel-label': {
                     color: theme.palette.mode === 'dark' ? theme.palette.text.primary : undefined,
+                    fontSize: { xs: '0.75rem', sm: '0.8rem', md: '0.875rem' },
+                    fontWeight: { xs: 500, sm: 400 },
+                  },
+                  '& .MuiStepLabel-iconContainer': {
+                    pr: { xs: 1, sm: 0 },
                   },
                 }}
               >
@@ -332,28 +366,57 @@ const BankerEligibilityChecker: React.FC = () => {
         sx={{
           display: 'grid',
           gridTemplateColumns: { xs: '1fr', lg: '2fr 1fr' },
-          gap: 4,
+          gap: { xs: 1.5, sm: 2, md: 3 },
         }}
       >
         {/* Left Column - Input Forms */}
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 1.5, sm: 2, md: 3 } }}>
           {/* Customer Details Accordion */}
-          <Accordion expanded={activeStep === 0} onChange={() => setActiveStep(0)}>
-            <AccordionSummary expandIcon={<ExpandMore />}>
-              <Stack direction='row' alignItems='center' spacing={2}>
-                <PersonOutline color='primary' />
-                <Typography variant='h6' sx={{ fontWeight: 600 }}>
+          <Accordion
+            expanded={activeStep === 0}
+            onChange={() => setActiveStep(0)}
+            sx={{
+              borderRadius: { xs: 2, sm: 3 },
+              '&:before': { display: 'none' },
+              boxShadow:
+                theme.palette.mode === 'dark'
+                  ? `0 2px 8px ${alpha(theme.palette.common.black, 0.3)}`
+                  : `0 2px 8px ${alpha(theme.palette.grey[500], 0.1)}`,
+            }}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMore />}
+              sx={{
+                minHeight: { xs: 48, sm: 56 },
+                px: { xs: 1.5, sm: 2 },
+                py: { xs: 0.5, sm: 1 },
+              }}
+            >
+              <Stack direction='row' alignItems='center' spacing={{ xs: 1, sm: 2 }}>
+                <PersonOutline color='primary' sx={{ fontSize: { xs: 20, sm: 24 } }} />
+                <Typography
+                  variant='h6'
+                  sx={{
+                    fontWeight: 600,
+                    fontSize: { xs: '1rem', sm: '1.25rem' },
+                  }}
+                >
                   Customer Details
                 </Typography>
-                <Chip label='Step 1' size='small' color='primary' />
+                <Chip
+                  label='Step 1'
+                  size='small'
+                  color='primary'
+                  sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}
+                />
               </Stack>
             </AccordionSummary>
-            <AccordionDetails>
+            <AccordionDetails sx={{ px: { xs: 1.5, sm: 2 }, pb: { xs: 2, sm: 3 } }}>
               <Box
                 sx={{
                   display: 'grid',
                   gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' },
-                  gap: 3,
+                  gap: { xs: 2, sm: 3 },
                 }}
               >
                 <Box>
@@ -540,22 +603,51 @@ const BankerEligibilityChecker: React.FC = () => {
           </Accordion>
 
           {/* Loan Parameters Accordion */}
-          <Accordion expanded={activeStep === 1} onChange={() => setActiveStep(1)}>
-            <AccordionSummary expandIcon={<ExpandMore />}>
-              <Stack direction='row' alignItems='center' spacing={2}>
-                <AttachMoney color='primary' />
-                <Typography variant='h6' sx={{ fontWeight: 600 }}>
+          <Accordion
+            expanded={activeStep === 1}
+            onChange={() => setActiveStep(1)}
+            sx={{
+              borderRadius: { xs: 2, sm: 3 },
+              '&:before': { display: 'none' },
+              boxShadow:
+                theme.palette.mode === 'dark'
+                  ? `0 2px 8px ${alpha(theme.palette.common.black, 0.3)}`
+                  : `0 2px 8px ${alpha(theme.palette.grey[500], 0.1)}`,
+            }}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMore />}
+              sx={{
+                minHeight: { xs: 48, sm: 56 },
+                px: { xs: 1.5, sm: 2 },
+                py: { xs: 0.5, sm: 1 },
+              }}
+            >
+              <Stack direction='row' alignItems='center' spacing={{ xs: 1, sm: 2 }}>
+                <AttachMoney color='primary' sx={{ fontSize: { xs: 20, sm: 24 } }} />
+                <Typography
+                  variant='h6'
+                  sx={{
+                    fontWeight: 600,
+                    fontSize: { xs: '1rem', sm: '1.25rem' },
+                  }}
+                >
                   Loan Parameters
                 </Typography>
-                <Chip label='Step 2' size='small' color='primary' />
+                <Chip
+                  label='Step 2'
+                  size='small'
+                  color='primary'
+                  sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}
+                />
               </Stack>
             </AccordionSummary>
-            <AccordionDetails>
+            <AccordionDetails sx={{ px: { xs: 1.5, sm: 2 }, pb: { xs: 2, sm: 3 } }}>
               <Box
                 sx={{
                   display: 'grid',
                   gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' },
-                  gap: 3,
+                  gap: { xs: 2, sm: 3 },
                 }}
               >
                 <Box>
@@ -694,15 +786,28 @@ const BankerEligibilityChecker: React.FC = () => {
                     min={1}
                     max={30}
                     step={1}
-                    sx={{ mt: 2 }}
-                    marks={[
-                      { value: 5, label: '5Y' },
-                      { value: 10, label: '10Y' },
-                      { value: 15, label: '15Y' },
-                      { value: 20, label: '20Y' },
-                      { value: 25, label: '25Y' },
-                      { value: 30, label: '30Y' },
-                    ]}
+                    sx={{
+                      mt: 2,
+                      '& .MuiSlider-markLabel': {
+                        fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                      },
+                    }}
+                    marks={
+                      window.innerWidth < 600
+                        ? [
+                            { value: 10, label: '10Y' },
+                            { value: 20, label: '20Y' },
+                            { value: 30, label: '30Y' },
+                          ]
+                        : [
+                            { value: 5, label: '5Y' },
+                            { value: 10, label: '10Y' },
+                            { value: 15, label: '15Y' },
+                            { value: 20, label: '20Y' },
+                            { value: 25, label: '25Y' },
+                            { value: 30, label: '30Y' },
+                          ]
+                    }
                   />
                 </Box>
               </Box>
@@ -710,22 +815,51 @@ const BankerEligibilityChecker: React.FC = () => {
           </Accordion>
 
           {/* Banker Settings Accordion */}
-          <Accordion expanded={activeStep === 2} onChange={() => setActiveStep(2)}>
-            <AccordionSummary expandIcon={<ExpandMore />}>
-              <Stack direction='row' alignItems='center' spacing={2}>
-                <Settings color='primary' />
-                <Typography variant='h6' sx={{ fontWeight: 600 }}>
+          <Accordion
+            expanded={activeStep === 2}
+            onChange={() => setActiveStep(2)}
+            sx={{
+              borderRadius: { xs: 2, sm: 3 },
+              '&:before': { display: 'none' },
+              boxShadow:
+                theme.palette.mode === 'dark'
+                  ? `0 2px 8px ${alpha(theme.palette.common.black, 0.3)}`
+                  : `0 2px 8px ${alpha(theme.palette.grey[500], 0.1)}`,
+            }}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMore />}
+              sx={{
+                minHeight: { xs: 48, sm: 56 },
+                px: { xs: 1.5, sm: 2 },
+                py: { xs: 0.5, sm: 1 },
+              }}
+            >
+              <Stack direction='row' alignItems='center' spacing={{ xs: 1, sm: 2 }}>
+                <Settings color='primary' sx={{ fontSize: { xs: 20, sm: 24 } }} />
+                <Typography
+                  variant='h6'
+                  sx={{
+                    fontWeight: 600,
+                    fontSize: { xs: '1rem', sm: '1.25rem' },
+                  }}
+                >
                   Professional Settings
                 </Typography>
-                <Chip label='Step 3' size='small' color='primary' />
+                <Chip
+                  label='Step 3'
+                  size='small'
+                  color='primary'
+                  sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}
+                />
               </Stack>
             </AccordionSummary>
-            <AccordionDetails>
+            <AccordionDetails sx={{ px: { xs: 1.5, sm: 2 }, pb: { xs: 2, sm: 3 } }}>
               <Box
                 sx={{
                   display: 'grid',
                   gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' },
-                  gap: 3,
+                  gap: { xs: 2, sm: 3 },
                 }}
               >
                 <Box>
@@ -924,13 +1058,13 @@ const BankerEligibilityChecker: React.FC = () => {
         <Box>
           <Card
             sx={{
-              position: 'sticky',
+              position: { xs: 'static', lg: 'sticky' },
               top: 20,
               background:
                 theme.palette.mode === 'dark'
                   ? `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.1)} 0%, ${alpha(theme.palette.secondary.main, 0.1)} 100%)`
                   : `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.05)} 0%, ${alpha(theme.palette.secondary.main, 0.05)} 100%)`,
-              borderRadius: 3,
+              borderRadius: { xs: 2, sm: 3 },
               border:
                 theme.palette.mode === 'dark'
                   ? `1px solid ${alpha(theme.palette.primary.main, 0.3)}`
@@ -941,13 +1075,29 @@ const BankerEligibilityChecker: React.FC = () => {
                   : undefined,
             }}
           >
-            <CardContent sx={{ p: 4 }}>
-              <Stack direction='row' alignItems='center' spacing={2} sx={{ mb: 3 }}>
-                <Analytics color='primary' sx={{ fontSize: 30 }} />
-                <Typography variant='h6' sx={{ fontWeight: 700 }}>
+            <CardContent sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
+              <Stack
+                direction='row'
+                alignItems='center'
+                spacing={{ xs: 1, sm: 2 }}
+                sx={{ mb: { xs: 2, sm: 3 } }}
+              >
+                <Analytics color='primary' sx={{ fontSize: { xs: 24, sm: 30 } }} />
+                <Typography
+                  variant='h6'
+                  sx={{
+                    fontWeight: 700,
+                    fontSize: { xs: '1rem', sm: '1.25rem' },
+                  }}
+                >
                   Assessment Results
                 </Typography>
-                <Chip label='Step 4' size='small' color='primary' />
+                <Chip
+                  label='Step 4'
+                  size='small'
+                  color='primary'
+                  sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}
+                />
               </Stack>
 
               {calculation && (
@@ -956,14 +1106,14 @@ const BankerEligibilityChecker: React.FC = () => {
                   <Box
                     sx={{
                       display: 'grid',
-                      gridTemplateColumns: 'repeat(2, 1fr)',
-                      gap: 2,
-                      mb: 3,
+                      gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' },
+                      gap: { xs: 1.5, sm: 2 },
+                      mb: { xs: 2, sm: 3 },
                     }}
                   >
                     <Paper
                       sx={{
-                        p: 3,
+                        p: { xs: 2, sm: 3 },
                         textAlign: 'center',
                         borderRadius: 2,
                         bgcolor:
@@ -976,17 +1126,28 @@ const BankerEligibilityChecker: React.FC = () => {
                             : 'none',
                       }}
                     >
-                      <Typography variant='h4' sx={{ fontWeight: 700, color: 'primary.main' }}>
+                      <Typography
+                        variant='h4'
+                        sx={{
+                          fontWeight: 700,
+                          color: 'primary.main',
+                          fontSize: { xs: '1.5rem', sm: '2.125rem' },
+                        }}
+                      >
                         {formatCurrency(calculation.maxLoanAmount)}
                       </Typography>
-                      <Typography variant='body2' color='text.secondary'>
+                      <Typography
+                        variant='body2'
+                        color='text.secondary'
+                        sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}
+                      >
                         Max Eligible Amount
                       </Typography>
                     </Paper>
 
                     <Paper
                       sx={{
-                        p: 3,
+                        p: { xs: 2, sm: 3 },
                         textAlign: 'center',
                         borderRadius: 2,
                         bgcolor:
@@ -999,20 +1160,31 @@ const BankerEligibilityChecker: React.FC = () => {
                             : 'none',
                       }}
                     >
-                      <Typography variant='h4' sx={{ fontWeight: 700, color: 'secondary.main' }}>
+                      <Typography
+                        variant='h4'
+                        sx={{
+                          fontWeight: 700,
+                          color: 'secondary.main',
+                          fontSize: { xs: '1.5rem', sm: '2.125rem' },
+                        }}
+                      >
                         {formatCurrency(calculation.monthlyEMI)}
                       </Typography>
-                      <Typography variant='body2' color='text.secondary'>
+                      <Typography
+                        variant='body2'
+                        color='text.secondary'
+                        sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}
+                      >
                         Monthly EMI
                       </Typography>
                     </Paper>
 
                     <Paper
                       sx={{
-                        p: 3,
+                        p: { xs: 2, sm: 3 },
                         textAlign: 'center',
                         borderRadius: 2,
-                        gridColumn: 'span 2',
+                        gridColumn: { xs: 'span 1', sm: 'span 2' },
                         bgcolor:
                           theme.palette.mode === 'dark'
                             ? alpha(theme.palette.background.paper, 0.8)
@@ -1050,7 +1222,7 @@ const BankerEligibilityChecker: React.FC = () => {
                     <Alert
                       severity='info'
                       sx={{
-                        mb: 3,
+                        mb: { xs: 2, sm: 3 },
                         borderRadius: 2,
                         bgcolor:
                           theme.palette.mode === 'dark'
@@ -1062,21 +1234,40 @@ const BankerEligibilityChecker: React.FC = () => {
                             : undefined,
                       }}
                     >
-                      <Typography variant='subtitle2' sx={{ mb: 1, fontWeight: 600 }}>
+                      <Typography
+                        variant='subtitle2'
+                        sx={{
+                          mb: 1,
+                          fontWeight: 600,
+                          fontSize: { xs: '0.9rem', sm: '1rem' },
+                        }}
+                      >
                         Professional Recommendations:
                       </Typography>
                       <ul style={{ margin: 0, paddingLeft: 20 }}>
                         {calculation.recommendations.map((rec: string, index: number) => (
-                          <li key={index}>{rec}</li>
+                          <li
+                            key={index}
+                            style={{ fontSize: window.innerWidth < 600 ? '0.85rem' : '0.875rem' }}
+                          >
+                            {rec}
+                          </li>
                         ))}
                       </ul>
                     </Alert>
                   )}
 
-                  <Divider sx={{ my: 2 }} />
+                  <Divider sx={{ my: { xs: 1.5, sm: 2 } }} />
 
                   {/* Action Buttons */}
-                  <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      gap: { xs: 1.5, sm: 2 },
+                      flexDirection: { xs: 'column', sm: 'row' },
+                      flexWrap: 'wrap',
+                    }}
+                  >
                     <Button
                       variant='contained'
                       startIcon={<Save />}
@@ -1085,7 +1276,9 @@ const BankerEligibilityChecker: React.FC = () => {
                       sx={{
                         flex: 1,
                         borderRadius: 2,
-                        py: 1.5,
+                        py: { xs: 1.2, sm: 1.5 },
+                        fontSize: { xs: '0.875rem', sm: '1rem' },
+                        minHeight: { xs: 44, sm: 48 },
                       }}
                     >
                       {saving ? 'Saving...' : 'Save Assessment'}
@@ -1097,7 +1290,9 @@ const BankerEligibilityChecker: React.FC = () => {
                       sx={{
                         flex: 1,
                         borderRadius: 2,
-                        py: 1.5,
+                        py: { xs: 1.2, sm: 1.5 },
+                        fontSize: { xs: '0.875rem', sm: '1rem' },
+                        minHeight: { xs: 44, sm: 48 },
                       }}
                     >
                       Recalculate
@@ -1107,8 +1302,8 @@ const BankerEligibilityChecker: React.FC = () => {
                   {/* Assessment Summary with Enhanced Theme Support */}
                   <Box
                     sx={{
-                      mt: 3,
-                      p: 3,
+                      mt: { xs: 2, sm: 3 },
+                      p: { xs: 2, sm: 3 },
                       bgcolor:
                         theme.palette.mode === 'dark'
                           ? alpha(theme.palette.background.paper, 0.6)
@@ -1120,16 +1315,36 @@ const BankerEligibilityChecker: React.FC = () => {
                           : 'none',
                     }}
                   >
-                    <Typography variant='caption' component='div' sx={{ fontWeight: 600, mb: 1 }}>
+                    <Typography
+                      variant='caption'
+                      component='div'
+                      sx={{
+                        fontWeight: 600,
+                        mb: 1,
+                        fontSize: { xs: '0.75rem', sm: '0.75rem' },
+                      }}
+                    >
                       Assessment Summary:
                     </Typography>
-                    <Typography variant='caption' component='div'>
+                    <Typography
+                      variant='caption'
+                      component='div'
+                      sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}
+                    >
                       <strong>Interest Rate:</strong> {calculation.recommendedInterestRate}
                     </Typography>
-                    <Typography variant='caption' component='div'>
+                    <Typography
+                      variant='caption'
+                      component='div'
+                      sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}
+                    >
                       <strong>FOIR Applied:</strong> {bankerSettings.customFOIR}%
                     </Typography>
-                    <Typography variant='caption' component='div'>
+                    <Typography
+                      variant='caption'
+                      component='div'
+                      sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}
+                    >
                       <strong>Assessed By:</strong> {user?.email}
                     </Typography>
                   </Box>

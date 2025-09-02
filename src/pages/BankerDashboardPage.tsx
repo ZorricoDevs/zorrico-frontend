@@ -18,6 +18,8 @@ import {
   Badge,
   useTheme,
   alpha,
+  Tabs,
+  Tab,
 } from '@mui/material';
 import {
   AccountBalance,
@@ -28,10 +30,12 @@ import {
   Calculate,
   Refresh,
   Shield,
+  ManageAccounts,
+  Dashboard,
 } from '@mui/icons-material';
 import { useAuth } from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
-import { config } from '../config/environment';
+import AssessmentManager from '../components/Banker/AssessmentManager';
 
 interface BankerStats {
   totalEligibilityChecks: number;
@@ -54,6 +58,7 @@ const BankerDashboardPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [refreshing, setRefreshing] = useState(false);
+  const [currentTab, setCurrentTab] = useState(0);
 
   // Redirect if not banker or admin
   useEffect(() => {
@@ -63,7 +68,11 @@ const BankerDashboardPage: React.FC = () => {
     }
   }, [user, navigate]);
 
-  // Fetch banker dashboard stats
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setCurrentTab(newValue);
+  };
+
+  // Fetch banker dashboard stats from localStorage
   useEffect(() => {
     const fetchStats = async () => {
       if (!user) return;
@@ -71,28 +80,54 @@ const BankerDashboardPage: React.FC = () => {
       try {
         setLoading(true);
         setError(''); // Clear any previous errors
-        const token = localStorage.getItem('token');
 
-        console.log('🏦 Banker Dashboard: Making API call to:', `${config.apiUrl}/banker/stats`);
+        // Get assessments from localStorage instead of API
+        const assessments = JSON.parse(localStorage.getItem('bankerAssessments') || '[]');
 
-        const response = await fetch(`${config.apiUrl}/banker/stats`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        });
+        // Calculate stats from localStorage data
+        const today = new Date().toDateString();
+        const todayAssessments = assessments.filter(
+          (assessment: any) => new Date(assessment.assessmentDate).toDateString() === today
+        );
 
-        if (response.ok) {
-          const data = await response.json();
-          setStats(data);
-        } else {
-          const errorData = await response.text();
-          console.error('🏦 API Error Response:', errorData);
-          setError(`Failed to fetch dashboard statistics (${response.status})`);
-        }
+        const totalLoanAmounts = assessments.map((a: any) => a.results.maxLoanAmount || 0);
+        const avgLoanAmount =
+          totalLoanAmounts.length > 0
+            ? totalLoanAmounts.reduce((sum: number, amount: number) => sum + amount, 0) /
+              totalLoanAmounts.length
+            : 0;
+
+        const eligibleCount = assessments.filter((a: any) => a.results.riskLevel !== 'High').length;
+        const eligibilityRate =
+          assessments.length > 0 ? (eligibleCount / assessments.length) * 100 : 0;
+
+        const highValueApplications = assessments.filter(
+          (a: any) => (a.results.maxLoanAmount || 0) > 5000000 // 50 lakhs+
+        ).length;
+
+        const employmentBreakdown = {
+          salaried: assessments.filter((a: any) => a.customerDetails.employmentType === 'salaried')
+            .length,
+          'self-employed': assessments.filter(
+            (a: any) => a.customerDetails.employmentType === 'self-employed'
+          ).length,
+          business: assessments.filter((a: any) => a.customerDetails.employmentType === 'business')
+            .length,
+        };
+
+        const calculatedStats: BankerStats = {
+          totalEligibilityChecks: assessments.length,
+          todayChecks: todayAssessments.length,
+          avgLoanAmount: Math.round(avgLoanAmount),
+          eligibilityRate: Math.round(eligibilityRate),
+          highValueApplications,
+          employmentBreakdown,
+        };
+
+        setStats(calculatedStats);
       } catch (err) {
-        console.error('🏦 Error fetching stats:', err);
-        setError('Error loading dashboard data');
+        console.error('🏦 Error fetching stats from localStorage:', err);
+        setError('Error loading dashboard data from local storage');
       } finally {
         setLoading(false);
         setRefreshing(false);
@@ -104,26 +139,58 @@ const BankerDashboardPage: React.FC = () => {
 
   const handleRefresh = () => {
     setRefreshing(true);
-    // Re-trigger the fetch
+    // Re-trigger the fetch from localStorage
     const fetchStats = async () => {
       if (!user) return;
       try {
         setError('');
-        const token = localStorage.getItem('token');
-        const response = await fetch(`${config.apiUrl}/banker/stats`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setStats(data);
-        } else {
-          setError(`Failed to refresh data (${response.status})`);
-        }
+
+        // Get assessments from localStorage instead of API
+        const assessments = JSON.parse(localStorage.getItem('bankerAssessments') || '[]');
+
+        // Calculate stats from localStorage data
+        const today = new Date().toDateString();
+        const todayAssessments = assessments.filter(
+          (assessment: any) => new Date(assessment.assessmentDate).toDateString() === today
+        );
+
+        const totalLoanAmounts = assessments.map((a: any) => a.results.maxLoanAmount || 0);
+        const avgLoanAmount =
+          totalLoanAmounts.length > 0
+            ? totalLoanAmounts.reduce((sum: number, amount: number) => sum + amount, 0) /
+              totalLoanAmounts.length
+            : 0;
+
+        const eligibleCount = assessments.filter((a: any) => a.results.riskLevel !== 'High').length;
+        const eligibilityRate =
+          assessments.length > 0 ? (eligibleCount / assessments.length) * 100 : 0;
+
+        const highValueApplications = assessments.filter(
+          (a: any) => (a.results.maxLoanAmount || 0) > 5000000 // 50 lakhs+
+        ).length;
+
+        const employmentBreakdown = {
+          salaried: assessments.filter((a: any) => a.customerDetails.employmentType === 'salaried')
+            .length,
+          'self-employed': assessments.filter(
+            (a: any) => a.customerDetails.employmentType === 'self-employed'
+          ).length,
+          business: assessments.filter((a: any) => a.customerDetails.employmentType === 'business')
+            .length,
+        };
+
+        const calculatedStats: BankerStats = {
+          totalEligibilityChecks: assessments.length,
+          todayChecks: todayAssessments.length,
+          avgLoanAmount: Math.round(avgLoanAmount),
+          eligibilityRate: Math.round(eligibilityRate),
+          highValueApplications,
+          employmentBreakdown,
+        };
+
+        setStats(calculatedStats);
       } catch (err) {
-        setError('Error refreshing dashboard data');
+        setError('Error refreshing dashboard data from local storage');
       } finally {
         setRefreshing(false);
       }
@@ -218,12 +285,12 @@ const BankerDashboardPage: React.FC = () => {
   }
 
   return (
-    <Container maxWidth='xl' sx={{ py: 4 }}>
+    <Container maxWidth='xl' sx={{ py: { xs: 2, sm: 3, md: 4 }, px: { xs: 1, sm: 2 } }}>
       {/* Enhanced Header with Professional Design and Theme Adaptability */}
       <Paper
         sx={{
-          p: 4,
-          mb: 4,
+          p: { xs: 2, sm: 3, md: 4 },
+          mb: { xs: 2, sm: 3, md: 4 },
           background:
             theme.palette.mode === 'dark'
               ? `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${alpha(theme.palette.primary.main, 0.8)} 100%)`
@@ -244,49 +311,81 @@ const BankerDashboardPage: React.FC = () => {
             position: 'absolute',
             top: 0,
             right: 0,
-            width: 200,
-            height: 200,
+            width: { xs: 100, sm: 150, md: 200 },
+            height: { xs: 100, sm: 150, md: 200 },
             opacity: theme.palette.mode === 'dark' ? 0.05 : 0.1,
             background: `radial-gradient(circle, ${theme.palette.mode === 'dark' ? theme.palette.common.white : 'white'} 1px, transparent 1px)`,
             backgroundSize: '20px 20px',
+            display: { xs: 'none', sm: 'block' },
           }}
         />
 
         <Box sx={{ position: 'relative', zIndex: 1 }}>
           <Stack
-            direction='row'
+            direction={{ xs: 'column', sm: 'row' }}
             justifyContent='space-between'
-            alignItems='flex-start'
+            alignItems={{ xs: 'flex-start', sm: 'flex-start' }}
             sx={{ mb: 2 }}
+            spacing={{ xs: 2, sm: 0 }}
           >
             <Box>
-              <Stack direction='row' alignItems='center' spacing={2} sx={{ mb: 2 }}>
+              <Stack
+                direction={{ xs: 'column', sm: 'row' }}
+                alignItems={{ xs: 'flex-start', sm: 'center' }}
+                spacing={{ xs: 1, sm: 2 }}
+                sx={{ mb: 2 }}
+              >
                 <Avatar
                   sx={{
-                    width: 60,
-                    height: 60,
+                    width: { xs: 50, sm: 60 },
+                    height: { xs: 50, sm: 60 },
                     bgcolor: alpha('#ffffff', 0.2),
                     border: '2px solid rgba(255,255,255,0.3)',
                   }}
                 >
-                  <AccountBalance sx={{ fontSize: 30 }} />
+                  <AccountBalance sx={{ fontSize: { xs: 25, sm: 30 } }} />
                 </Avatar>
                 <Box>
-                  <Typography variant='h4' sx={{ fontWeight: 700, mb: 0.5 }}>
+                  <Typography
+                    variant='h4'
+                    sx={{
+                      fontWeight: 700,
+                      mb: 0.5,
+                      fontSize: { xs: '1.5rem', sm: '2.125rem' },
+                      textAlign: { xs: 'left', sm: 'left' },
+                    }}
+                  >
                     Professional Banking Dashboard
                   </Typography>
-                  <Typography variant='h6' sx={{ opacity: 0.9 }}>
+                  <Typography
+                    variant='h6'
+                    sx={{
+                      opacity: 0.9,
+                      fontSize: { xs: '1rem', sm: '1.25rem' },
+                    }}
+                  >
                     Welcome back, {user?.firstName || user?.email}
                   </Typography>
                 </Box>
               </Stack>
-              <Typography variant='body1' sx={{ opacity: 0.9, maxWidth: 600 }}>
+              <Typography
+                variant='body1'
+                sx={{
+                  opacity: 0.9,
+                  maxWidth: { xs: '100%', sm: 600 },
+                  fontSize: { xs: '0.9rem', sm: '1rem' },
+                }}
+              >
                 Access comprehensive loan assessment tools, customer analytics, and
                 professional-grade eligibility calculators
               </Typography>
             </Box>
 
-            <Stack direction='row' spacing={1}>
+            <Stack
+              direction={{ xs: 'row', sm: 'row' }}
+              spacing={1}
+              sx={{ alignSelf: { xs: 'flex-start', sm: 'auto' } }}
+            >
               <Tooltip title='Refresh Dashboard'>
                 <IconButton
                   onClick={handleRefresh}
@@ -323,7 +422,62 @@ const BankerDashboardPage: React.FC = () => {
         </Box>
       </Paper>
 
-      {stats && (
+      {/* Navigation Tabs */}
+      <Card sx={{ mb: { xs: 2, sm: 3, md: 4 } }}>
+        <Tabs
+          value={currentTab}
+          onChange={handleTabChange}
+          variant='fullWidth'
+          sx={{
+            borderBottom: 1,
+            borderColor: 'divider',
+            '& .MuiTabs-indicator': {
+              height: 3,
+            },
+            '& .MuiTab-root': {
+              minHeight: { xs: 56, sm: 64 },
+              fontSize: { xs: '0.875rem', sm: '1rem' },
+            },
+            '& .MuiTabs-flexContainer': {
+              flexDirection: { xs: 'row', sm: 'row' },
+            },
+          }}
+        >
+          <Tab
+            icon={<Dashboard sx={{ fontSize: { xs: 20, sm: 24 } }} />}
+            label='Dashboard'
+            iconPosition='start'
+            sx={{
+              textTransform: 'none',
+              fontWeight: 600,
+              flexDirection: { xs: 'column', sm: 'row' },
+              gap: { xs: 0.5, sm: 1 },
+              '& .MuiTab-iconWrapper': {
+                marginBottom: { xs: '4px', sm: 0 },
+                marginRight: { xs: 0, sm: '8px' },
+              },
+            }}
+          />
+          <Tab
+            icon={<ManageAccounts sx={{ fontSize: { xs: 20, sm: 24 } }} />}
+            label='Manage Assessments'
+            iconPosition='start'
+            sx={{
+              textTransform: 'none',
+              fontWeight: 600,
+              flexDirection: { xs: 'column', sm: 'row' },
+              gap: { xs: 0.5, sm: 1 },
+              '& .MuiTab-iconWrapper': {
+                marginBottom: { xs: '4px', sm: 0 },
+                marginRight: { xs: 0, sm: '8px' },
+              },
+            }}
+          />
+        </Tabs>
+      </Card>
+
+      {/* Tab Content */}
+      {currentTab === 0 && stats && (
         <>
           {/* Enhanced Main Stats Grid */}
           <Box
@@ -349,14 +503,14 @@ const BankerDashboardPage: React.FC = () => {
                   theme.palette.mode === 'dark' ? `1px solid ${alpha('#4caf50', 0.3)}` : 'none',
               }}
             >
-              <CardContent sx={{ p: 3, position: 'relative', zIndex: 1 }}>
+              <CardContent sx={{ p: { xs: 2, sm: 3 }, position: 'relative', zIndex: 1 }}>
                 <Stack
                   direction='row'
                   justifyContent='space-between'
                   alignItems='flex-start'
                   sx={{ mb: 2 }}
                 >
-                  <TrendingUp sx={{ fontSize: 40, opacity: 0.9 }} />
+                  <TrendingUp sx={{ fontSize: { xs: 32, sm: 40 }, opacity: 0.9 }} />
                   <Chip
                     label='Total'
                     size='small'
@@ -364,13 +518,28 @@ const BankerDashboardPage: React.FC = () => {
                       bgcolor: alpha('#ffffff', 0.2),
                       color: 'white',
                       fontWeight: 600,
+                      fontSize: { xs: '0.7rem', sm: '0.75rem' },
                     }}
                   />
                 </Stack>
-                <Typography variant='h3' sx={{ fontWeight: 700, mb: 1 }}>
+                <Typography
+                  variant='h3'
+                  sx={{
+                    fontWeight: 700,
+                    mb: 1,
+                    fontSize: { xs: '1.75rem', sm: '3rem' },
+                  }}
+                >
                   {stats.totalEligibilityChecks.toLocaleString()}
                 </Typography>
-                <Typography variant='body2' sx={{ opacity: 0.9 }}>
+                <Typography
+                  variant='body2'
+                  sx={{
+                    opacity: 0.9,
+                    fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                    lineHeight: { xs: 1.3, sm: 1.4 },
+                  }}
+                >
                   Total Assessments Completed
                 </Typography>
                 <Box sx={{ mt: 2 }}>
@@ -380,6 +549,7 @@ const BankerDashboardPage: React.FC = () => {
                     sx={{
                       bgcolor: alpha('#ffffff', 0.3),
                       '& .MuiLinearProgress-bar': { bgcolor: 'white' },
+                      height: { xs: 4, sm: 6 },
                     }}
                   />
                 </Box>
@@ -772,6 +942,9 @@ const BankerDashboardPage: React.FC = () => {
           </Box>
         </>
       )}
+
+      {/* Assessment Manager Tab */}
+      {currentTab === 1 && <AssessmentManager />}
     </Container>
   );
 };
