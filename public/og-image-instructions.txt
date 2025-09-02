@@ -1,0 +1,29 @@
+# OG Image Instructions
+
+Create an Open Graph image with these specifications:
+- Size: 1200x630 pixels
+- Format: JPG or PNG
+- File name: og-image.jpg
+- Place in: frontend/public/og-image.jpg
+
+Content should include:
+- HomeLoanMittra logo
+- Text: "Instant Home Loan Approval"
+- Text: "Compare Best Rates from 50+ Banks"
+- Professional financial/housing theme
+- Brand colors: #1976d2 (primary blue)
+- High-quality, readable text
+- Mobile-friendly design
+
+This image will be used when your website is shared on:
+- Facebook
+- Twitter
+- LinkedIn
+- WhatsApp
+- Other social platforms
+
+You can create this using tools like:
+- Canva (canva.com)
+- Figma (figma.com)
+- Adobe Creative Suite
+- Online OG image generators

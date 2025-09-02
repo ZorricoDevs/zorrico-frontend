@@ -1,35 +1,34 @@
 {
   "short_name": "Zorrico",
-  "name": "Zorrico - Making Home Loans Effortless",
+  "name": "Zorrico - Instant Home Loan Approval",
+  "description": "Get instant home loan approval from 50+ banks with Zorrico. Compare rates, calculate EMI, and complete your home loan journey digitally.",
   "icons": [
     {
       "src": "favicon.svg",
-      "sizes": "16x16",
-      "type": "image/png"
-    },
-    {
-      "src": "favicon.svg",
-      "sizes": "32x32",
-      "type": "image/png"
-    },
-    {
-      "src": "favicon.svg",
-      "sizes": "48x48",
-      "type": "image/png"
+      "sizes": "16x16 32x32 48x48",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     },
     {
       "src": "logo.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "any maskable"
     },
     {
       "src": "logo.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "any maskable"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
   "display": "standalone",
   "theme_color": "#1976d2",
-  "background_color": "#ffffff"
+  "background_color": "#ffffff",
+  "orientation": "portrait-primary",
+  "categories": ["finance", "business", "productivity"],
+  "lang": "en-IN",
+  "scope": "/",
+  "id": "homeloanmittra-app"
 }

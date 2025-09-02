@@ -1,0 +1,38 @@
+# Robots.txt for HomeLoanMittra
+# Allow all crawlers to access all content
+
+User-agent: *
+Allow: /
+
+# Specific rules for major search engines
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /private/
+Disallow: /dashboard/
+Disallow: /broker/
+Disallow: /banker/
+Disallow: /builder/
+Disallow: /lender/
+
+# Allow important pages
+Allow: /
+Allow: /home-loans
+Allow: /calculator
+Allow: /about
+Allow: /contact
+Allow: /privacy-policy
+Allow: /terms-of-use
+Allow: /careers
+Allow: /newsroom
+
+# Sitemap location
+Sitemap: https://homeloanmittra.com/sitemap.xml
