@@ -1,7 +1,7 @@
 // Environment configuration utility
 export const config = {
   // API Configuration
-  apiUrl: process.env.REACT_APP_API_URL || 'https://homeloanmittra-backend.onrender.com/api',
+  apiUrl: process.env.REACT_APP_API_URL || 'https://api.zorrico.com/api',
   frontendUrl: process.env.REACT_APP_FRONTEND_URL || 'http://localhost:3000',
 
   // Environment
