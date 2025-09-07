@@ -1,23 +1,8 @@
 {
   "short_name": "Zorrico",
-  "name": "Zorrico - Instant Home Loan Approval",
-  "description": "Get instant home loan approval from 50+ banks with Zorrico. Compare rates, calculate EMI, and complete your home loan journey digitally.",
+  "name": "Zorrico - Instant Home Loan Eligibility | Compare Best Rates",
+  "description": "Get instant home loan eligibility from 50+ banks with Zorrico. Compare rates, calculate EMI, and complete your home loan journey digitally.",
   "icons": [
-    {
-      "src": "favicon.ico",
-      "sizes": "32x32",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "favicon-16x16.png",
-      "sizes": "16x16",
-      "type": "image/png"
-    },
-    {
-      "src": "favicon-32x32.png",
-      "sizes": "32x32",
-      "type": "image/png"
-    },
     {
       "src": "favicon.svg",
       "sizes": "any",
@@ -26,8 +11,14 @@
     },
     {
       "src": "favicon.svg",
-      "type": "image/svg+xml",
       "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "favicon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
       "purpose": "any maskable"
     },
     {
