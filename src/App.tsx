@@ -431,6 +431,7 @@ const AppContent: React.FC = () => {
           </AuthProvider>
         </AuthErrorBoundary>
       </ErrorBoundary>
+      <Analytics />
     </ThemeProvider>
   );
 };
@@ -476,7 +477,6 @@ function App() {
           </CustomThemeProvider>
         </QueryClientProvider>
       </Provider>
-      <Analytics />
     </ChunkErrorBoundary>
   );
 }
