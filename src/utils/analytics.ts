@@ -47,10 +47,9 @@ export const trackLoanApplication = (loanType: string, amount?: number) => {
 // trackFacebookEvent('ViewContent', { content_type: 'loan_calculator' });
 // trackLoanApplication('home_loan', 5000000);
 
-// TypeScript declaration for gtag and fbq (add to types file)
+// TypeScript declaration for gtag (fbq is declared in metaPixel.ts)
 declare global {
   interface Window {
     gtag: (...args: any[]) => void;
-    fbq: (...args: any[]) => void;
   }
 }

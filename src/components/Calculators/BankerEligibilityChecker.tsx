@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
+import { MetaPixelTracker } from '../../utils/metaPixel';
 import {
   Box,
   Card,
@@ -147,6 +148,16 @@ const BankerEligibilityChecker: React.FC = () => {
     };
 
     setCalculation(result);
+
+    // Track banker calculator usage
+    MetaPixelTracker.trackCustomEvent('BankerCalculatorUsed', {
+      loan_amount: loanAmount,
+      monthly_income: monthlyIncome,
+      credit_score: creditScore,
+      bank_name: bankerSettings.bankName,
+      custom_foir: bankerSettings.customFOIR,
+      custom_interest_rate: bankerSettings.customInterestRate,
+    });
   }, [
     monthlyIncome,
     existingEMI,

@@ -18,6 +18,7 @@ import {
   Paper,
 } from '@mui/material';
 import { CheckCircle } from '@mui/icons-material';
+import { MetaPixelTracker } from '../../utils/metaPixel';
 
 interface ApplicationData {
   personalInfo: {
@@ -183,6 +184,17 @@ const LoanApplicationForm: React.FC = () => {
     };
 
     localStorage.setItem('loanApplication_' + appNumber, JSON.stringify(applicationPayload));
+
+    // Track loan application initiation with Meta Pixel
+    MetaPixelTracker.trackInitiateCheckout();
+
+    // Track complete registration if this is user's first application
+    MetaPixelTracker.trackCompleteRegistration({
+      email: applicationData.personalInfo.email,
+      phone: applicationData.personalInfo.phone,
+      first_name: applicationData.personalInfo.firstName,
+      last_name: applicationData.personalInfo.lastName,
+    });
 
     // In real app, this would create customer credentials via admin
     // Application submitted successfully

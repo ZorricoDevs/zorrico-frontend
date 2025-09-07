@@ -20,6 +20,7 @@ import {
 import { Close, Email, Phone, Person, Work } from '@mui/icons-material';
 import { Link as RouterLink } from 'react-router-dom';
 import { loanAPI } from '../../services/api';
+import { MetaPixelTracker } from '../../utils/metaPixel';
 
 interface LoanApplicationPopupProps {
   open: boolean;
@@ -180,6 +181,14 @@ const LoanApplicationPopup: React.FC<LoanApplicationPopupProps> = ({
           open: true,
           message: 'Application submitted successfully! Our team will contact you within 24 hours.',
           severity: 'success',
+        });
+
+        // Track Lead event with Meta Pixel
+        MetaPixelTracker.trackLead({
+          email: formData.email,
+          phone: formData.phone,
+          first_name: formData.fullName.split(' ')[0],
+          last_name: formData.fullName.split(' ').slice(1).join(' '),
         });
 
         // Close dialog immediately for better UX

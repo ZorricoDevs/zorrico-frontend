@@ -18,6 +18,7 @@ import { TrendingUp, Calculate, AccountBalance } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 import FinanceLoader from '../UI/FinanceLoader';
 import LoanApplicationPopup from '../UI/LoanApplicationPopup';
+import { MetaPixelTracker } from '../../utils/metaPixel';
 
 interface EligibilityCalculation {
   eligible: boolean;
@@ -435,6 +436,9 @@ const EligibilityChecker: React.FC = () => {
         subMessage: offerData.subMessage,
         urgency: offerData.urgency,
       });
+
+      // Track eligibility check with Meta Pixel
+      MetaPixelTracker.trackEligibilityCheck(monthlyIncome, Math.round(maxLoanAmount));
     } catch (error) {
       setCalculation({
         eligible: false,
