@@ -20,14 +20,37 @@ export const trackEvent = (action: string, category: string, label?: string) => 
   }
 };
 
+// Track Facebook Pixel events
+export const trackFacebookEvent = (eventName: string, parameters?: any) => {
+  if (typeof window !== 'undefined' && window.fbq) {
+    window.fbq('track', eventName, parameters);
+  }
+};
+
+// Track loan application events for both GA and Facebook
+export const trackLoanApplication = (loanType: string, amount?: number) => {
+  // Google Analytics
+  trackEvent('loan_application_started', 'user_actions', loanType);
+
+  // Facebook Pixel
+  trackFacebookEvent('Lead', {
+    content_name: loanType,
+    value: amount,
+    currency: 'INR',
+  });
+};
+
 // Usage examples:
 // trackEvent('loan_application_started', 'user_actions', 'home_loan');
 // trackEvent('calculator_used', 'tools', 'emi_calculator');
 // trackEvent('bank_comparison', 'user_actions', 'rate_comparison');
+// trackFacebookEvent('ViewContent', { content_type: 'loan_calculator' });
+// trackLoanApplication('home_loan', 5000000);
 
-// TypeScript declaration for gtag (add to types file)
+// TypeScript declaration for gtag and fbq (add to types file)
 declare global {
   interface Window {
     gtag: (...args: any[]) => void;
+    fbq: (...args: any[]) => void;
   }
 }

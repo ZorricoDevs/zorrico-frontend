@@ -2,6 +2,7 @@ import React, { Suspense, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Analytics } from '@vercel/analytics/react';
 import AuthProvider from './context/AuthContext';
 import { ThemeProvider as CustomThemeProvider } from './context/ThemeContext';
 import { useTheme } from './hooks/useTheme';
@@ -475,6 +476,7 @@ function App() {
           </CustomThemeProvider>
         </QueryClientProvider>
       </Provider>
+      <Analytics />
     </ChunkErrorBoundary>
   );
 }
