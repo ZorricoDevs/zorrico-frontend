@@ -4,8 +4,23 @@
   "description": "Get instant home loan approval from 50+ banks with Zorrico. Compare rates, calculate EMI, and complete your home loan journey digitally.",
   "icons": [
     {
+      "src": "favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
       "src": "favicon.svg",
-      "sizes": "16x16 32x32 48x48",
+      "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
     },
