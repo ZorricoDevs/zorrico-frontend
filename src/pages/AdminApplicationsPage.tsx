@@ -20,13 +20,13 @@ import {
   Select,
   FormControl,
   InputLabel,
-  SelectChangeEvent
+  SelectChangeEvent,
 } from '@mui/material';
 import {
   Search as SearchIcon,
   MoreVert as MoreVertIcon,
   Check as CheckIcon,
-  Close as CloseIcon
+  Close as CloseIcon,
 } from '@mui/icons-material';
 
 interface Application {
@@ -44,7 +44,7 @@ const AdminApplicationsPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [ setSelectedApp] = useState<string | null>(null);
+  const [setSelectedApp] = useState<string | null>(null);
 
   // Mock data - replace with actual API call
   const applications: Application[] = [
@@ -56,7 +56,7 @@ const AdminApplicationsPage: React.FC = () => {
       status: 'Pending',
       dateApplied: '2024-01-15',
       bankName: 'HDFC Bank',
-      interestRate: 8.5
+      interestRate: 8.5,
     },
     {
       id: '2',
@@ -66,7 +66,7 @@ const AdminApplicationsPage: React.FC = () => {
       status: 'Approved',
       dateApplied: '2024-01-12',
       bankName: 'SBI',
-      interestRate: 8.2
+      interestRate: 8.2,
     },
     {
       id: '3',
@@ -76,7 +76,7 @@ const AdminApplicationsPage: React.FC = () => {
       status: 'Under Review',
       dateApplied: '2024-01-18',
       bankName: 'ICICI Bank',
-      interestRate: 8.7
+      interestRate: 8.7,
     },
     {
       id: '4',
@@ -86,7 +86,7 @@ const AdminApplicationsPage: React.FC = () => {
       status: 'Rejected',
       dateApplied: '2024-01-10',
       bankName: 'Axis Bank',
-      interestRate: 8.9
+      interestRate: 8.9,
     },
     {
       id: '5',
@@ -96,24 +96,30 @@ const AdminApplicationsPage: React.FC = () => {
       status: 'Approved',
       dateApplied: '2024-01-20',
       bankName: 'Kotak Mahindra',
-      interestRate: 8.3
-    }
+      interestRate: 8.3,
+    },
   ];
 
   const filteredApplications = applications.filter(app => {
-    const matchesSearch = app.applicantName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         app.bankName.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch =
+      app.applicantName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      app.bankName.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === 'All' || app.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'Approved': return 'success';
-      case 'Pending': return 'warning';
-      case 'Under Review': return 'info';
-      case 'Rejected': return 'error';
-      default: return 'default';
+      case 'Approved':
+        return 'success';
+      case 'Pending':
+        return 'warning';
+      case 'Under Review':
+        return 'info';
+      case 'Rejected':
+        return 'error';
+      default:
+        return 'default';
     }
   };
 
@@ -140,27 +146,29 @@ const AdminApplicationsPage: React.FC = () => {
   };
 
   return (
-    <Box sx={{
-      minHeight: '100vh',
-      backgroundColor: '#0a0a0a',
-      py: 3
-    }}>
-      <Container maxWidth="xl">
+    <Box
+      sx={{
+        minHeight: '100vh',
+        backgroundColor: '#0a0a0a',
+        py: 3,
+      }}
+    >
+      <Container maxWidth='xl'>
         <Box sx={{ mb: 4 }}>
           <Typography
-            variant="h4"
+            variant='h4'
             sx={{
               color: 'white',
               fontWeight: 'bold',
-              mb: 1
+              mb: 1,
             }}
           >
             Applications Management
           </Typography>
           <Typography
-            variant="body1"
+            variant='body1'
             sx={{
-              color: 'rgba(255, 255, 255, 0.7)'
+              color: 'rgba(255, 255, 255, 0.7)',
             }}
           >
             Monitor and manage all loan applications
@@ -168,16 +176,18 @@ const AdminApplicationsPage: React.FC = () => {
         </Box>
 
         {/* Filters */}
-        <Box sx={{
-          display: 'flex',
-          gap: 2,
-          mb: 3,
-          flexWrap: 'wrap'
-        }}>
+        <Box
+          sx={{
+            display: 'flex',
+            gap: 2,
+            mb: 3,
+            flexWrap: 'wrap',
+          }}
+        >
           <TextField
-            placeholder="Search applications..."
+            placeholder='Search applications...'
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
             sx={{
               minWidth: 300,
               '& .MuiOutlinedInput-root': {
@@ -187,11 +197,11 @@ const AdminApplicationsPage: React.FC = () => {
                 '&.Mui-focused fieldset': { borderColor: '#304FFE' },
               },
               '& .MuiInputBase-input': { color: 'white' },
-              '& .MuiInputLabel-root': { color: 'rgba(255, 255, 255, 0.7)' }
+              '& .MuiInputLabel-root': { color: 'rgba(255, 255, 255, 0.7)' },
             }}
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start">
+                <InputAdornment position='start'>
                   <SearchIcon sx={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                 </InputAdornment>
               ),
@@ -209,14 +219,14 @@ const AdminApplicationsPage: React.FC = () => {
                 '& .MuiOutlinedInput-notchedOutline': { borderColor: '#333' },
                 '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#555' },
                 '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#304FFE' },
-                '& .MuiSelect-icon': { color: 'rgba(255, 255, 255, 0.7)' }
+                '& .MuiSelect-icon': { color: 'rgba(255, 255, 255, 0.7)' },
               }}
             >
-              <MenuItem value="All">All Statuses</MenuItem>
-              <MenuItem value="Pending">Pending</MenuItem>
-              <MenuItem value="Under Review">Under Review</MenuItem>
-              <MenuItem value="Approved">Approved</MenuItem>
-              <MenuItem value="Rejected">Rejected</MenuItem>
+              <MenuItem value='All'>All Statuses</MenuItem>
+              <MenuItem value='Pending'>Pending</MenuItem>
+              <MenuItem value='Under Review'>Under Review</MenuItem>
+              <MenuItem value='Approved'>Approved</MenuItem>
+              <MenuItem value='Rejected'>Rejected</MenuItem>
             </Select>
           </FormControl>
         </Box>
@@ -227,7 +237,7 @@ const AdminApplicationsPage: React.FC = () => {
           sx={{
             backgroundColor: '#1a1a1a',
             borderRadius: 2,
-            border: '1px solid #333'
+            border: '1px solid #333',
           }}
         >
           <Table>
@@ -244,12 +254,12 @@ const AdminApplicationsPage: React.FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredApplications.map((app) => (
+              {filteredApplications.map(app => (
                 <TableRow
                   key={app.id}
                   sx={{
                     '&:hover': { backgroundColor: '#222' },
-                    '& td': { borderBottom: '1px solid #333' }
+                    '& td': { borderBottom: '1px solid #333' },
                   }}
                 >
                   <TableCell sx={{ color: 'white' }}>{app.applicantName}</TableCell>
@@ -261,10 +271,10 @@ const AdminApplicationsPage: React.FC = () => {
                     <Chip
                       label={app.status}
                       color={getStatusColor(app.status) as any}
-                      size="small"
+                      size='small'
                       sx={{
                         fontWeight: 500,
-                        minWidth: 84
+                        minWidth: 84,
                       }}
                     />
                   </TableCell>
@@ -274,7 +284,9 @@ const AdminApplicationsPage: React.FC = () => {
                   <TableCell>
                     <IconButton
                       sx={{ color: 'white' }}
-                      onClick={(e) => handleMenuOpen(e, app.id)}
+                      onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+                        handleMenuOpen(e, app.id)
+                      }
                     >
                       <MoreVertIcon />
                     </IconButton>
@@ -293,8 +305,8 @@ const AdminApplicationsPage: React.FC = () => {
           PaperProps={{
             sx: {
               backgroundColor: '#1a1a1a',
-              border: '1px solid #333'
-            }
+              border: '1px solid #333',
+            },
           }}
         >
           <MenuItem onClick={() => handleStatusUpdate('Approved')} sx={{ color: 'white' }}>
@@ -312,17 +324,15 @@ const AdminApplicationsPage: React.FC = () => {
         </Menu>
 
         {filteredApplications.length === 0 && (
-          <Box sx={{
-            textAlign: 'center',
-            py: 4,
-            color: 'rgba(255, 255, 255, 0.7)'
-          }}>
-            <Typography variant="h6">
-              No applications found
-            </Typography>
-            <Typography variant="body2">
-              Try adjusting your search or filter criteria
-            </Typography>
+          <Box
+            sx={{
+              textAlign: 'center',
+              py: 4,
+              color: 'rgba(255, 255, 255, 0.7)',
+            }}
+          >
+            <Typography variant='h6'>No applications found</Typography>
+            <Typography variant='body2'>Try adjusting your search or filter criteria</Typography>
           </Box>
         )}
       </Container>

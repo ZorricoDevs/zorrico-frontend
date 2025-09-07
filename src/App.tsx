@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import AuthProvider from './context/AuthContext';
 import { ThemeProvider as CustomThemeProvider } from './context/ThemeContext';
 import { useTheme } from './hooks/useTheme';
@@ -432,6 +433,7 @@ const AppContent: React.FC = () => {
         </AuthErrorBoundary>
       </ErrorBoundary>
       <Analytics />
+      <SpeedInsights />
     </ThemeProvider>
   );
 };

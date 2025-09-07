@@ -214,7 +214,7 @@ const Settings: React.FC = () => {
                   control={
                     <Switch
                       checked={notifications.emailNotifications}
-                      onChange={e =>
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         handleNotificationChange('emailNotifications', e.target.checked)
                       }
                     />
@@ -225,7 +225,9 @@ const Settings: React.FC = () => {
                   control={
                     <Switch
                       checked={notifications.smsNotifications}
-                      onChange={e => handleNotificationChange('smsNotifications', e.target.checked)}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleNotificationChange('smsNotifications', e.target.checked)
+                      }
                     />
                   }
                   label='SMS Notifications'
@@ -234,7 +236,7 @@ const Settings: React.FC = () => {
                   control={
                     <Switch
                       checked={notifications.pushNotifications}
-                      onChange={e =>
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         handleNotificationChange('pushNotifications', e.target.checked)
                       }
                     />
@@ -245,7 +247,9 @@ const Settings: React.FC = () => {
                   control={
                     <Switch
                       checked={notifications.marketingEmails}
-                      onChange={e => handleNotificationChange('marketingEmails', e.target.checked)}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleNotificationChange('marketingEmails', e.target.checked)
+                      }
                     />
                   }
                   label='Marketing Emails'
