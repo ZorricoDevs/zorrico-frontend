@@ -7,8 +7,8 @@ Create an Open Graph image with these specifications:
 - Place in: frontend/public/og-image.jpg
 
 Content should include:
-- HomeLoanMittra logo
-- Text: "Instant Home Loan Approval"
+- Zorrico logo
+- Text: "Instant Home Loan Eligibilty"
 - Text: "Compare Best Rates from 50+ Banks"
 - Professional financial/housing theme
 - Brand colors: #1976d2 (primary blue)

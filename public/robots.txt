@@ -35,4 +35,4 @@ Allow: /careers
 Allow: /newsroom
 
 # Sitemap location
-Sitemap: https://homeloanmittra.com/sitemap.xml
+Sitemap: https://zorrico.com/sitemap.xml
