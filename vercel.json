@@ -9,10 +9,32 @@
   },
   "routes": [
     {
+      "src": "/robots\\.txt",
+      "headers": {
+        "Cache-Control": "public, max-age=3600",
+        "Content-Type": "text/plain"
+      },
+      "dest": "/robots.txt"
+    },
+    {
+      "src": "/sitemap\\.xml",
+      "headers": {
+        "Cache-Control": "public, max-age=3600",
+        "Content-Type": "application/xml"
+      },
+      "dest": "/sitemap.xml"
+    },
+    {
       "src": "/favicon\\.(ico|png|svg)",
       "headers": {
         "Cache-Control": "public, max-age=86400",
         "Content-Type": "image/x-icon"
+      }
+    },
+    {
+      "src": "/favicons/(.*)",
+      "headers": {
+        "Cache-Control": "public, max-age=86400"
       }
     },
     {
