@@ -89,10 +89,6 @@ function AuthProvider({ children }: AuthProviderProps) {
           avatar: data.user.avatar || '',
         };
 
-        console.log('AuthContext Debug - Login response:', data);
-        console.log('AuthContext Debug - User object:', user);
-        console.log('AuthContext Debug - User role:', user.role);
-
         // Store token
         if (data.token) {
           localStorage.setItem('token', data.token);

@@ -80,10 +80,6 @@ const Navbar: React.FC = () => {
     const userRole = user.role;
     const userType = user.userType;
 
-    console.log('Navbar Debug - User:', user);
-    console.log('Navbar Debug - User Role:', userRole);
-    console.log('Navbar Debug - User Type:', userType);
-
     // Primary role checking
     if (userRole === 'admin') return '/admin-dashboard';
     if (userRole === 'broker') return '/broker-dashboard';
@@ -103,7 +99,6 @@ const Navbar: React.FC = () => {
   };
 
   const dashboardPath = getDashboardPath();
-  console.log('Navbar Debug - Final Dashboard Path:', dashboardPath);
 
   const menuItems = [
     { label: 'Home', path: '/', icon: <Home /> },

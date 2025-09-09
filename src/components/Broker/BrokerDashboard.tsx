@@ -141,11 +141,6 @@ const BrokerDashboard: React.FC = () => {
           brokerApi.getBrokerAnalytics(),
         ]);
 
-        console.log('BrokerDashboard Debug - Stats:', statsData);
-        console.log('BrokerDashboard Debug - Leads:', leadsData);
-        console.log('BrokerDashboard Debug - Applications:', applicationsData);
-        console.log('BrokerDashboard Debug - User:', user);
-
         // Ensure leadsData is an array
         const validLeadsData = Array.isArray(leadsData) ? leadsData : [];
         const validApplicationsData = Array.isArray(applicationsData) ? applicationsData : [];
@@ -197,9 +192,6 @@ const BrokerDashboard: React.FC = () => {
         brokerApi.getBrokerStats(),
         brokerApi.getLeads(),
       ]);
-
-      console.log('BrokerDashboard Debug - Refreshed Stats:', statsData);
-      console.log('BrokerDashboard Debug - Refreshed Leads:', leadsData);
 
       // Ensure leadsData is an array
       const validLeadsData = Array.isArray(leadsData) ? leadsData : [];
