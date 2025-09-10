@@ -504,7 +504,7 @@ const HomePage: React.FC = () => {
                       margin: { xs: '0 auto 20px', lg: '0 0 32px' },
                     }}
                   >
-                    Anonymous eligibility checker with lowest interest rates from 50+ banks.
+                    Anonymous eligibility checker with best interest rates from 50+ banks.
                     Privacy-first platform with unbiased, data-driven recommendations for customers,
                     brokers & builders.
                   </Typography>

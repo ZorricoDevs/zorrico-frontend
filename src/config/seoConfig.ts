@@ -17,25 +17,24 @@ export interface SEOConfig {
 export const seoConfig: Record<string, SEOConfig> = {
   homepage: {
     title:
-      'Zorrico Home Loans - Effortless Process & Lowest Interest Rates | Anonymous Eligibility Checker',
+      'Zorrico - Effortless Home Loan Process & Best Interest Rates | Anonymous Eligibility Checker',
     description:
       'Making home loans effortless with anonymous eligibility checker, unbiased recommendations from 50+ banks. Privacy-first platform for customers, brokers & builders.',
     keywords:
-      'zorrico home loans, home loan eligibility checker, lowest interest rate home loans, effortless home loans, anonymous eligibility check, unbiased home loan comparison, privacy first home loans, home loan brokers platform, builder financing solutions',
+      'zorrico, home loan eligibility checker, best interest rate home loans, effortless home loans, anonymous eligibility check, unbiased home loan comparison, privacy first home loans, home loan brokers platform, builder financing solutions',
     canonical: 'https://zorrico.com/',
     ogTitle:
-      'Zorrico Home Loans - Effortless & Lowest Interest Rates | Anonymous Eligibility Checker',
+      'Zorrico - Effortless Home Loans & Best Interest Rates | Anonymous Eligibility Checker',
     ogDescription:
-      'Making home loans effortless with unbiased recommendations & lowest rates from 50+ banks. Check eligibility anonymously without data privacy concerns.',
-    twitterTitle: 'Zorrico Home Loans - Effortless Process & Lowest Rates | Privacy-First Platform',
+      'Making home loans effortless with unbiased recommendations & best rates from 50+ banks. Check eligibility anonymously without data privacy concerns.',
+    twitterTitle: 'Zorrico - Effortless Home Loan Process & Best Rates | Privacy-First Platform',
     twitterDescription:
       'Anonymous home loan eligibility checker with unbiased recommendations from 50+ banks. Making home loans effortless while protecting your privacy.',
     jsonLd: {
       '@context': 'https://schema.org',
       '@type': 'WebPage',
-      name: 'Zorrico Home Loans - Effortless & Anonymous Eligibility Checker',
-      description:
-        'Privacy-first home loan platform with unbiased recommendations and lowest rates',
+      name: 'Zorrico - Effortless Home Loan & Anonymous Eligibility Checker',
+      description: 'Privacy-first home loan platform with unbiased recommendations and best rates',
       url: 'https://zorrico.com',
       isPartOf: {
         '@type': 'WebSite',
@@ -69,16 +68,16 @@ export const seoConfig: Record<string, SEOConfig> = {
   },
 
   emiCalculator: {
-    title: 'EMI Calculator - Home Loan EMI Calculator | Lowest Rates | Zorrico',
+    title: 'EMI Calculator - Home Loan EMI Calculator | Best Rates | Zorrico',
     description:
-      'Calculate home loan EMI with our accurate calculator. Compare EMIs from 50+ banks to find lowest interest rates. Plan your home loan affordability.',
+      'Calculate home loan EMI with our accurate calculator. Compare EMIs from 50+ banks to find best interest rates. Plan your home loan affordability.',
     keywords:
-      'emi calculator, home loan emi calculator, emi calculation, home loan calculator, lowest emi rates, loan affordability calculator, zorrico emi calculator',
+      'emi calculator, home loan emi calculator, emi calculation, home loan calculator, best emi rates, loan affordability calculator, zorrico emi calculator',
     canonical: 'https://zorrico.com/emi-calculator',
-    ogTitle: 'Home Loan EMI Calculator - Compare Lowest Rates | Zorrico',
+    ogTitle: 'Home Loan EMI Calculator - Compare Best Rates | Zorrico',
     ogDescription:
       'Calculate accurate EMIs and compare rates from 50+ banks. Find the most affordable home loan option for your budget.',
-    twitterTitle: 'EMI Calculator - Find Lowest Home Loan Rates',
+    twitterTitle: 'EMI Calculator - Find Best Home Loan Rates',
     twitterDescription:
       'Calculate and compare EMIs from 50+ banks to secure the most affordable home loan rates.',
     jsonLd: {
@@ -91,30 +90,30 @@ export const seoConfig: Record<string, SEOConfig> = {
   },
 
   homeLoans: {
-    title: 'Home Loans at Lowest Interest Rates | 50+ Banks | Zorrico',
+    title: 'Home Loans at Best Interest Rates | 50+ Banks | Zorrico',
     description:
-      'Get home loans at lowest interest rates from 50+ banks. Unbiased recommendations, effortless process, and privacy-first approach. Compare rates instantly.',
+      'Get home loans at best interest rates from 50+ banks. Unbiased recommendations, effortless process, and privacy-first approach. Compare rates instantly.',
     keywords:
-      'home loans, lowest interest rate home loans, home loan rates, best home loan offers, compare home loan rates, effortless home loans, zorrico home loans',
+      'home loans, best interest rate home loans, home loan rates, best home loan offers, compare home loan rates, effortless home loans, zorrico',
     canonical: 'https://zorrico.com/home-loans',
-    ogTitle: 'Home Loans at Lowest Interest Rates | Zorrico',
+    ogTitle: 'Home Loans at Best Interest Rates | Zorrico',
     ogDescription:
-      'Secure home loans at the lowest interest rates from 50+ verified banks. Unbiased recommendations and effortless application process.',
-    twitterTitle: 'Lowest Interest Rate Home Loans - Unbiased Recommendations',
+      'Secure home loans at the best interest rates from 50+ verified banks. Unbiased recommendations and effortless application process.',
+    twitterTitle: 'Best Interest Rate Home Loans - Unbiased Recommendations',
     twitterDescription:
-      'Compare and secure the lowest home loan rates from 50+ banks with our effortless, privacy-first platform.',
+      'Compare and secure the best home loan rates from 50+ banks with our effortless, privacy-first platform.',
     jsonLd: {
       '@context': 'https://schema.org',
       '@type': 'Service',
       name: 'Home Loan Services',
-      description: 'Home loans at lowest interest rates with unbiased recommendations',
+      description: 'Home loans at best interest rates with unbiased recommendations',
     },
   },
 
   aboutUs: {
     title: 'About Zorrico - Making Home Loans Effortless & Unbiased | Privacy-First Platform',
     description:
-      "Learn about Zorrico's mission to make home loans effortless with anonymous eligibility checking, unbiased recommendations, and lowest rates from 50+ banks.",
+      "Learn about Zorrico's mission to make home loans effortless with anonymous eligibility checking, unbiased recommendations, and best rates from 50+ banks.",
     keywords:
       'about zorrico, zorrico company, effortless home loans, unbiased home loan platform, privacy first lending, home loan aggregator',
     canonical: 'https://zorrico.com/about-us',

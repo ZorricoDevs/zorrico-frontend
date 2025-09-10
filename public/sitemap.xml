@@ -99,21 +99,21 @@
   <url>
     <loc>https://zorrico.com/privacy-policy</loc>
     <lastmod>2025-09-10</lastmod>
-    <changefreq>quarterly</changefreq>
+    <changefreq>monthly</changefreq>
     <priority>0.40</priority>
   </url>
 
   <url>
     <loc>https://zorrico.com/terms-of-use</loc>
     <lastmod>2025-09-10</lastmod>
-    <changefreq>quarterly</changefreq>
+    <changefreq>monthly</changefreq>
     <priority>0.40</priority>
   </url>
 
   <url>
     <loc>https://zorrico.com/security-disclosure</loc>
     <lastmod>2025-09-10</lastmod>
-    <changefreq>quarterly</changefreq>
+    <changefreq>monthly</changefreq>
     <priority>0.35</priority>
   </url>
 
@@ -121,7 +121,7 @@
   <url>
     <loc>https://zorrico.com/iso27001-2022</loc>
     <lastmod>2025-09-10</lastmod>
-    <changefreq>yearly</changefreq>
+    <changefreq>monthly</changefreq>
     <priority>0.30</priority>
   </url>
 
