@@ -44,30 +44,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Zorrico - India's leading digital platform for instant home loan eligibility. Compare rates from 50+ banks, get pre-approved in minutes, and save time & money on your home loan journey." />
-    <meta name="keywords" content="zorrico, home loan, home loan india, instant home loan eligibility, compare home loan rates, digital home loan, online home loan, best home loan rates, home loan calculator, property loan, housing finance, loan against property, home loan eligibility, mortgage calculator, HDFC home loan, SBI home loan, ICICI home loan, axis bank home loan, pre-approved home loan" />
+    <meta name="description" content="Zorrico - Making home loans effortless with lowest interest rates. Anonymous eligibility checker, unbiased recommendations from 50+ banks. Privacy-first home loan platform for customers, brokers & builders." />
+    <meta name="keywords" content="zorrico home loans, home loan eligibility checker, lowest interest rate home loans, effortless home loans, anonymous eligibility check, unbiased home loan comparison, privacy first home loans, home loan brokers platform, builder financing solutions, custom eligibility tools, data driven home loan recommendations, progressive home loan disclosure, real estate aggregation platform" />
     <meta name="author" content="Zorrico Technologies" />
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
     <meta name="googlebot" content="index, follow" />
+    <meta name="theme-color" content="#1976d2" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://zorrico.com/" />
-    <meta property="og:title" content="Zorrico - Instant Home Loan Eligibility | Compare Best Rates" />
-    <meta property="og:description" content="Get instant home loan eligibility from 50+ banks with Zorrico. Compare rates, calculate EMI, and complete your home loan journey digitally. Trusted by 10,000+ customers across India." />
+    <meta property="og:title" content="Zorrico Home Loans - Effortless & Lowest Interest Rates | Anonymous Eligibility Checker" />
+    <meta property="og:description" content="Making home loans effortless with unbiased recommendations & lowest rates from 50+ banks. Check eligibility anonymously without data privacy concerns. Trusted platform for customers, brokers & builders." />
     <meta property="og:image" content="%PUBLIC_URL%/og-image.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:site_name" content="Zorrico" />
     <meta property="og:locale" content="en_IN" />
+    <meta property="fb:app_id" content="1087844056871168" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="https://zorrico.com/" />
-    <meta property="twitter:title" content="Zorrico - Instant Home Loan Eligibility | Get Best Rates" />
-    <meta property="twitter:description" content="Get instant home loan eligibility from 50+ banks with Zorrico. Compare rates, calculate EMI, and complete your home loan journey digitally." />
+    <meta property="twitter:title" content="Zorrico Home Loans - Effortless Process & Lowest Rates | Privacy-First Platform" />
+    <meta property="twitter:description" content="Anonymous home loan eligibility checker with unbiased recommendations from 50+ banks. Making home loans effortless while protecting your privacy." />
     <meta property="twitter:image" content="%PUBLIC_URL%/og-image.jpg" />
     <meta property="twitter:creator" content="@Zorrico" />
+    <meta property="twitter:site" content="@Zorrico" />
 
     <!-- Additional SEO Meta Tags -->
     <meta name="application-name" content="Zorrico" />
@@ -94,55 +100,112 @@
     <!-- Manifest -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
 
-    <!-- Schema.org structured data -->
+    <!-- Enhanced Schema.org structured data -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "FinancialService",
-      "name": "Zorrico",
-      "url": "https://zorrico.com",
-      "logo": "https://zorrico.com/logo.png",
-      "description": "Digital platform for instant home loan approvals and rate comparison across 50+ banks in India",
-      "areaServed": "IN",
-      "serviceType": "Home Loan Services",
-      "provider": {
-        "@type": "Organization",
-        "name": "Zorrico Technologies",
-        "url": "https://zorrico.com"
-      },
-      "hasOfferCatalog": {
-        "@type": "OfferCatalog",
-        "name": "Home Loan Products",
-        "itemListElement": [
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "LoanOrCredit",
-              "name": "Home Loan",
-              "description": "Competitive home loan rates with instant approval"
-            }
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://zorrico.com/#organization",
+          "name": "Zorrico",
+          "url": "https://zorrico.com",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://zorrico.com/logo.png",
+            "width": 400,
+            "height": 400
           },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "LoanOrCredit",
-              "name": "Loan Against Property",
-              "description": "Flexible loan against property solutions"
-            }
+          "description": "Making home loans effortless with unbiased recommendations and lowest interest rates. Privacy-first platform connecting customers, brokers, builders and banks.",
+          "foundingDate": "2023",
+          "areaServed": {
+            "@type": "Country",
+            "name": "India"
+          },
+          "sameAs": [
+            "https://www.facebook.com/zorrico",
+            "https://twitter.com/zorrico",
+            "https://www.linkedin.com/company/zorrico"
+          ]
+        },
+        {
+          "@type": "FinancialService",
+          "@id": "https://zorrico.com/#service",
+          "name": "Zorrico Home Loan Platform",
+          "url": "https://zorrico.com",
+          "description": "Effortless home loans with anonymous eligibility checker, unbiased bank recommendations, and lowest interest rates from 50+ verified lenders",
+          "provider": {
+            "@id": "https://zorrico.com/#organization"
+          },
+          "areaServed": "IN",
+          "serviceType": ["Home Loan Aggregation", "Eligibility Assessment", "Rate Comparison"],
+          "audience": {
+            "@type": "Audience",
+            "name": "Home Loan Seekers, Brokers, Builders, Banks"
+          },
+          "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Home Loan Solutions",
+            "itemListElement": [
+              {
+                "@type": "Offer",
+                "name": "Anonymous Eligibility Checker",
+                "description": "Check home loan eligibility without sharing personal data upfront",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Privacy-First Eligibility Assessment"
+                }
+              },
+              {
+                "@type": "Offer",
+                "name": "Unbiased Rate Comparison",
+                "description": "Data-driven recommendations without lender bias from 50+ banks",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Multi-Bank Comparison Service"
+                }
+              },
+              {
+                "@type": "Offer",
+                "name": "Broker Integration Platform",
+                "description": "Verified leads and customizable tools for mortgage brokers",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Broker Management System"
+                }
+              }
+            ]
           }
-        ]
-      },
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "telephone": "+91-XXXXXXXXXX",
-        "contactType": "customer service",
-        "areaServed": "IN",
-        "availableLanguage": ["English", "Hindi"]
-      }
+        },
+        {
+          "@type": "WebApplication",
+          "@id": "https://zorrico.com/#webapp",
+          "name": "Zorrico Home Loan Platform",
+          "url": "https://zorrico.com",
+          "applicationCategory": "FinanceApplication",
+          "operatingSystem": "Web Browser",
+          "description": "Comprehensive home loan platform with anonymous eligibility checking and unbiased recommendations",
+          "featureList": [
+            "Anonymous Eligibility Check",
+            "50+ Bank Integration",
+            "Unbiased Recommendations",
+            "Broker Lead Management",
+            "Builder Financing Tools",
+            "Custom FOIR Calculators",
+            "Privacy-First Approach"
+          ],
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "INR",
+            "description": "Free eligibility check and rate comparison"
+          }
+        }
+      ]
     }
     </script>
 
-    <title>Zorrico - Instant Home Loan Eligibility | Compare Best Rates from 50+ Banks</title>
+    <title>Zorrico Home Loans - Effortless Process & Lowest Interest Rates | Anonymous Eligibility Checker</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

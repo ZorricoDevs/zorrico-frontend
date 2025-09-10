@@ -4,6 +4,7 @@ import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
+import { HelmetProvider } from 'react-helmet-async';
 import AuthProvider from './context/AuthContext';
 import { ThemeProvider as CustomThemeProvider } from './context/ThemeContext';
 import { useTheme } from './hooks/useTheme';
@@ -471,15 +472,17 @@ function App() {
   }, []);
 
   return (
-    <ChunkErrorBoundary>
-      <Provider store={store}>
-        <QueryClientProvider client={queryClient}>
-          <CustomThemeProvider>
-            <AppContent />
-          </CustomThemeProvider>
-        </QueryClientProvider>
-      </Provider>
-    </ChunkErrorBoundary>
+    <HelmetProvider>
+      <ChunkErrorBoundary>
+        <Provider store={store}>
+          <QueryClientProvider client={queryClient}>
+            <CustomThemeProvider>
+              <AppContent />
+            </CustomThemeProvider>
+          </QueryClientProvider>
+        </Provider>
+      </ChunkErrorBoundary>
+    </HelmetProvider>
   );
 }
 

@@ -1,107 +1,128 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
-  <!-- Homepage -->
+  <!-- Homepage - Zorrico Home Loans -->
   <url>
     <loc>https://zorrico.com/</loc>
-    <lastmod>2025-09-09</lastmod>
+    <lastmod>2025-09-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
-  <!-- Calculator Pages -->
+  <!-- High Priority Calculator Pages - Core Business Features -->
+  <url>
+    <loc>https://zorrico.com/eligibility-checker</loc>
+    <lastmod>2025-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
   <url>
     <loc>https://zorrico.com/emi-calculator</loc>
-    <lastmod>2025-09-09</lastmod>
+    <lastmod>2025-09-10</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.90</priority>
   </url>
 
+  <!-- Product & Service Pages -->
   <url>
-    <loc>https://zorrico.com/eligibility-c hecker</loc>
-    <lastmod>2025-09-09</lastmod>
+    <loc>https://zorrico.com/home-loans</loc>
+    <lastmod>2025-09-10</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.85</priority>
   </url>
 
+  <!-- Login Pages for Different User Types -->
   <url>
-    <loc>https://zorrico.com/emicalculator</loc>
-    <lastmod>2025-09-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- Product Pages -->
-  <url>
-    <loc>https://zorrico.com/homeloans</loc>
-    <lastmod>2025-09-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- About Us -->
-  <url>
-    <loc>https://zorrico.com/about</loc>
-    <lastmod>2025-09-09</lastmod>
+    <loc>https://zorrico.com/customer-login</loc>
+    <lastmod>2025-09-10</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.70</priority>
   </url>
 
-  <!-- Contact Page -->
+  <url>
+    <loc>https://zorrico.com/broker-login</loc>
+    <lastmod>2025-09-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://zorrico.com/builder-login</loc>
+    <lastmod>2025-09-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.65</priority>
+  </url>
+
+  <url>
+    <loc>https://zorrico.com/banker-login</loc>
+    <lastmod>2025-09-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.65</priority>
+  </url>
+
+  <!-- Company Information Pages -->
+  <url>
+    <loc>https://zorrico.com/about-us</loc>
+    <lastmod>2025-09-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
   <url>
     <loc>https://zorrico.com/contact</loc>
-    <lastmod>2025-09-09</lastmod>
+    <lastmod>2025-09-10</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.70</priority>
   </url>
 
-  <!-- Careers -->
+  <!-- Career & News Pages -->
   <url>
     <loc>https://zorrico.com/careers</loc>
-    <lastmod>2025-09-09</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <lastmod>2025-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.60</priority>
   </url>
 
-  <!-- Newsroom -->
   <url>
     <loc>https://zorrico.com/newsroom</loc>
-    <lastmod>2025-09-09</lastmod>
+    <lastmod>2025-09-10</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.60</priority>
   </url>
 
-  <!-- Legal Pages -->
+  <!-- Legal & Compliance Pages -->
   <url>
-    <loc>https://zorrico.com/privacypolicy</loc>
-    <lastmod>2025-09-09</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.4</priority>
-  </url>
-
-  <url>
-    <loc>https://zorrico.com/termsofuse</loc>
-    <lastmod>2025-09-09</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.4</priority>
+    <loc>https://zorrico.com/privacy-policy</loc>
+    <lastmod>2025-09-10</lastmod>
+    <changefreq>quarterly</changefreq>
+    <priority>0.40</priority>
   </url>
 
   <url>
-    <loc>https://zorrico.com/securitydisclosure</loc>
-    <lastmod>2025-09-09</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
+    <loc>https://zorrico.com/terms-of-use</loc>
+    <lastmod>2025-09-10</lastmod>
+    <changefreq>quarterly</changefreq>
+    <priority>0.40</priority>
   </url>
 
-  <!-- ISO 27001:2022 Page -->
+  <url>
+    <loc>https://zorrico.com/security-disclosure</loc>
+    <lastmod>2025-09-10</lastmod>
+    <changefreq>quarterly</changefreq>
+    <priority>0.35</priority>
+  </url>
+
+  <!-- ISO Compliance Page -->
   <url>
     <loc>https://zorrico.com/iso27001-2022</loc>
-    <lastmod>2025-09-02</lastmod>
+    <lastmod>2025-09-10</lastmod>
     <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
+    <priority>0.30</priority>
   </url>
 
 </urlset>

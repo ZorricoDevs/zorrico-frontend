@@ -1,10 +1,10 @@
-# Robots.txt for HomeLoanMittra
-# Allow all crawlers to access all content
+# Robots.txt for Zorrico Home Loans - Effortless & Unbiased Platform
+# Optimized for search engines to index home loan content
 
 User-agent: *
 Allow: /
 
-# Specific rules for major search engines
+# Enhanced rules for major search engines
 User-agent: Googlebot
 Allow: /
 Crawl-delay: 1
@@ -13,26 +13,39 @@ User-agent: Bingbot
 Allow: /
 Crawl-delay: 1
 
+User-agent: Slurp
+Allow: /
+Crawl-delay: 2
+
+User-agent: DuckDuckBot
+Allow: /
+Crawl-delay: 1
+
 # Disallow admin and private areas
 Disallow: /admin/
 Disallow: /api/
 Disallow: /private/
 Disallow: /dashboard/
-Disallow: /broker/
-Disallow: /banker/
-Disallow: /builder/
-Disallow: /lender/
+Disallow: /broker-dashboard/
+Disallow: /admin-dashboard/
+Disallow: /banker-dashboard/
+Disallow: /builder-dashboard/
+Disallow: /profile/
+Disallow: /settings/
 
-# Allow important pages
+# Allow important SEO pages for home loans
 Allow: /
 Allow: /home-loans
-Allow: /calculator
-Allow: /about
+Allow: /eligibility-checker
+Allow: /emi-calculator
+Allow: /about-us
 Allow: /contact
 Allow: /privacy-policy
 Allow: /terms-of-use
 Allow: /careers
 Allow: /newsroom
+Allow: /iso27001-2022
+Allow: /security-disclosure
 
 # Sitemap location
 Sitemap: https://zorrico.com/sitemap.xml
