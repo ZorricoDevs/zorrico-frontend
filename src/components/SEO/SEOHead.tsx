@@ -28,7 +28,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({ page, customConfig }) => {
       {/* Open Graph Meta Tags */}
       <meta property='og:title' content={config.ogTitle || config.title} />
       <meta property='og:description' content={config.ogDescription || config.description} />
-      <meta property='og:url' content={config.canonical} />
+      <meta property='og:url' content={config.canonical || ''} />
       <meta property='og:type' content='website' />
       {config.ogImage && <meta property='og:image' content={config.ogImage} />}
       <meta property='og:site_name' content='Zorrico' />
@@ -55,19 +55,6 @@ const SEOHead: React.FC<SEOHeadProps> = ({ page, customConfig }) => {
 
       {/* JSON-LD Structured Data */}
       {config.jsonLd && <script type='application/ld+json'>{JSON.stringify(config.jsonLd)}</script>}
-
-      {/* Preload Critical Resources */}
-      <link
-        rel='preload'
-        href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap'
-        as='style'
-      />
-      <link rel='preconnect' href='https://fonts.googleapis.com' />
-      <link rel='preconnect' href='https://fonts.gstatic.com' crossOrigin='' />
-
-      {/* Performance Hints */}
-      <link rel='dns-prefetch' href='//www.google-analytics.com' />
-      <link rel='dns-prefetch' href='//connect.facebook.net' />
     </Helmet>
   );
 };
