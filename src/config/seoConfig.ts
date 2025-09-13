@@ -15,6 +15,43 @@ export interface SEOConfig {
 }
 
 export const seoConfig: Record<string, SEOConfig> = {
+  landingPage: {
+    title: 'Home Loan Application - Easy Home Loan Process | Zorrico',
+    description:
+      "Apply for home loan with Zorrico's streamlined process. Get competitive interest rates from multiple banks. Expert guidance and personalized loan solutions. Apply now!",
+    keywords:
+      'home loan application, apply home loan online, competitive home loan rates, home loan approval process, personalized loan solutions, zorrico home loans',
+    canonical: 'https://zorrico.com/apply-instant',
+    ogTitle: 'Apply for Home Loan - Quick Process & Competitive Rates | Zorrico',
+    ogDescription:
+      'Apply for home loan with expert guidance and competitive rates. Streamlined process with personalized solutions for your dream home.',
+    twitterTitle: 'Home Loan Application - Quick Process & Competitive Rates',
+    twitterDescription:
+      'Apply for home loan with expert guidance. Competitive rates and personalized solutions. Start your application today!',
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      name: 'Home Loan Application',
+      description: 'Apply for home loan with competitive interest rates and expert guidance',
+      url: 'https://zorrico.com/apply-instant',
+      isPartOf: {
+        '@type': 'WebSite',
+        name: 'Zorrico',
+        url: 'https://zorrico.com',
+      },
+      provider: {
+        '@type': 'Organization',
+        name: 'Zorrico',
+        description: 'Premium home loan experts providing personalized loan solutions',
+      },
+      offers: {
+        '@type': 'Offer',
+        description: 'Home loan application with competitive rates',
+        category: 'Financial Service',
+      },
+    },
+  },
+
   homepage: {
     title:
       'Zorrico - Effortless Home Loan Process & Best Interest Rates | Anonymous Eligibility Checker',

@@ -5,48 +5,199 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Floating animation for hero elements */
+/* Enhanced floating animation for hero elements */
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0.8;
+  }
+  33% {
+    transform: translateY(-15px) rotate(1deg);
+    opacity: 1;
+  }
+  66% {
+    transform: translateY(-25px) rotate(-1deg);
+    opacity: 0.9;
+  }
 }
 
 .floating-element {
   animation: float 6s ease-in-out infinite;
 }
 
-/* Gradient animation for text */
+/* Enhanced animate float for particles */
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Advanced gradient animation for text */
 @keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+    filter: hue-rotate(0deg);
+  }
+  25% {
+    background-position: 100% 50%;
+    filter: hue-rotate(90deg);
+  }
+  50% {
+    background-position: 100% 100%;
+    filter: hue-rotate(180deg);
+  }
+  75% {
+    background-position: 0% 100%;
+    filter: hue-rotate(270deg);
+  }
+  100% {
+    background-position: 0% 50%;
+    filter: hue-rotate(360deg);
+  }
 }
 
 .gradient-text {
-  background: linear-gradient(-45deg, #304FFE, #5C6FFF, #FFD700, #FFA726);
-  background-size: 400% 400%;
+  background: linear-gradient(-45deg, #304ffe, #5c6fff, #ffd700, #ffa726, #e91e63, #9c27b0);
+  background-size: 600% 600%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   animation: gradientShift 8s ease infinite;
 }
 
-/* Pulse animation for buttons */
+/* Enhanced pulse animation for buttons */
 @keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(48, 79, 254, 0.7); }
-  70% { box-shadow: 0 0 0 10px rgba(48, 79, 254, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(48, 79, 254, 0); }
+  0% {
+    box-shadow: 0 0 0 0 rgba(48, 79, 254, 0.7);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 0 15px rgba(48, 79, 254, 0);
+    transform: scale(1.05);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(48, 79, 254, 0);
+    transform: scale(1);
+  }
 }
 
 .pulse-button {
   animation: pulse 2s infinite;
 }
 
+/* Sparkle animation */
+@keyframes sparkle {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(180deg);
+  }
+}
+
+.sparkle {
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+/* Floating particles */
+@keyframes floatParticles {
+  0% {
+    transform: translateY(0) translateX(0) scale(0.8);
+    opacity: 0.3;
+  }
+  33% {
+    transform: translateY(-50px) translateX(20px) scale(1);
+    opacity: 0.8;
+  }
+  66% {
+    transform: translateY(-80px) translateX(-10px) scale(1.1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-120px) translateX(30px) scale(0.9);
+    opacity: 0;
+  }
+}
+
+.float-particles {
+  animation: floatParticles 6s ease-in-out infinite;
+}
+
+/* Glow effect */
+@keyframes glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+  }
+  50% {
+    box-shadow:
+      0 0 40px rgba(147, 51, 234, 0.8),
+      0 0 60px rgba(59, 130, 246, 0.6);
+  }
+}
+
+.glow-effect {
+  animation: glow 3s ease-in-out infinite;
+}
+
+/* Wave animation */
+@keyframes wave {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(5deg);
+  }
+  75% {
+    transform: rotate(-5deg);
+  }
+}
+
+.wave-animation {
+  animation: wave 2s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+/* Typewriter effect */
+@keyframes typewriter {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.typewriter {
+  animation: typewriter 3s steps(40, end);
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid;
+  animation-fill-mode: forwards;
+}
+
 /* Shake animation for attention */
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-  20%, 40%, 60%, 80% { transform: translateX(5px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-5px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(5px);
+  }
 }
 
 .shake-on-hover:hover {
@@ -55,10 +206,23 @@ html {
 
 /* Bounce animation */
 @keyframes bounce {
-  0%, 20%, 53%, 80%, 100% { transform: translate3d(0, 0, 0); }
-  40%, 43% { transform: translate3d(0, -30px, 0); }
-  70% { transform: translate3d(0, -15px, 0); }
-  90% { transform: translate3d(0, -4px, 0); }
+  0%,
+  20%,
+  53%,
+  80%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  40%,
+  43% {
+    transform: translate3d(0, -30px, 0);
+  }
+  70% {
+    transform: translate3d(0, -15px, 0);
+  }
+  90% {
+    transform: translate3d(0, -4px, 0);
+  }
 }
 
 .bounce-on-scroll {
@@ -67,8 +231,15 @@ html {
 
 /* Glow effect */
 @keyframes glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(48, 79, 254, 0.5); }
-  50% { box-shadow: 0 0 40px rgba(48, 79, 254, 0.8), 0 0 60px rgba(48, 79, 254, 0.6); }
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(48, 79, 254, 0.5);
+  }
+  50% {
+    box-shadow:
+      0 0 40px rgba(48, 79, 254, 0.8),
+      0 0 60px rgba(48, 79, 254, 0.6);
+  }
 }
 
 .glow-effect {
@@ -77,8 +248,14 @@ html {
 
 /* Slide in from left */
 @keyframes slideInLeft {
-  from { transform: translateX(-100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 .slide-in-left {
@@ -87,8 +264,14 @@ html {
 
 /* Slide in from right */
 @keyframes slideInRight {
-  from { transform: translateX(100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 .slide-in-right {
@@ -97,8 +280,14 @@ html {
 
 /* Fade in up */
 @keyframes fadeInUp {
-  from { transform: translateY(50px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .fade-in-up {
@@ -107,8 +296,14 @@ html {
 
 /* Scale in */
 @keyframes scaleIn {
-  from { transform: scale(0.8); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .scale-in {
@@ -117,8 +312,14 @@ html {
 
 /* Rotate in */
 @keyframes rotateIn {
-  from { transform: rotate(-180deg) scale(0.5); opacity: 0; }
-  to { transform: rotate(0deg) scale(1); opacity: 1; }
+  from {
+    transform: rotate(-180deg) scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
 }
 
 .rotate-in {
@@ -133,7 +334,7 @@ html {
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #304FFE 0%, #5C6FFF 100%);
+  background: linear-gradient(90deg, #304ffe 0%, #5c6fff 100%);
   transform-origin: 0%;
   z-index: 1000;
   opacity: 0.8;
@@ -167,9 +368,15 @@ html {
 
 /* Loading animation */
 @keyframes loading {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .loading-animation {
@@ -178,28 +385,46 @@ html {
 
 /* Text typing effect */
 @keyframes typing {
-  from { width: 0; }
-  to { width: 100%; }
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
 }
 
 @keyframes blink {
-  50% { border-color: transparent; }
+  50% {
+    border-color: transparent;
+  }
 }
 
 .typing-effect {
   overflow: hidden;
-  border-right: 3px solid #304FFE;
+  border-right: 3px solid #304ffe;
   white-space: nowrap;
   margin: 0 auto;
-  animation: typing 3s steps(40, end), blink 0.75s step-end infinite;
+  animation:
+    typing 3s steps(40, end),
+    blink 0.75s step-end infinite;
 }
 
 /* Stagger animation delay classes */
-.stagger-1 { animation-delay: 0.1s; }
-.stagger-2 { animation-delay: 0.2s; }
-.stagger-3 { animation-delay: 0.3s; }
-.stagger-4 { animation-delay: 0.4s; }
-.stagger-5 { animation-delay: 0.5s; }
+.stagger-1 {
+  animation-delay: 0.1s;
+}
+.stagger-2 {
+  animation-delay: 0.2s;
+}
+.stagger-3 {
+  animation-delay: 0.3s;
+}
+.stagger-4 {
+  animation-delay: 0.4s;
+}
+.stagger-5 {
+  animation-delay: 0.5s;
+}
 
 /* Process step connector - responsive display */
 .process-connector {

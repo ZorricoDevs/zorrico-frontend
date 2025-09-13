@@ -84,6 +84,7 @@ const TermsOfUsePage = lazyWithRetry(() => import('./pages/TermsOfUsePage'));
 const SecurityDisclosurePage = lazyWithRetry(() => import('./pages/SecurityDisclosurePage'));
 const NewsroomPage = lazyWithRetry(() => import('./pages/NewsroomPage'));
 const HomeLoansPage = lazyWithRetry(() => import('./pages/HomeLoansPage'));
+const LandingPageStandalone = lazyWithRetry(() => import('./pages/LandingPageTailwind'));
 
 // Create a query client for React Query
 const queryClient = new QueryClient({
@@ -176,6 +177,11 @@ const AppContent: React.FC = () => {
                       <Route path='/' element={<HomePage />} />
                       <Route path='/home' element={<HomePage />} />
                       <Route path='/loans' element={<HomePage />} />
+
+                      {/* Landing Page for Ads - Standalone */}
+                      <Route path='/apply-instant' element={<LandingPageStandalone />} />
+                      <Route path='/instant-approval' element={<LandingPageStandalone />} />
+                      <Route path='/quick-apply' element={<LandingPageStandalone />} />
 
                       {/* Calculator Routes - Multiple paths for flexibility */}
                       <Route path='/calculator/emi' element={<EMICalculator />} />
