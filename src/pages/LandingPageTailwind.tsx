@@ -3,6 +3,88 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
 import { loanAPI } from '../services/api';
 
+// Bank Logo Component with fallback handling
+const BankLogo = ({
+  src,
+  alt,
+  name,
+  fallbackColor,
+  darkMode,
+}: {
+  src: string;
+  alt: string;
+  name: string;
+  fallbackColor: string;
+  darkMode: boolean;
+}) => {
+  const [imageError, setImageError] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [currentSrc, setCurrentSrc] = useState(src);
+
+  // Multiple fallback URLs to try
+  const fallbackUrls = [
+    src, // Original URL
+    src.replace('/assets/', '/'), // Try without assets prefix
+    `${window.location.origin}${src}`, // Try with full origin
+    `${process.env.PUBLIC_URL || ''}${src}`, // Try with PUBLIC_URL
+  ];
+
+  // Reset error state when src changes
+  useEffect(() => {
+    setImageError(false);
+    setImageLoaded(false);
+    setCurrentSrc(src);
+  }, [src]);
+
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+    setImageError(false);
+  };
+
+  const handleImageError = () => {
+    const currentIndex = fallbackUrls.indexOf(currentSrc);
+    const nextIndex = currentIndex + 1;
+
+    if (nextIndex < fallbackUrls.length) {
+      // Try next fallback URL
+      console.log(
+        `Trying fallback URL ${nextIndex + 1}/${fallbackUrls.length}: ${fallbackUrls[nextIndex]}`
+      );
+      setCurrentSrc(fallbackUrls[nextIndex]);
+    } else {
+      // All URLs failed, show fallback
+      console.warn(`All fallback URLs failed for bank logo: ${name}`);
+      setImageError(true);
+    }
+  };
+
+  return (
+    <div className='aspect-square flex items-center justify-center mb-3 p-2 relative'>
+      {!imageError && (
+        <img
+          src={currentSrc}
+          alt={alt}
+          className={`max-w-full max-h-full object-contain transition-all duration-300 ${
+            darkMode ? 'brightness-110' : 'brightness-100'
+          } hover:scale-105 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+          style={{ maxHeight: '60px' }}
+          onLoad={handleImageLoad}
+          onError={handleImageError}
+        />
+      )}
+      {(imageError || !imageLoaded) && (
+        <div
+          className={`${imageError ? 'absolute inset-0' : 'absolute inset-0'} w-full h-full rounded-xl bg-gradient-to-br ${fallbackColor} flex items-center justify-center text-sm lg:text-base font-bold text-white shadow-lg transition-opacity duration-300 ${
+            imageError || !imageLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
+        >
+          {name}
+        </div>
+      )}
+    </div>
+  );
+};
+
 // Alert Components
 const SuccessAlert = ({ onClose }: { onClose: () => void }) => {
   const { theme } = useTheme();
@@ -193,65 +275,78 @@ const LandingPageTailwind: React.FC = () => {
     'Hubli',
   ];
 
+  // Get base URL for assets (works for both development and production)
+  const getAssetUrl = (path: string) => {
+    const baseUrl = process.env.PUBLIC_URL || '';
+    const fullUrl = `${baseUrl}${path}`;
+
+    // Debug logging for development
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`Asset URL: ${fullUrl} (PUBLIC_URL: ${process.env.PUBLIC_URL || 'undefined'})`);
+    }
+
+    return fullUrl;
+  };
+
   // Top Indian Banks Data
   const topBanks = [
     {
       name: 'SBI',
-      logo: '/assets/bank-logos/sbi.svg',
+      logo: getAssetUrl('/assets/bank-logos/sbi.svg'),
       alt: 'State Bank of India',
       fallbackColor: 'from-blue-800 to-blue-900',
     },
     {
       name: 'HDFC Bank',
-      logo: '/assets/bank-logos/hdfc.svg',
+      logo: getAssetUrl('/assets/bank-logos/hdfc.svg'),
       alt: 'HDFC Bank',
       fallbackColor: 'from-blue-700 to-blue-800',
     },
     {
       name: 'ICICI Bank',
-      logo: '/assets/bank-logos/icici.svg',
+      logo: getAssetUrl('/assets/bank-logos/icici.svg'),
       alt: 'ICICI Bank',
       fallbackColor: 'from-orange-600 to-red-600',
     },
     {
       name: 'Axis Bank',
-      logo: '/assets/bank-logos/axis.svg',
+      logo: getAssetUrl('/assets/bank-logos/axis.svg'),
       alt: 'Axis Bank',
       fallbackColor: 'from-purple-700 to-purple-800',
     },
     {
       name: 'Kotak Bank',
-      logo: '/assets/bank-logos/kotak.png',
+      logo: getAssetUrl('/assets/bank-logos/kotak.png'),
       alt: 'Kotak Mahindra Bank',
       fallbackColor: 'from-red-600 to-red-700',
     },
     {
       name: 'PNB',
-      logo: '/assets/bank-logos/pnb.svg',
+      logo: getAssetUrl('/assets/bank-logos/pnb.svg'),
       alt: 'Punjab National Bank',
       fallbackColor: 'from-blue-600 to-blue-700',
     },
     {
       name: 'Canara Bank',
-      logo: '/assets/bank-logos/canara.svg',
+      logo: getAssetUrl('/assets/bank-logos/canara.svg'),
       alt: 'Canara Bank',
       fallbackColor: 'from-orange-500 to-orange-600',
     },
     {
       name: 'Bank of India',
-      logo: '/assets/bank-logos/bankofindia.svg',
+      logo: getAssetUrl('/assets/bank-logos/bankofindia.svg'),
       alt: 'Bank of India',
       fallbackColor: 'from-indigo-600 to-indigo-700',
     },
     {
       name: 'Union Bank',
-      logo: '/assets/bank-logos/union.png',
+      logo: getAssetUrl('/assets/bank-logos/union.png'),
       alt: 'Union Bank of India',
       fallbackColor: 'from-green-600 to-green-700',
     },
     {
       name: 'IDFC First',
-      logo: '/assets/bank-logos/idfc.svg',
+      logo: getAssetUrl('/assets/bank-logos/idfc.svg'),
       alt: 'IDFC First Bank',
       fallbackColor: 'from-purple-600 to-indigo-600',
     },
@@ -923,29 +1018,13 @@ const LandingPageTailwind: React.FC = () => {
                     : 'bg-white border border-gray-200'
                 } shadow-lg hover:shadow-xl transition-all duration-300 backdrop-blur-sm`}
               >
-                <div className='aspect-square flex items-center justify-center mb-3 p-2'>
-                  <img
-                    src={bank.logo}
-                    alt={bank.alt}
-                    className={`max-w-full max-h-full object-contain transition-all duration-300 ${
-                      darkMode ? 'brightness-110' : 'brightness-100'
-                    } hover:scale-105`}
-                    style={{ maxHeight: '60px' }}
-                    onError={e => {
-                      // Fallback to gradient background on error
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
-                      if (target.nextElementSibling) {
-                        (target.nextElementSibling as HTMLElement).style.display = 'flex';
-                      }
-                    }}
-                  />
-                  <div
-                    className={`hidden w-full h-full rounded-xl bg-gradient-to-br ${bank.fallbackColor} items-center justify-center text-sm lg:text-base font-bold text-white shadow-lg`}
-                  >
-                    {bank.name}
-                  </div>
-                </div>
+                <BankLogo
+                  src={bank.logo}
+                  alt={bank.alt}
+                  name={bank.name}
+                  fallbackColor={bank.fallbackColor}
+                  darkMode={darkMode}
+                />
                 <p
                   className={`text-center text-sm font-semibold ${
                     darkMode ? 'text-gray-300' : 'text-gray-700'
