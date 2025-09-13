@@ -42,7 +42,8 @@ const SuccessAlert = ({ onClose }: { onClose: () => void }) => {
           </div>
           <div className='ml-3'>
             <p className='text-sm font-medium'>
-              Success! Your application has been submitted. We&apos;ll contact you soon.
+              Success! Your application has been submitted. We&apos;ll contact you soon with loan
+              offers.
             </p>
           </div>
           <div className='ml-auto pl-3'>
@@ -194,61 +195,109 @@ const LandingPageTailwind: React.FC = () => {
 
   // Top Indian Banks Data
   const topBanks = [
-    { name: 'SBI', logo: 'https://via.placeholder.com/120x80/1f4788/white?text=SBI' },
-    { name: 'HDFC Bank', logo: 'https://via.placeholder.com/120x80/004c8f/white?text=HDFC' },
-    { name: 'ICICI Bank', logo: 'https://via.placeholder.com/120x80/b02a37/white?text=ICICI' },
-    { name: 'Axis Bank', logo: 'https://via.placeholder.com/120x80/800020/white?text=AXIS' },
-    { name: 'Kotak Bank', logo: 'https://via.placeholder.com/120x80/ed1c24/white?text=KOTAK' },
-    { name: 'PNB', logo: 'https://via.placeholder.com/120x80/0066cc/white?text=PNB' },
-    { name: 'Canara Bank', logo: 'https://via.placeholder.com/120x80/ff6600/white?text=CANARA' },
-    { name: 'Bank of India', logo: 'https://via.placeholder.com/120x80/003366/white?text=BOI' },
-    { name: 'Union Bank', logo: 'https://via.placeholder.com/120x80/ff9900/white?text=UNION' },
-    { name: 'IDFC First', logo: 'https://via.placeholder.com/120x80/7b68ee/white?text=IDFC' },
-  ];
-
-  // Unique Features Data
+    {
+      name: 'SBI',
+      logo: '/assets/bank-logos/sbi.svg',
+      alt: 'State Bank of India',
+      fallbackColor: 'from-blue-800 to-blue-900',
+    },
+    {
+      name: 'HDFC Bank',
+      logo: '/assets/bank-logos/hdfc.svg',
+      alt: 'HDFC Bank',
+      fallbackColor: 'from-blue-700 to-blue-800',
+    },
+    {
+      name: 'ICICI Bank',
+      logo: '/assets/bank-logos/icici.svg',
+      alt: 'ICICI Bank',
+      fallbackColor: 'from-orange-600 to-red-600',
+    },
+    {
+      name: 'Axis Bank',
+      logo: '/assets/bank-logos/axis.svg',
+      alt: 'Axis Bank',
+      fallbackColor: 'from-purple-700 to-purple-800',
+    },
+    {
+      name: 'Kotak Bank',
+      logo: '/assets/bank-logos/kotak.png',
+      alt: 'Kotak Mahindra Bank',
+      fallbackColor: 'from-red-600 to-red-700',
+    },
+    {
+      name: 'PNB',
+      logo: '/assets/bank-logos/pnb.svg',
+      alt: 'Punjab National Bank',
+      fallbackColor: 'from-blue-600 to-blue-700',
+    },
+    {
+      name: 'Canara Bank',
+      logo: '/assets/bank-logos/canara.svg',
+      alt: 'Canara Bank',
+      fallbackColor: 'from-orange-500 to-orange-600',
+    },
+    {
+      name: 'Bank of India',
+      logo: '/assets/bank-logos/bankofindia.svg',
+      alt: 'Bank of India',
+      fallbackColor: 'from-indigo-600 to-indigo-700',
+    },
+    {
+      name: 'Union Bank',
+      logo: '/assets/bank-logos/union.png',
+      alt: 'Union Bank of India',
+      fallbackColor: 'from-green-600 to-green-700',
+    },
+    {
+      name: 'IDFC First',
+      logo: '/assets/bank-logos/idfc.svg',
+      alt: 'IDFC First Bank',
+      fallbackColor: 'from-purple-600 to-indigo-600',
+    },
+  ]; // Unique Features Data
   const uniqueFeatures = [
     {
       icon: '⚡',
-      title: 'Instant Approval',
-      highlight: 'AI-Powered',
+      title: 'Instant Eligibility Check',
+      highlight: 'Smart System',
       description:
-        'Get pre-approved in just 30 seconds with our advanced AI credit assessment system. No waiting, no hassle.',
+        'Find out your home loan eligibility in just 30 seconds with our smart assessment system. Quick, simple, and hassle-free.',
     },
     {
       icon: '🏦',
-      title: 'Compare 40+ Banks',
-      highlight: 'Best Rates',
+      title: 'Compare Multiple Banks',
+      highlight: 'Best Offers',
       description:
-        'Access exclusive rates from top lenders. Our platform compares offers from 40+ banks to find your perfect match.',
+        'Access exclusive offers from leading banks. Our platform compares multiple options to find your perfect match.',
     },
     {
       icon: '🔒',
-      title: 'Bank-Grade Security',
+      title: 'Secure Process',
       highlight: '256-bit SSL',
       description:
-        'Your data is protected with military-grade encryption. RBI-approved processes ensure complete security.',
+        'Your data is protected with 256-bit SSL encryption and secure processes to ensure complete confidentiality.',
     },
     {
       icon: '📱',
       title: 'Digital First Process',
       highlight: 'Paperless',
       description:
-        'Complete documentation through our mobile app. Upload, verify, and track everything digitally.',
+        'Seamless paperless process — upload and verify documents digitally for faster approval.',
     },
     {
       icon: '🎯',
       title: 'Personalized Offers',
-      highlight: 'ML-Driven',
+      highlight: 'Smart Matching',
       description:
-        'Machine learning algorithms analyze your profile to find loan products tailored specifically for you.',
+        'Smart matching system recommends the best loan products based on your profile and needs.',
     },
     {
       icon: '👨‍💼',
       title: 'Expert Guidance',
-      highlight: '24/7 Support',
+      highlight: 'Dedicated Support',
       description:
-        'Dedicated relationship managers guide you through every step. Expert advice whenever you need it.',
+        'Our loan advisors guide you through every step of the process with expert advice whenever you need it.',
     },
   ];
 
@@ -298,11 +347,28 @@ const LandingPageTailwind: React.FC = () => {
 
     setIsSubmitting(true);
     try {
-      await loanAPI.submitEligibilityForm(formData);
+      // Transform form data to match backend expected format
+      const submissionData = {
+        fullName: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        propertyLocation: formData.location,
+        // Optional fields that can be added later
+        occupation: '',
+        companyName: '',
+        workExperience: '',
+        currentAddress: '',
+        panNumber: '',
+        bankName: '',
+        eligibilityDetails: {},
+      };
+
+      await loanAPI.submitEligibilityForm(submissionData);
       setShowSuccess(true);
       setFormData({ name: '', phone: '', email: '', location: '' });
       setShowMobileForm(false);
     } catch (error) {
+      console.error('Form submission error:', error);
       setErrorMessage('Failed to submit application. Please try again.');
       setShowError(true);
     } finally {
@@ -317,6 +383,45 @@ const LandingPageTailwind: React.FC = () => {
           : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50'
       }`}
     >
+      {/* Processing Fee Waiver Banner */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className='relative overflow-hidden'
+      >
+        <div className='bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 text-white py-3 px-4 relative'>
+          {/* Animated background effect */}
+          <div className='absolute inset-0 bg-gradient-to-r from-orange-400 via-red-400 to-pink-400 opacity-50 animate-pulse'></div>
+
+          <div className='relative z-10 flex items-center justify-center'>
+            <motion.div
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className='flex items-center space-x-2 text-center'
+            >
+              <span className='text-lg lg:text-xl'>🎉</span>
+              <span className='text-sm sm:text-base lg:text-lg font-bold tracking-wide'>
+                PROCESSING FEE WAIVED – LIMITED PERIOD
+              </span>
+              <span className='text-lg lg:text-xl'>🎉</span>
+            </motion.div>
+          </div>
+
+          {/* Blinking effect for urgency */}
+          <motion.div
+            animate={{ opacity: [1, 0.7, 1] }}
+            transition={{ duration: 2, repeat: Infinity, repeatType: 'reverse' }}
+            className='absolute right-4 top-1/2 transform -translate-y-1/2 hidden sm:block'
+          >
+            <span className='text-xs lg:text-sm font-semibold bg-white text-red-600 px-2 py-1 rounded-full shadow-md'>
+              HURRY!
+            </span>
+          </motion.div>
+        </div>
+      </motion.div>
+
       {/* Floating Apply Now Button for Mobile */}
       <motion.button
         onClick={() => setShowMobileForm(true)}
@@ -333,79 +438,6 @@ const LandingPageTailwind: React.FC = () => {
       >
         Apply Now 🚀
       </motion.button>
-
-      {/* Enhanced Professional Header */}
-      <motion.header
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className={`relative backdrop-blur-md border-b ${
-          darkMode ? 'bg-slate-900/80 border-slate-700/50' : 'bg-white/80 border-white/50'
-        } shadow-lg`}
-      >
-        <div className='absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10'></div>
-        <div className='container mx-auto px-4 sm:px-6 lg:px-8 py-4 relative'>
-          <div className='flex items-center justify-between'>
-            <motion.div whileHover={{ scale: 1.05 }} className='flex items-center space-x-3'>
-              <div className='w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg'>
-                <span className='text-white text-2xl font-bold'>Z</span>
-              </div>
-              <div>
-                <h1
-                  className={`text-2xl lg:text-3xl font-bold ${
-                    darkMode ? 'text-white' : 'text-gray-900'
-                  }`}
-                >
-                  Home Loan Simplified
-                </h1>
-              </div>
-            </motion.div>
-
-            <div className='hidden lg:flex items-center space-x-8'>
-              <div className='flex items-center space-x-6 text-sm'>
-                <div
-                  className={`flex items-center space-x-2 ${
-                    darkMode ? 'text-green-400' : 'text-green-600'
-                  }`}
-                >
-                  <svg className='w-5 h-5' fill='currentColor' viewBox='0 0 20 20'>
-                    <path
-                      fillRule='evenodd'
-                      d='M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z'
-                      clipRule='evenodd'
-                    />
-                  </svg>
-                  <span className='font-semibold'>RBI Approved</span>
-                </div>
-                <div
-                  className={`flex items-center space-x-2 ${
-                    darkMode ? 'text-blue-400' : 'text-blue-600'
-                  }`}
-                >
-                  <svg className='w-5 h-5' fill='currentColor' viewBox='0 0 20 20'>
-                    <path
-                      fillRule='evenodd'
-                      d='M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z'
-                      clipRule='evenodd'
-                    />
-                  </svg>
-                  <span className='font-semibold'>100% Secure</span>
-                </div>
-                <div
-                  className={`flex items-center space-x-2 ${
-                    darkMode ? 'text-purple-400' : 'text-purple-600'
-                  }`}
-                >
-                  <svg className='w-5 h-5' fill='currentColor' viewBox='0 0 20 20'>
-                    <path d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' />
-                  </svg>
-                  <span className='font-semibold'>Instant Approval</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </motion.header>
 
       {/* Enhanced Hero Section */}
       <section className='relative py-16 lg:py-24 overflow-hidden'>
@@ -441,16 +473,18 @@ const LandingPageTailwind: React.FC = () => {
                     Dream Home Loan
                   </span>
                   <br />
-                  in 30 Seconds! ⚡
+                  Quick & Hassle-Free! ⚡
                 </h1>
                 <p
                   className={`text-xl lg:text-2xl mt-6 leading-relaxed ${
                     darkMode ? 'text-gray-300' : 'text-gray-600'
                   }`}
                 >
-                  India&apos;s most trusted home loan platform with{' '}
-                  <span className='font-bold text-blue-600'>AI-powered instant approval</span> and
-                  access to 40+ top banks. Get the best rates guaranteed!
+                  Check your eligibility instantly and access offers from 50+ top banks.{' '}
+                  <span className='font-bold text-blue-600'>
+                    Simple, fast, and transparent process
+                  </span>{' '}
+                  with the best available rates!
                 </p>
               </motion.div>
 
@@ -462,10 +496,10 @@ const LandingPageTailwind: React.FC = () => {
                 className='grid grid-cols-2 sm:grid-cols-4 gap-6'
               >
                 {[
-                  { value: '₹50K+ Cr', label: 'Loans Processed', icon: '💰' },
-                  { value: '1M+', label: 'Happy Customers', icon: '😊' },
-                  { value: '40+', label: 'Partner Banks', icon: '🏦' },
-                  { value: '30 Sec', label: 'Approval Time', icon: '⚡' },
+                  { value: '₹5Cr', label: 'Home Loan Upto', icon: '💰' },
+                  { value: '100%', label: 'Paperwork Done', icon: '😊' },
+                  { value: '50+', label: 'Partner Banks', icon: '🏦' },
+                  { value: '30 Sec', label: 'Eligibility Check', icon: '⚡' },
                 ].map(stat => (
                   <motion.div
                     key={stat.label}
@@ -503,10 +537,10 @@ const LandingPageTailwind: React.FC = () => {
                 className='space-y-4'
               >
                 {[
-                  '✅ Lowest interest rates starting from 8.35% per annum',
-                  '✅ Zero processing fees for limited time',
-                  '✅ Instant pre-approval with minimal documentation',
-                  '✅ Expert guidance from certified loan advisors',
+                  '✅ Lowest interest rates starting from ~8.35% p.a. (as per bank policy)',
+                  '✅ Exclusive offers with reduced/zero processing fees (limited time)',
+                  '✅ Unbiased Home Loan comparisons from 50+ top banks',
+                  '✅ Expert guidance from experienced loan advisors',
                 ].map((benefit, index) => (
                   <motion.div
                     key={index}
@@ -592,7 +626,7 @@ const LandingPageTailwind: React.FC = () => {
                       darkMode ? 'text-blue-400' : 'text-blue-600'
                     } font-semibold`}
                   >
-                    ⚡ Instant approval in 30 seconds
+                    ⚡ Quick eligibility check in 30 seconds
                   </p>
                   <div
                     className={`mt-4 p-3 rounded-lg ${
@@ -600,7 +634,7 @@ const LandingPageTailwind: React.FC = () => {
                     }`}
                   >
                     <p className='text-sm font-semibold'>
-                      ✅ 100% Free • No Hidden Charges • Bank-Grade Security
+                      ✅ 100% Free • Just Effortless Loans • Bank-Grade Security
                     </p>
                   </div>
                 </motion.div>
@@ -795,7 +829,7 @@ const LandingPageTailwind: React.FC = () => {
                         Processing Application...
                       </div>
                     ) : (
-                      'Get Instant Pre-Approval 🚀'
+                      'Apply Now 🚀'
                     )}
                   </motion.button>
                 </motion.form>
@@ -827,7 +861,7 @@ const LandingPageTailwind: React.FC = () => {
                       <svg className='w-4 h-4 mr-2' fill='currentColor' viewBox='0 0 20 20'>
                         <path d='M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z' />
                       </svg>
-                      RBI Approved
+                      Secured
                     </div>
                   </div>
                 </div>
@@ -889,24 +923,25 @@ const LandingPageTailwind: React.FC = () => {
                     : 'bg-white border border-gray-200'
                 } shadow-lg hover:shadow-xl transition-all duration-300 backdrop-blur-sm`}
               >
-                <div className='aspect-square flex items-center justify-center mb-3'>
+                <div className='aspect-square flex items-center justify-center mb-3 p-2'>
                   <img
                     src={bank.logo}
-                    alt={`${bank.name} logo`}
-                    className='max-w-full max-h-full object-contain filter brightness-110'
+                    alt={bank.alt}
+                    className={`max-w-full max-h-full object-contain transition-all duration-300 ${
+                      darkMode ? 'brightness-110' : 'brightness-100'
+                    } hover:scale-105`}
+                    style={{ maxHeight: '60px' }}
                     onError={e => {
-                      // Fallback to text if image fails to load
+                      // Fallback to gradient background on error
                       const target = e.target as HTMLImageElement;
                       target.style.display = 'none';
                       if (target.nextElementSibling) {
-                        (target.nextElementSibling as HTMLElement).style.display = 'block';
+                        (target.nextElementSibling as HTMLElement).style.display = 'flex';
                       }
                     }}
                   />
                   <div
-                    className={`hidden w-full h-full rounded-lg flex items-center justify-center text-sm font-bold ${
-                      darkMode ? 'bg-slate-600 text-white' : 'bg-gray-100 text-gray-700'
-                    }`}
+                    className={`hidden w-full h-full rounded-xl bg-gradient-to-br ${bank.fallbackColor} items-center justify-center text-sm lg:text-base font-bold text-white shadow-lg`}
                   >
                     {bank.name}
                   </div>
@@ -957,14 +992,14 @@ const LandingPageTailwind: React.FC = () => {
                 darkMode ? 'text-white' : 'text-gray-900'
               }`}
             >
-              What Makes Zorrico Different? 🌟
+              What Makes Us Different? 🌟
             </h2>
             <p
               className={`text-lg lg:text-xl ${
                 darkMode ? 'text-gray-300' : 'text-gray-600'
               } max-w-3xl mx-auto`}
             >
-              Experience the future of home loan processing with our cutting-edge technology and
+              Experience a smarter way of getting home loans with seamless technology and
               personalized service
             </p>
           </motion.div>
@@ -1210,7 +1245,7 @@ const LandingPageTailwind: React.FC = () => {
                       Processing...
                     </div>
                   ) : (
-                    'Get Instant Pre-Approval 🚀'
+                    'Apply Now 🚀'
                   )}
                 </motion.button>
               </form>

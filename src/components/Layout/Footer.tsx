@@ -174,7 +174,7 @@ const Footer: React.FC = () => {
                     fontSize: { xs: '0.65rem', sm: '0.75rem' },
                   }}
                 >
-                  15K+ Loans
+                  Unbiased Loans
                 </Typography>
               </Box>
 
@@ -200,7 +200,7 @@ const Footer: React.FC = () => {
                     fontSize: { xs: '0.65rem', sm: '0.75rem' },
                   }}
                 >
-                  24hr Approval
+                  Best Interest Rate
                 </Typography>
               </Box>
             </Box>
