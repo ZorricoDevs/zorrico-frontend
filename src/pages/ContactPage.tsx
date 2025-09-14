@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Typography, Stack, Box, Paper, Button, useTheme } from '@mui/material';
 import { Phone, Email, LocationOn, Schedule } from '@mui/icons-material';
 import GenericPage from '../components/UI/GenericPage';
+import { MetaPixelTracker } from '../utils/metaPixel';
 
 const ContactPage: React.FC = () => {
   const theme = useTheme();
   const isDarkMode = theme.palette.mode === 'dark';
+
+  // Track Contact page view
+  useEffect(() => {
+    MetaPixelTracker.trackViewContent('Contact Page', 'page');
+    MetaPixelTracker.trackContact();
+  }, []);
 
   const content = (
     <Stack spacing={4}>

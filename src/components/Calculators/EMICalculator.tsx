@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { MetaPixelTracker } from '../../utils/metaPixel';
 import {
   Box,
   Card,
@@ -44,6 +45,11 @@ const EMICalculator: React.FC = () => {
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 1500);
     return () => clearTimeout(timer);
+  }, []);
+
+  // Track EMI Calculator page view
+  useEffect(() => {
+    MetaPixelTracker.trackViewContent('EMI Calculator', 'calculator');
   }, []);
 
   const calculateEMI = useCallback(() => {
@@ -95,6 +101,18 @@ const EMICalculator: React.FC = () => {
       totalPayment: Math.round(totalPayment),
       totalInterest: Math.round(totalInterest),
       monthlyBreakdown,
+    });
+
+    // Track EMI calculation usage
+    MetaPixelTracker.trackLoanCalculatorUsage(loanAmount, tenure);
+    MetaPixelTracker.trackCustomEvent('EMICalculated', {
+      loan_amount: loanAmount,
+      interest_rate: interestRate,
+      tenure_years: tenure,
+      monthly_emi: Math.round(emi),
+      total_interest: Math.round(totalInterest),
+      value: loanAmount,
+      currency: 'INR',
     });
   }, [loanAmount, interestRate, tenure]);
 

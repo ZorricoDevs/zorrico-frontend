@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
 import { loanAPI } from '../services/api';
+import { MetaPixelTracker } from '../utils/metaPixel';
 
 // Enhanced Bank Logo Component with base64 fallback
 const BankLogo = ({
@@ -426,6 +427,12 @@ const LandingPageTailwind: React.FC = () => {
     }
   };
 
+  // Track landing page views for Meta Pixel
+  useEffect(() => {
+    MetaPixelTracker.trackPageView();
+    MetaPixelTracker.trackViewContent('Landing Page', 'page');
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -449,6 +456,21 @@ const LandingPageTailwind: React.FC = () => {
       };
 
       await loanAPI.submitEligibilityForm(submissionData);
+
+      // Track successful lead submission
+      MetaPixelTracker.trackLead({
+        email: formData.email,
+        phone: formData.phone,
+        first_name: formData.name.split(' ')[0],
+        last_name: formData.name.split(' ').slice(1).join(' ') || '',
+        location: formData.location,
+      });
+
+      MetaPixelTracker.trackCompleteRegistration({
+        email: formData.email,
+        phone: formData.phone,
+      });
+
       setShowSuccess(true);
       setFormData({ name: '', phone: '', email: '', location: '' });
       setShowMobileForm(false);

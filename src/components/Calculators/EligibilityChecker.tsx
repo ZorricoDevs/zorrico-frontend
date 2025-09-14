@@ -460,6 +460,11 @@ const EligibilityChecker: React.FC = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  // Track Eligibility Checker page view
+  useEffect(() => {
+    MetaPixelTracker.trackViewContent('Eligibility Checker', 'calculator');
+  }, []);
+
   useEffect(() => {
     calculateEligibility();
   }, [calculateEligibility]);

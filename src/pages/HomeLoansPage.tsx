@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Typography, Stack, Box, Paper, Button, Chip, useTheme } from '@mui/material';
 import { Home, TrendingDown, Speed, Verified, Calculate, CompareArrows } from '@mui/icons-material';
 import GenericPage from '../components/UI/GenericPage';
 import SEOHead from '../components/SEO/SEOHead';
+import { MetaPixelTracker } from '../utils/metaPixel';
 
 const HomeLoansPage: React.FC = () => {
   const loanTypes = [
@@ -68,6 +69,15 @@ const HomeLoansPage: React.FC = () => {
     { criteria: 'Employment', requirement: 'Salaried/Self-employed' },
     { criteria: 'Property Value', requirement: 'As per bank norms' },
   ];
+
+  // Track Home Loans page view
+  useEffect(() => {
+    MetaPixelTracker.trackViewContent('Home Loans', 'product_catalog');
+    MetaPixelTracker.trackCustomEvent('HomeLoansPageViewed', {
+      page_type: 'product_listing',
+      content_category: 'home_loans',
+    });
+  }, []);
 
   const content = (
     <Stack spacing={4}>
