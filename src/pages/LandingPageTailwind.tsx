@@ -258,11 +258,11 @@ const LandingPageTailwind: React.FC = () => {
     return fullUrl;
   };
 
-  // Top Indian Banks Data - Using base64 fallback for guaranteed display
+  // Top Indian Banks Data - Using GitHub raw URLs for guaranteed availability
   const topBanks = [
     {
       name: 'SBI',
-      logo: '/assets/bank-logos/sbi.svg',
+      logo: 'https://raw.githubusercontent.com/ZorricoDevs/zorrico-frontend/9e10279789e293808885cbb53d9903f6ca625293/public/assets/bank-logos/sbi.svg',
       fallback:
         'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjMDA1NkIzIi8+Cjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlNCSTwvdGV4dD4KPC9zdmc+',
       alt: 'State Bank of India',
@@ -270,7 +270,7 @@ const LandingPageTailwind: React.FC = () => {
     },
     {
       name: 'HDFC Bank',
-      logo: '/assets/bank-logos/hdfc.svg',
+      logo: 'https://raw.githubusercontent.com/ZorricoDevs/zorrico-frontend/9e10279789e293808885cbb53d9903f6ca625293/public/assets/bank-logos/hdfc.svg',
       fallback:
         'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjRkYwMDBGIi8+Cjx0ZXh0IHg9IjUwIiB5PSI0NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkhERkM8L3RleHQ+Cjx0ZXh0IHg9IjUwIiB5PSI2NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkJhbms8L3RleHQ+Cjwvc3ZnPg==',
       alt: 'HDFC Bank',
@@ -278,7 +278,7 @@ const LandingPageTailwind: React.FC = () => {
     },
     {
       name: 'ICICI Bank',
-      logo: '/assets/bank-logos/icici.svg',
+      logo: 'https://raw.githubusercontent.com/ZorricoDevs/zorrico-frontend/9e10279789e293808885cbb53d9903f6ca625293/public/assets/bank-logos/icici.svg',
       fallback:
         'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjRkY2QjAwIi8+Cjx0ZXh0IHg9IjUwIiB5PSI0NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPklDSUNJPC90ZXh0Pgo8dGV4dCB4PSI1MCIgeT0iNjUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5CYW5rPC90ZXh0Pgo8L3N2Zz4=',
       alt: 'ICICI Bank',
@@ -286,7 +286,7 @@ const LandingPageTailwind: React.FC = () => {
     },
     {
       name: 'Axis Bank',
-      logo: '/assets/bank-logos/axis.svg',
+      logo: 'https://raw.githubusercontent.com/ZorricoDevs/zorrico-frontend/9e10279789e293808885cbb53d9903f6ca625293/public/assets/bank-logos/axis.svg',
       fallback:
         'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjOTMzNkIzIi8+Cjx0ZXh0IHg9IjUwIiB5PSI0NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkF4aXM8L3RleHQ+Cjx0ZXh0IHg9IjUwIiB5PSI2NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkJhbms8L3RleHQ+Cjwvc3ZnPg==',
       alt: 'Axis Bank',
@@ -294,7 +294,7 @@ const LandingPageTailwind: React.FC = () => {
     },
     {
       name: 'Kotak Bank',
-      logo: '/assets/bank-logos/kotak.png',
+      logo: 'https://raw.githubusercontent.com/ZorricoDevs/zorrico-frontend/refs/heads/main/public/assets/bank-logos/kotak.png',
       fallback:
         'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjREMyNjI2Ii8+Cjx0ZXh0IHg9IjUwIiB5PSI0NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEwIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPktPVEFLPC90ZXh0Pgo8dGV4dCB4PSI1MCIgeT0iNjUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5CYW5rPC90ZXh0Pgo8L3N2Zz4=',
       alt: 'Kotak Mahindra Bank',
@@ -302,7 +302,7 @@ const LandingPageTailwind: React.FC = () => {
     },
     {
       name: 'PNB',
-      logo: '/assets/bank-logos/pnb.svg',
+      logo: 'https://raw.githubusercontent.com/ZorricoDevs/zorrico-frontend/9e10279789e293808885cbb53d9903f6ca625293/public/assets/bank-logos/pnb.svg',
       fallback:
         'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjMjU2M0VCIi8+Cjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlBOQjwvdGV4dD4KPC9zdmc+',
       alt: 'Punjab National Bank',
@@ -310,7 +310,7 @@ const LandingPageTailwind: React.FC = () => {
     },
     {
       name: 'Canara Bank',
-      logo: '/assets/bank-logos/canara.svg',
+      logo: 'https://raw.githubusercontent.com/ZorricoDevs/zorrico-frontend/9e10279789e293808885cbb53d9903f6ca625293/public/assets/bank-logos/canara.svg',
       fallback:
         'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjRkY5OTAwIi8+Cjx0ZXh0IHg9IjUwIiB5PSI0NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEwIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkNhbmFyYTwvdGV4dD4KPHRleHQgeD0iNTAiIHk9IjY1IiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTAiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QmFuazwvdGV4dD4KPC9zdmc+',
       alt: 'Canara Bank',
@@ -318,7 +318,7 @@ const LandingPageTailwind: React.FC = () => {
     },
     {
       name: 'Bank of India',
-      logo: '/assets/bank-logos/bankofindia.svg',
+      logo: 'https://raw.githubusercontent.com/ZorricoDevs/zorrico-frontend/9e10279789e293808885cbb53d9903f6ca625293/public/assets/bank-logos/bankofindia.svg',
       fallback:
         'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjNEY0NkU1Ii8+Cjx0ZXh0IHg9IjUwIiB5PSI0NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEwIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkJhbmsgb2Y8L3RleHQ+Cjx0ZXh0IHg9IjUwIiB5PSI2NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEwIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkluZGlhPC90ZXh0Pgo8L3N2Zz4=',
       alt: 'Bank of India',
@@ -326,7 +326,7 @@ const LandingPageTailwind: React.FC = () => {
     },
     {
       name: 'Union Bank',
-      logo: '/assets/bank-logos/union.png',
+      logo: 'https://raw.githubusercontent.com/ZorricoDevs/zorrico-frontend/refs/heads/main/public/assets/bank-logos/union.png',
       fallback:
         'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjMTU4MDNEIi8+Cjx0ZXh0IHg9IjUwIiB5PSI0NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEwIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlVuaW9uPC90ZXh0Pgo8dGV4dCB4PSI1MCIgeT0iNjUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5CYW5rPC90ZXh0Pgo8L3N2Zz4=',
       alt: 'Union Bank of India',
@@ -334,7 +334,7 @@ const LandingPageTailwind: React.FC = () => {
     },
     {
       name: 'IDFC First',
-      logo: '/assets/bank-logos/idfc.svg',
+      logo: 'https://raw.githubusercontent.com/ZorricoDevs/zorrico-frontend/9e10279789e293808885cbb53d9903f6ca625293/public/assets/bank-logos/idfc.svg',
       fallback:
         'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjODMzNUQxIi8+Cjx0ZXh0IHg9IjUwIiB5PSI0NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEwIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPklERkM8L3RleHQ+Cjx0ZXh0IHg9IjUwIiB5PSI2NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEwIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkZpcnN0PC90ZXh0Pgo8L3N2Zz4=',
       alt: 'IDFC First Bank',
