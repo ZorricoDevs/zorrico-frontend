@@ -3,80 +3,50 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
 import { loanAPI } from '../services/api';
 
-// Bank Logo Component with fallback handling
+// Enhanced Bank Logo Component with base64 fallback
 const BankLogo = ({
   src,
+  fallback,
   alt,
   name,
   fallbackColor,
   darkMode,
 }: {
   src: string;
+  fallback?: string;
   alt: string;
   name: string;
   fallbackColor: string;
   darkMode: boolean;
 }) => {
   const [imageError, setImageError] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
   const [currentSrc, setCurrentSrc] = useState(src);
 
-  // Multiple fallback URLs to try
-  const fallbackUrls = [
-    src, // Original URL
-    src.replace('/assets/', '/'), // Try without assets prefix
-    `${window.location.origin}${src}`, // Try with full origin
-    `${process.env.PUBLIC_URL || ''}${src}`, // Try with PUBLIC_URL
-  ];
-
-  // Reset error state when src changes
-  useEffect(() => {
-    setImageError(false);
-    setImageLoaded(false);
-    setCurrentSrc(src);
-  }, [src]);
-
-  const handleImageLoad = () => {
-    setImageLoaded(true);
-    setImageError(false);
-  };
-
   const handleImageError = () => {
-    const currentIndex = fallbackUrls.indexOf(currentSrc);
-    const nextIndex = currentIndex + 1;
-
-    if (nextIndex < fallbackUrls.length) {
-      // Try next fallback URL
-      console.log(
-        `Trying fallback URL ${nextIndex + 1}/${fallbackUrls.length}: ${fallbackUrls[nextIndex]}`
-      );
-      setCurrentSrc(fallbackUrls[nextIndex]);
+    if (fallback && currentSrc !== fallback) {
+      // Try base64 fallback first
+      setCurrentSrc(fallback);
     } else {
-      // All URLs failed, show fallback
-      console.warn(`All fallback URLs failed for bank logo: ${name}`);
+      // Show gradient fallback
       setImageError(true);
     }
   };
 
   return (
     <div className='aspect-square flex items-center justify-center mb-3 p-2 relative'>
-      {!imageError && (
+      {!imageError ? (
         <img
           src={currentSrc}
           alt={alt}
           className={`max-w-full max-h-full object-contain transition-all duration-300 ${
             darkMode ? 'brightness-110' : 'brightness-100'
-          } hover:scale-105 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+          } hover:scale-105`}
           style={{ maxHeight: '60px' }}
-          onLoad={handleImageLoad}
           onError={handleImageError}
         />
-      )}
-      {(imageError || !imageLoaded) && (
+      ) : (
         <div
-          className={`${imageError ? 'absolute inset-0' : 'absolute inset-0'} w-full h-full rounded-xl bg-gradient-to-br ${fallbackColor} flex items-center justify-center text-sm lg:text-base font-bold text-white shadow-lg transition-opacity duration-300 ${
-            imageError || !imageLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
+          className={`w-full h-full rounded-xl bg-gradient-to-br ${fallbackColor} flex items-center justify-center text-sm lg:text-base font-bold text-white shadow-lg`}
         >
           {name}
         </div>
@@ -288,65 +258,85 @@ const LandingPageTailwind: React.FC = () => {
     return fullUrl;
   };
 
-  // Top Indian Banks Data
+  // Top Indian Banks Data - Using base64 fallback for guaranteed display
   const topBanks = [
     {
       name: 'SBI',
-      logo: getAssetUrl('/assets/bank-logos/sbi.svg'),
+      logo: '/assets/bank-logos/sbi.svg',
+      fallback:
+        'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjMDA1NkIzIi8+Cjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlNCSTwvdGV4dD4KPC9zdmc+',
       alt: 'State Bank of India',
       fallbackColor: 'from-blue-800 to-blue-900',
     },
     {
       name: 'HDFC Bank',
-      logo: getAssetUrl('/assets/bank-logos/hdfc.svg'),
+      logo: '/assets/bank-logos/hdfc.svg',
+      fallback:
+        'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjRkYwMDBGIi8+Cjx0ZXh0IHg9IjUwIiB5PSI0NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkhERkM8L3RleHQ+Cjx0ZXh0IHg9IjUwIiB5PSI2NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkJhbms8L3RleHQ+Cjwvc3ZnPg==',
       alt: 'HDFC Bank',
       fallbackColor: 'from-blue-700 to-blue-800',
     },
     {
       name: 'ICICI Bank',
-      logo: getAssetUrl('/assets/bank-logos/icici.svg'),
+      logo: '/assets/bank-logos/icici.svg',
+      fallback:
+        'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjRkY2QjAwIi8+Cjx0ZXh0IHg9IjUwIiB5PSI0NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPklDSUNJPC90ZXh0Pgo8dGV4dCB4PSI1MCIgeT0iNjUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5CYW5rPC90ZXh0Pgo8L3N2Zz4=',
       alt: 'ICICI Bank',
       fallbackColor: 'from-orange-600 to-red-600',
     },
     {
       name: 'Axis Bank',
-      logo: getAssetUrl('/assets/bank-logos/axis.svg'),
+      logo: '/assets/bank-logos/axis.svg',
+      fallback:
+        'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjOTMzNkIzIi8+Cjx0ZXh0IHg9IjUwIiB5PSI0NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkF4aXM8L3RleHQ+Cjx0ZXh0IHg9IjUwIiB5PSI2NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkJhbms8L3RleHQ+Cjwvc3ZnPg==',
       alt: 'Axis Bank',
       fallbackColor: 'from-purple-700 to-purple-800',
     },
     {
       name: 'Kotak Bank',
-      logo: getAssetUrl('/assets/bank-logos/kotak.png'),
+      logo: '/assets/bank-logos/kotak.png',
+      fallback:
+        'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjREMyNjI2Ii8+Cjx0ZXh0IHg9IjUwIiB5PSI0NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEwIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPktPVEFLPC90ZXh0Pgo8dGV4dCB4PSI1MCIgeT0iNjUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5CYW5rPC90ZXh0Pgo8L3N2Zz4=',
       alt: 'Kotak Mahindra Bank',
       fallbackColor: 'from-red-600 to-red-700',
     },
     {
       name: 'PNB',
-      logo: getAssetUrl('/assets/bank-logos/pnb.svg'),
+      logo: '/assets/bank-logos/pnb.svg',
+      fallback:
+        'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjMjU2M0VCIi8+Cjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlBOQjwvdGV4dD4KPC9zdmc+',
       alt: 'Punjab National Bank',
       fallbackColor: 'from-blue-600 to-blue-700',
     },
     {
       name: 'Canara Bank',
-      logo: getAssetUrl('/assets/bank-logos/canara.svg'),
+      logo: '/assets/bank-logos/canara.svg',
+      fallback:
+        'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjRkY5OTAwIi8+Cjx0ZXh0IHg9IjUwIiB5PSI0NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEwIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkNhbmFyYTwvdGV4dD4KPHRleHQgeD0iNTAiIHk9IjY1IiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTAiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QmFuazwvdGV4dD4KPC9zdmc+',
       alt: 'Canara Bank',
       fallbackColor: 'from-orange-500 to-orange-600',
     },
     {
       name: 'Bank of India',
-      logo: getAssetUrl('/assets/bank-logos/bankofindia.svg'),
+      logo: '/assets/bank-logos/bankofindia.svg',
+      fallback:
+        'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjNEY0NkU1Ii8+Cjx0ZXh0IHg9IjUwIiB5PSI0NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEwIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkJhbmsgb2Y8L3RleHQ+Cjx0ZXh0IHg9IjUwIiB5PSI2NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEwIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkluZGlhPC90ZXh0Pgo8L3N2Zz4=',
       alt: 'Bank of India',
       fallbackColor: 'from-indigo-600 to-indigo-700',
     },
     {
       name: 'Union Bank',
-      logo: getAssetUrl('/assets/bank-logos/union.png'),
+      logo: '/assets/bank-logos/union.png',
+      fallback:
+        'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjMTU4MDNEIi8+Cjx0ZXh0IHg9IjUwIiB5PSI0NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEwIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlVuaW9uPC90ZXh0Pgo8dGV4dCB4PSI1MCIgeT0iNjUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5CYW5rPC90ZXh0Pgo8L3N2Zz4=',
       alt: 'Union Bank of India',
       fallbackColor: 'from-green-600 to-green-700',
     },
     {
       name: 'IDFC First',
-      logo: getAssetUrl('/assets/bank-logos/idfc.svg'),
+      logo: '/assets/bank-logos/idfc.svg',
+      fallback:
+        'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjODMzNUQxIi8+Cjx0ZXh0IHg9IjUwIiB5PSI0NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEwIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPklERkM8L3RleHQ+Cjx0ZXh0IHg9IjUwIiB5PSI2NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEwIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkZpcnN0PC90ZXh0Pgo8L3N2Zz4=',
       alt: 'IDFC First Bank',
       fallbackColor: 'from-purple-600 to-indigo-600',
     },
@@ -1020,6 +1010,7 @@ const LandingPageTailwind: React.FC = () => {
               >
                 <BankLogo
                   src={bank.logo}
+                  fallback={bank.fallback}
                   alt={bank.alt}
                   name={bank.name}
                   fallbackColor={bank.fallbackColor}
