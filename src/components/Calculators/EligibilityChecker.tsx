@@ -456,7 +456,7 @@ const EligibilityChecker: React.FC = () => {
   }, [monthlyIncome, age, employmentType, existingLoans, creditScore, requestedTenure]);
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1500);
+    const timer = setTimeout(() => setLoading(false), 300); // Reduced from 1500ms to 300ms
     return () => clearTimeout(timer);
   }, []);
 

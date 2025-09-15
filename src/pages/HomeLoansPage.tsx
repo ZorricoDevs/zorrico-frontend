@@ -1,11 +1,17 @@
 import React, { useEffect } from 'react';
-import { Typography, Stack, Box, Paper, Button, Chip, useTheme } from '@mui/material';
+import { Typography, Stack, Box, Paper, Button, Chip } from '@mui/material';
 import { Home, TrendingDown, Speed, Verified, Calculate, CompareArrows } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import { useTheme as useCustomTheme } from '../context/ThemeContext';
 import GenericPage from '../components/UI/GenericPage';
 import SEOHead from '../components/SEO/SEOHead';
 import { MetaPixelTracker } from '../utils/metaPixel';
 
 const HomeLoansPage: React.FC = () => {
+  const navigate = useNavigate();
+  const { theme } = useCustomTheme();
+  const isDark = theme === 'dark';
+
   const loanTypes = [
     {
       title: 'Purchase Home Loan',
@@ -42,30 +48,33 @@ const HomeLoansPage: React.FC = () => {
   const keyFeatures = [
     {
       icon: <TrendingDown sx={{ fontSize: 32, color: '#28a745' }} />,
-      title: 'Lowest Interest Rates',
-      description: 'Starting from 8.25% with competitive rates from 50+ lenders',
+      title: 'Best Interest Rates Across 50+ Lenders',
+      description:
+        'Instead of showing only their own products (like banks/NBFCs do), you give customers real comparisons across 50+ lenders starting from 8.25%, ensuring transparency.',
     },
     {
       icon: <Speed sx={{ fontSize: 32, color: '#1976d2' }} />,
-      title: 'Quick Approval',
-      description: 'Get pre-approved in 24-48 hours with our digital process',
+      title: 'Personalized Loan Matching',
+      description:
+        'Instead of showing every loan, Zorrico recommends the most suitable lender for each customer based on their profile.',
     },
     {
       icon: <Verified sx={{ fontSize: 32, color: '#ff9800' }} />,
-      title: 'Minimal Documentation',
-      description: 'Simplified paperwork with digital document verification',
+      title: 'Free Home Loan Guidance from Experts',
+      description: 'Get expert assistance with your home loan application and documentation.',
     },
     {
       icon: <Calculate sx={{ fontSize: 32, color: '#dc3545' }} />,
-      title: 'EMI Calculator',
-      description: 'Plan your finances with our advanced EMI and eligibility calculators',
+      title: 'Smart EMI & Eligibility Calculator',
+      description:
+        'Not just a calculator – but a financial planning tool that shows the best fit before applying.',
     },
   ];
 
   const eligibilityCriteria = [
     { criteria: 'Age', requirement: '21-65 years' },
     { criteria: 'Income', requirement: 'Min ₹25,000/month' },
-    { criteria: 'Credit Score', requirement: '650 and above' },
+    { criteria: 'Credit Score', requirement: '450 and above' },
     { criteria: 'Employment', requirement: 'Salaried/Self-employed' },
     { criteria: 'Property Value', requirement: 'As per bank norms' },
   ];
@@ -87,9 +96,9 @@ const HomeLoansPage: React.FC = () => {
       </Typography>
 
       <Typography variant='body1' paragraph>
-        Make your dream of homeownership a reality with HomeLoanMittra&apos;s comprehensive home
-        loan solutions. Compare offers from 50+ banks and NBFCs to find the best rates and terms
-        that suit your needs.
+        Make your dream of homeownership a reality with Zorrico&apos;s comprehensive home loan
+        solutions. Compare offers from 50+ banks and NBFCs to find the best rates and terms that
+        suit your needs.
       </Typography>
 
       <Box
@@ -101,38 +110,66 @@ const HomeLoansPage: React.FC = () => {
           mb: 4,
         }}
       >
-        <Paper elevation={1} sx={{ p: 2 }}>
+        <Paper
+          elevation={1}
+          sx={{
+            p: 2,
+            backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#fff',
+            border: isDark ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
+          }}
+        >
           <Typography variant='h5' sx={{ color: '#1976d2', fontWeight: 700, mb: 1 }}>
             8.25%*
           </Typography>
-          <Typography variant='body2' sx={{ color: '#666' }}>
+          <Typography variant='body2' sx={{ color: isDark ? '#b0b0b0' : '#666' }}>
             Starting Interest Rate
           </Typography>
         </Paper>
 
-        <Paper elevation={1} sx={{ p: 2 }}>
+        <Paper
+          elevation={1}
+          sx={{
+            p: 2,
+            backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#fff',
+            border: isDark ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
+          }}
+        >
           <Typography variant='h5' sx={{ color: '#28a745', fontWeight: 700, mb: 1 }}>
             90%
           </Typography>
-          <Typography variant='body2' sx={{ color: '#666' }}>
+          <Typography variant='body2' sx={{ color: isDark ? '#b0b0b0' : '#666' }}>
             Loan to Value Ratio
           </Typography>
         </Paper>
 
-        <Paper elevation={1} sx={{ p: 2 }}>
+        <Paper
+          elevation={1}
+          sx={{
+            p: 2,
+            backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#fff',
+            border: isDark ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
+          }}
+        >
           <Typography variant='h5' sx={{ color: '#ff9800', fontWeight: 700, mb: 1 }}>
             30 Yrs
           </Typography>
-          <Typography variant='body2' sx={{ color: '#666' }}>
+          <Typography variant='body2' sx={{ color: isDark ? '#b0b0b0' : '#666' }}>
             Maximum Tenure
           </Typography>
         </Paper>
 
-        <Paper elevation={1} sx={{ p: 2 }}>
+        <Paper
+          elevation={1}
+          sx={{
+            p: 2,
+            backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#fff',
+            border: isDark ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
+          }}
+        >
           <Typography variant='h5' sx={{ color: '#dc3545', fontWeight: 700, mb: 1 }}>
             50+
           </Typography>
-          <Typography variant='body2' sx={{ color: '#666' }}>
+          <Typography variant='body2' sx={{ color: isDark ? '#b0b0b0' : '#666' }}>
             Partner Lenders
           </Typography>
         </Paper>
@@ -146,7 +183,16 @@ const HomeLoansPage: React.FC = () => {
         sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' }, gap: 3 }}
       >
         {loanTypes.map((loan, index) => (
-          <Paper key={index} elevation={2} sx={{ p: 3, height: '100%' }}>
+          <Paper
+            key={index}
+            elevation={2}
+            sx={{
+              p: 3,
+              height: '100%',
+              backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#fff',
+              border: isDark ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
+            }}
+          >
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
               {loan.icon}
               <Box sx={{ ml: 2 }}>
@@ -162,7 +208,7 @@ const HomeLoansPage: React.FC = () => {
               </Box>
             </Box>
 
-            <Typography variant='body2' sx={{ mb: 2, color: '#666' }}>
+            <Typography variant='body2' sx={{ mb: 2, color: isDark ? '#b0b0b0' : '#666' }}>
               {loan.description}
             </Typography>
 
@@ -188,29 +234,52 @@ const HomeLoansPage: React.FC = () => {
               ))}
             </Stack>
 
-            <Button variant='outlined' size='small' fullWidth>
-              Check Eligibility
-            </Button>
+            <Stack direction='row' spacing={1}>
+              <Button
+                variant='outlined'
+                size='small'
+                sx={{ flex: 1 }}
+                onClick={() => navigate('/eligibility-checker')}
+              >
+                Check Eligibility
+              </Button>
+              <Button
+                variant='contained'
+                size='small'
+                sx={{ flex: 1 }}
+                onClick={() => navigate('/apply-instant')}
+              >
+                Apply Now
+              </Button>
+            </Stack>
           </Paper>
         ))}
       </Box>
 
       <Typography variant='h5' component='h2' sx={{ color: '#1976d2', fontWeight: 600 }}>
-        Why Choose HomeLoanMittra?
+        Why Choose Zorrico?
       </Typography>
 
       <Box
         sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' }, gap: 3 }}
       >
         {keyFeatures.map((feature, index) => (
-          <Paper key={index} elevation={1} sx={{ p: 3 }}>
+          <Paper
+            key={index}
+            elevation={1}
+            sx={{
+              p: 3,
+              backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#fff',
+              border: isDark ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
+            }}
+          >
             <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
               {feature.icon}
               <Box>
                 <Typography variant='h6' sx={{ fontWeight: 600, mb: 1 }}>
                   {feature.title}
                 </Typography>
-                <Typography variant='body2' sx={{ color: '#666' }}>
+                <Typography variant='body2' sx={{ color: isDark ? '#b0b0b0' : '#666' }}>
                   {feature.description}
                 </Typography>
               </Box>
@@ -223,7 +292,14 @@ const HomeLoansPage: React.FC = () => {
         Eligibility Criteria
       </Typography>
 
-      <Paper elevation={2} sx={{ p: 4 }}>
+      <Paper
+        elevation={2}
+        sx={{
+          p: 4,
+          backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#fff',
+          border: isDark ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
+        }}
+      >
         <Typography variant='h6' sx={{ fontWeight: 600, mb: 3 }}>
           Basic Requirements
         </Typography>
@@ -239,25 +315,32 @@ const HomeLoansPage: React.FC = () => {
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 p: 2,
-                backgroundColor: '#f8f9fa',
+                backgroundColor: isDark ? 'rgba(255, 255, 255, 0.08)' : '#f8f9fa',
                 borderRadius: 1,
               }}
             >
               <Typography variant='body1' sx={{ fontWeight: 600 }}>
                 {item.criteria}:
               </Typography>
-              <Typography variant='body1' sx={{ color: '#666' }}>
+              <Typography variant='body1' sx={{ color: isDark ? '#b0b0b0' : '#666' }}>
                 {item.requirement}
               </Typography>
             </Box>
           ))}
         </Box>
 
-        <Box sx={{ mt: 3, p: 2, backgroundColor: '#e3f2fd', borderRadius: 1 }}>
+        <Box
+          sx={{
+            mt: 3,
+            p: 2,
+            backgroundColor: isDark ? 'rgba(33, 150, 243, 0.1)' : '#e3f2fd',
+            borderRadius: 1,
+          }}
+        >
           <Typography variant='body2' sx={{ fontWeight: 600, mb: 1 }}>
             Additional Requirements:
           </Typography>
-          <Typography variant='body2' sx={{ color: '#666' }}>
+          <Typography variant='body2' sx={{ color: isDark ? '#b0b0b0' : '#666' }}>
             • Property should be approved by local authorities
             <br />
             • Clear property title and necessary approvals
@@ -275,77 +358,142 @@ const HomeLoansPage: React.FC = () => {
       <Box
         sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' }, gap: 3 }}
       >
-        <Paper elevation={1} sx={{ p: 3 }}>
+        <Paper
+          elevation={1}
+          sx={{
+            p: 3,
+            backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#fff',
+            border: isDark ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
+          }}
+        >
           <Typography variant='h6' sx={{ fontWeight: 600, mb: 2, color: '#1976d2' }}>
             Identity & Address Proof
           </Typography>
           <Stack spacing={1}>
-            <Typography variant='body2'>• Aadhaar Card</Typography>
-            <Typography variant='body2'>• PAN Card</Typography>
-            <Typography variant='body2'>• Passport/Voter ID</Typography>
-            <Typography variant='body2'>• Driving License</Typography>
+            <Typography variant='body2' sx={{ color: isDark ? '#e0e0e0' : 'inherit' }}>
+              • Aadhaar Card
+            </Typography>
+            <Typography variant='body2' sx={{ color: isDark ? '#e0e0e0' : 'inherit' }}>
+              • PAN Card
+            </Typography>
+            <Typography variant='body2' sx={{ color: isDark ? '#e0e0e0' : 'inherit' }}>
+              • Passport/Voter ID
+            </Typography>
+            <Typography variant='body2' sx={{ color: isDark ? '#e0e0e0' : 'inherit' }}>
+              • Driving License
+            </Typography>
           </Stack>
         </Paper>
 
-        <Paper elevation={1} sx={{ p: 3 }}>
+        <Paper
+          elevation={1}
+          sx={{
+            p: 3,
+            backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#fff',
+            border: isDark ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
+          }}
+        >
           <Typography variant='h6' sx={{ fontWeight: 600, mb: 2, color: '#1976d2' }}>
             Income Proof
           </Typography>
           <Stack spacing={1}>
-            <Typography variant='body2'>• Salary Slips (3 months)</Typography>
-            <Typography variant='body2'>• Bank Statements (6 months)</Typography>
-            <Typography variant='body2'>• Form 16/ITR (2 years)</Typography>
-            <Typography variant='body2'>• Employment Certificate</Typography>
+            <Typography variant='body2' sx={{ color: isDark ? '#e0e0e0' : 'inherit' }}>
+              • Salary Slips (3 months)
+            </Typography>
+            <Typography variant='body2' sx={{ color: isDark ? '#e0e0e0' : 'inherit' }}>
+              • Bank Statements (6 months)
+            </Typography>
+            <Typography variant='body2' sx={{ color: isDark ? '#e0e0e0' : 'inherit' }}>
+              • Form 16/ITR (2 years)
+            </Typography>
+            <Typography variant='body2' sx={{ color: isDark ? '#e0e0e0' : 'inherit' }}>
+              • Employment Certificate
+            </Typography>
           </Stack>
         </Paper>
 
-        <Paper elevation={1} sx={{ p: 3 }}>
+        <Paper
+          elevation={1}
+          sx={{
+            p: 3,
+            backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#fff',
+            border: isDark ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
+          }}
+        >
           <Typography variant='h6' sx={{ fontWeight: 600, mb: 2, color: '#1976d2' }}>
             Property Documents
           </Typography>
           <Stack spacing={1}>
-            <Typography variant='body2'>• Sale Agreement</Typography>
-            <Typography variant='body2'>• Property Papers</Typography>
-            <Typography variant='body2'>• NOC from Builder</Typography>
-            <Typography variant='body2'>• Approved Building Plan</Typography>
+            <Typography variant='body2' sx={{ color: isDark ? '#e0e0e0' : 'inherit' }}>
+              • Sale Agreement
+            </Typography>
+            <Typography variant='body2' sx={{ color: isDark ? '#e0e0e0' : 'inherit' }}>
+              • Property Papers
+            </Typography>
+            <Typography variant='body2' sx={{ color: isDark ? '#e0e0e0' : 'inherit' }}>
+              • NOC from Builder
+            </Typography>
+            <Typography variant='body2' sx={{ color: isDark ? '#e0e0e0' : 'inherit' }}>
+              • Approved Building Plan
+            </Typography>
           </Stack>
         </Paper>
 
-        <Paper elevation={1} sx={{ p: 3 }}>
+        <Paper
+          elevation={1}
+          sx={{
+            p: 3,
+            backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#fff',
+            border: isDark ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
+          }}
+        >
           <Typography variant='h6' sx={{ fontWeight: 600, mb: 2, color: '#1976d2' }}>
             Additional Documents
           </Typography>
           <Stack spacing={1}>
-            <Typography variant='body2'>• Property Valuation Report</Typography>
-            <Typography variant='body2'>• Insurance Documents</Typography>
-            <Typography variant='body2'>• Processing Fee Receipt</Typography>
-            <Typography variant='body2'>• Passport Size Photos</Typography>
+            <Typography variant='body2' sx={{ color: isDark ? '#e0e0e0' : 'inherit' }}>
+              • Property Valuation Report
+            </Typography>
+            <Typography variant='body2' sx={{ color: isDark ? '#e0e0e0' : 'inherit' }}>
+              • Insurance Documents
+            </Typography>
+            <Typography variant='body2' sx={{ color: isDark ? '#e0e0e0' : 'inherit' }}>
+              • Processing Fee Receipt
+            </Typography>
+            <Typography variant='body2' sx={{ color: isDark ? '#e0e0e0' : 'inherit' }}>
+              • Passport Size Photos
+            </Typography>
           </Stack>
         </Paper>
       </Box>
 
-      <Paper elevation={2} sx={{ p: 4, backgroundColor: '#f8f9fa', textAlign: 'center' }}>
+      <Paper
+        elevation={2}
+        sx={{
+          p: 4,
+          backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#f8f9fa',
+          textAlign: 'center',
+          border: isDark ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
+        }}
+      >
         <Typography variant='h6' sx={{ fontWeight: 600, mb: 2 }}>
           Ready to Apply for Your Home Loan?
         </Typography>
-        <Typography variant='body1' sx={{ mb: 3 }}>
+        <Typography variant='body1' sx={{ mb: 3, color: isDark ? '#e0e0e0' : 'inherit' }}>
           Get instant pre-approval and compare offers from 50+ lenders in minutes.
         </Typography>
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent='center'>
-          <Button variant='contained' size='large'>
+          <Button variant='contained' size='large' onClick={() => navigate('/eligibility-checker')}>
             Check Eligibility
           </Button>
-          <Button variant='outlined' size='large'>
+          <Button variant='outlined' size='large' onClick={() => navigate('/emi-calculator')}>
             Calculate EMI
-          </Button>
-          <Button variant='outlined' size='large'>
-            Compare Loans
           </Button>
         </Stack>
       </Paper>
 
       <Box sx={{ textAlign: 'center', mt: 4 }}>
-        <Typography variant='body2' sx={{ color: '#666' }}>
+        <Typography variant='body2' sx={{ color: isDark ? '#b0b0b0' : '#666' }}>
           *Interest rates are subject to change and depend on credit profile, loan amount, and
           lender policies.
         </Typography>

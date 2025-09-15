@@ -265,6 +265,7 @@ const Footer: React.FC = () => {
             </Typography>
             <Stack spacing={1} alignItems={{ xs: 'center', sm: 'flex-start' }}>
               {[
+                { name: 'Home Loans', path: '/home-loans' },
                 { name: 'EMI Calculator', path: '/emi-calculator' },
                 { name: 'Home Loan Eligibility Checker', path: '/eligibility-checker' },
               ].map(item => (

@@ -247,19 +247,6 @@ const LandingPageTailwind: React.FC = () => {
     'Hubli',
   ];
 
-  // Get base URL for assets (works for both development and production)
-  const getAssetUrl = (path: string) => {
-    const baseUrl = process.env.PUBLIC_URL || '';
-    const fullUrl = `${baseUrl}${path}`;
-
-    // Debug logging for development
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`Asset URL: ${fullUrl} (PUBLIC_URL: ${process.env.PUBLIC_URL || 'undefined'})`);
-    }
-
-    return fullUrl;
-  };
-
   // Top Indian Banks Data - Using GitHub raw URLs for guaranteed availability
   const topBanks = [
     {

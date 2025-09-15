@@ -203,6 +203,7 @@ const AppContent: React.FC = () => {
                       {/* Footer Product Links */}
                       <Route path='/emicalculator' element={<EMICalculator />} />
                       <Route path='/homeloans' element={<HomeLoansPage />} />
+                      <Route path='/home-loans' element={<HomeLoansPage />} />
                       <Route path='/applicationtracker' element={<ApplicationsPage />} />
                       <Route path='/loanadvisory' element={<HomePage />} />
 
