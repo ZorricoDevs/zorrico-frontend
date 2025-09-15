@@ -2,6 +2,7 @@ import React from 'react';
 import { Typography, Stack, Box, Paper, Button, useTheme } from '@mui/material';
 import { Work, TrendingUp, Schedule } from '@mui/icons-material';
 import GenericPage from '../components/UI/GenericPage';
+import SEOHead from '../components/SEO/SEOHead';
 
 const CareersPage: React.FC = () => {
   const theme = useTheme();
@@ -222,7 +223,12 @@ const CareersPage: React.FC = () => {
     </Stack>
   );
 
-  return <GenericPage title='Careers' content={content} breadcrumb='Join Our Team' />;
+  return (
+    <>
+      <SEOHead page='careers' />
+      <GenericPage title='Careers at Zorrico' content={content} breadcrumb='Join Our Team' />
+    </>
+  );
 };
 
 export default CareersPage;

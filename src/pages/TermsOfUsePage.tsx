@@ -2,6 +2,7 @@ import React from 'react';
 import { Typography, Stack, Box, Paper, useTheme } from '@mui/material';
 import { Gavel, Shield } from '@mui/icons-material';
 import GenericPage from '../components/UI/GenericPage';
+import SEOHead from '../components/SEO/SEOHead';
 
 const TermsOfUsePage: React.FC = () => {
   const theme = useTheme();
@@ -372,7 +373,14 @@ const TermsOfUsePage: React.FC = () => {
   );
 
   return (
-    <GenericPage title='Terms of Use' content={content} breadcrumb='Legal Terms & Conditions' />
+    <>
+      <SEOHead page='termsOfUse' />
+      <GenericPage
+        title='Terms of Use - Zorrico'
+        content={content}
+        breadcrumb='Legal Terms & Conditions'
+      />
+    </>
   );
 };
 

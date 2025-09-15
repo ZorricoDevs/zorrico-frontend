@@ -3,6 +3,7 @@ import { Typography, Stack, Box, Paper, Button, useTheme } from '@mui/material';
 import { Phone, Email, LocationOn, Schedule } from '@mui/icons-material';
 import GenericPage from '../components/UI/GenericPage';
 import { MetaPixelTracker } from '../utils/metaPixel';
+import SEOHead from '../components/SEO/SEOHead';
 
 const ContactPage: React.FC = () => {
   const theme = useTheme();
@@ -213,7 +214,12 @@ const ContactPage: React.FC = () => {
     </Stack>
   );
 
-  return <GenericPage title='Contact Us' content={content} breadcrumb='Get in Touch' />;
+  return (
+    <>
+      <SEOHead page='contact' />
+      <GenericPage title='Contact Zorrico' content={content} breadcrumb='Get in Touch' />
+    </>
+  );
 };
 
 export default ContactPage;

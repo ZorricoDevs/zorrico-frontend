@@ -2,6 +2,7 @@ import React from 'react';
 import { Typography, Stack, Box, Paper, Chip, Button, useTheme } from '@mui/material';
 import { Article, CalendarToday, TrendingUp, Business } from '@mui/icons-material';
 import GenericPage from '../components/UI/GenericPage';
+import SEOHead from '../components/SEO/SEOHead';
 
 const NewsroomPage: React.FC = () => {
   const theme = useTheme();
@@ -428,7 +429,10 @@ const NewsroomPage: React.FC = () => {
   );
 
   return (
-    <GenericPage title='RBI Home Loan News' content={content} breadcrumb='RBI Updates & Policies' />
+    <>
+      <SEOHead page='newsroom' />
+      <GenericPage title='Zorrico Newsroom' content={content} breadcrumb='News & Updates' />
+    </>
   );
 };
 

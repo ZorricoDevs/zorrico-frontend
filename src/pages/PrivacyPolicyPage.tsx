@@ -2,6 +2,7 @@ import React from 'react';
 import { Typography, Stack, Box, Paper, useTheme } from '@mui/material';
 import { Security, VerifiedUser } from '@mui/icons-material';
 import GenericPage from '../components/UI/GenericPage';
+import SEOHead from '../components/SEO/SEOHead';
 
 const PrivacyPolicyPage: React.FC = () => {
   const theme = useTheme();
@@ -365,7 +366,14 @@ const PrivacyPolicyPage: React.FC = () => {
   );
 
   return (
-    <GenericPage title='Privacy Policy' content={content} breadcrumb='Privacy & Data Protection' />
+    <>
+      <SEOHead page='privacyPolicy' />
+      <GenericPage
+        title='Privacy Policy - Zorrico'
+        content={content}
+        breadcrumb='Privacy & Data Protection'
+      />
+    </>
   );
 };
 

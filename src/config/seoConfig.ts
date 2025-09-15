@@ -53,30 +53,37 @@ export const seoConfig: Record<string, SEOConfig> = {
   },
 
   homepage: {
-    title:
-      'Zorrico - Effortless Home Loan Process & Best Interest Rates | Anonymous Eligibility Checker',
+    title: 'Zorrico - Effortless Home Loan Process & Best Interest Rates',
     description:
-      'Making home loans effortless with anonymous eligibility checker, unbiased recommendations from 50+ banks. Privacy-first platform for customers, brokers & builders.',
+      'Zorrico - Making home loans effortless with best interest rates. Anonymous eligibility checker, unbiased recommendations from 50+ banks.',
     keywords:
       'zorrico, home loan eligibility checker, best interest rate home loans, effortless home loans, anonymous eligibility check, unbiased home loan comparison, privacy first home loans, home loan brokers platform, builder financing solutions',
     canonical: 'https://zorrico.com/',
-    ogTitle:
-      'Zorrico - Effortless Home Loans & Best Interest Rates | Anonymous Eligibility Checker',
+    ogTitle: 'Zorrico - Effortless Home Loan Process & Best Interest Rates',
     ogDescription:
-      'Making home loans effortless with unbiased recommendations & best rates from 50+ banks. Check eligibility anonymously without data privacy concerns.',
-    twitterTitle: 'Zorrico - Effortless Home Loan Process & Best Rates | Privacy-First Platform',
+      'Making home loans effortless with best interest rates. Anonymous eligibility checker, unbiased recommendations from 50+ banks.',
+    twitterTitle: 'Zorrico - Effortless Home Loan Process & Best Interest Rates',
     twitterDescription:
-      'Anonymous home loan eligibility checker with unbiased recommendations from 50+ banks. Making home loans effortless while protecting your privacy.',
+      'Making home loans effortless with best interest rates. Anonymous eligibility checker, unbiased recommendations from 50+ banks.',
     jsonLd: {
       '@context': 'https://schema.org',
-      '@type': 'WebPage',
-      name: 'Zorrico - Effortless Home Loan & Anonymous Eligibility Checker',
-      description: 'Privacy-first home loan platform with unbiased recommendations and best rates',
+      '@type': 'WebSite',
+      name: 'Zorrico',
+      description:
+        'Making home loans effortless with best interest rates and anonymous eligibility checker',
       url: 'https://zorrico.com',
-      isPartOf: {
-        '@type': 'WebSite',
-        name: 'Zorrico',
-        url: 'https://zorrico.com',
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: {
+          '@type': 'EntryPoint',
+          urlTemplate: 'https://zorrico.com/search?q={search_term_string}',
+        },
+        'query-input': 'required name=search_term_string',
+      },
+      about: {
+        '@type': 'FinancialService',
+        name: 'Home Loan Services',
+        description: 'Anonymous home loan eligibility checker and comparison platform',
       },
     },
   },
@@ -202,6 +209,54 @@ export const seoConfig: Record<string, SEOConfig> = {
     keywords:
       'banker login, loan processing platform, risk assessment tools, application review, zorrico banker portal',
     canonical: 'https://zorrico.com/banker-login',
+  },
+
+  newsroom: {
+    title: 'Zorrico Newsroom - Latest Updates & Home Loan Industry Insights',
+    description:
+      'Stay updated with Zorrico latest news, announcements, and home loan industry insights. Market trends, digital banking updates, and platform developments.',
+    keywords:
+      'zorrico newsroom, home loan news, banking industry updates, financial services news, mortgage market trends, digital banking news',
+    canonical: 'https://zorrico.com/newsroom',
+    ogTitle: 'Zorrico Newsroom - Latest Home Loan Industry News & Updates',
+    ogDescription:
+      'Get the latest updates on home loan industry trends, digital banking innovations, and Zorrico platform developments.',
+    twitterTitle: 'Zorrico Newsroom - Home Loan Industry News & Updates',
+    twitterDescription:
+      'Stay informed with latest home loan industry news, market trends, and Zorrico platform updates.',
+  },
+
+  careers: {
+    title: 'Careers at Zorrico - Join Our Fintech Team | Remote & Office Opportunities',
+    description:
+      'Join Zorrico fintech team transforming home loan experience. Remote and office opportunities for developers, analysts, and finance professionals.',
+    keywords:
+      'zorrico careers, fintech jobs, home loan industry careers, remote fintech jobs, software developer jobs, financial analyst jobs',
+    canonical: 'https://zorrico.com/careers',
+    ogTitle: 'Careers at Zorrico - Transform Home Loan Experience with Us',
+    ogDescription:
+      'Join our mission to make home loans effortless. Exciting opportunities for developers, analysts, and finance professionals.',
+    twitterTitle: 'Careers at Zorrico - Fintech Opportunities',
+    twitterDescription:
+      'Join our fast-growing fintech platform. Work with us to transform how people experience home loans.',
+  },
+
+  termsOfUse: {
+    title: 'Terms of Use - Zorrico Home Loan Platform | Legal Terms & Conditions',
+    description:
+      'Terms of use for Zorrico home loan platform. Legal terms, conditions, and user agreements for customers, brokers, and builders.',
+    keywords:
+      'zorrico terms of use, legal terms, platform conditions, user agreement, home loan platform terms',
+    canonical: 'https://zorrico.com/termsofuse',
+  },
+
+  privacyPolicy: {
+    title: 'Privacy Policy - Zorrico | Data Protection & Privacy Commitment',
+    description:
+      'Zorrico privacy policy explaining our commitment to data protection, anonymous eligibility checking, and user privacy safeguards.',
+    keywords:
+      'zorrico privacy policy, data protection, user privacy, anonymous eligibility, privacy first platform',
+    canonical: 'https://zorrico.com/privacypolicy',
   },
 };
 
