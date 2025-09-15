@@ -30,7 +30,8 @@ export class MetaPixelTracker {
   static trackSearch(searchTerm: string): void {
     if (this.isInitialized()) {
       window.fbq('track', 'Search', {
-        search_term: searchTerm,
+        search_string: searchTerm, // Using standard FB parameter name
+        content_category: 'home_loans',
       });
       console.log('Meta Pixel: Search tracked -', searchTerm);
     }
@@ -71,11 +72,14 @@ export class MetaPixelTracker {
     }
   }
 
-  // Track contact form submissions
+  // Track contact form submissions (using Lead event which is valid)
   static trackContact(): void {
     if (this.isInitialized()) {
-      window.fbq('track', 'Contact');
-      console.log('Meta Pixel: Contact tracked');
+      window.fbq('track', 'Lead', {
+        content_name: 'Contact Form',
+        content_type: 'contact',
+      });
+      console.log('Meta Pixel: Contact (Lead) tracked');
     }
   }
 
@@ -89,29 +93,32 @@ export class MetaPixelTracker {
 
   // Track loan calculator usage
   static trackLoanCalculatorUsage(loanAmount: number, tenure: number): void {
-    this.trackCustomEvent('LoanCalculatorUsed', {
-      loan_amount: loanAmount,
-      tenure_years: tenure,
+    this.trackCustomEvent('CalculatorUsed', {
+      content_name: 'Loan Calculator',
+      content_type: 'calculator',
       value: loanAmount,
       currency: 'INR',
+      custom_tenure_years: tenure,
     });
   }
 
   // Track eligibility check
   static trackEligibilityCheck(income: number, loanAmount: number): void {
-    this.trackCustomEvent('EligibilityCheck', {
-      monthly_income: income,
-      requested_amount: loanAmount,
+    this.trackCustomEvent('EligibilityChecked', {
+      content_name: 'Eligibility Checker',
+      content_type: 'calculator',
       value: loanAmount,
       currency: 'INR',
+      custom_monthly_income: income,
     });
   }
 
   // Track bank comparison
   static trackBankComparison(banksCompared: string[]): void {
-    this.trackCustomEvent('BankComparison', {
-      banks_compared: banksCompared.join(','),
-      comparison_count: banksCompared.length,
+    this.trackCustomEvent('BanksCompared', {
+      content_name: 'Bank Comparison',
+      content_type: 'comparison',
+      custom_banks_count: banksCompared.length,
     });
   }
 }

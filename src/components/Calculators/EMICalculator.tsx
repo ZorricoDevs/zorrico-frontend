@@ -106,13 +106,13 @@ const EMICalculator: React.FC = () => {
     // Track EMI calculation usage
     MetaPixelTracker.trackLoanCalculatorUsage(loanAmount, tenure);
     MetaPixelTracker.trackCustomEvent('EMICalculated', {
-      loan_amount: loanAmount,
-      interest_rate: interestRate,
-      tenure_years: tenure,
-      monthly_emi: Math.round(emi),
-      total_interest: Math.round(totalInterest),
+      content_name: 'EMI Calculator',
+      content_type: 'calculator',
       value: loanAmount,
       currency: 'INR',
+      custom_interest_rate: interestRate,
+      custom_tenure_years: tenure,
+      custom_monthly_emi: Math.round(emi),
     });
   }, [loanAmount, interestRate, tenure]);
 

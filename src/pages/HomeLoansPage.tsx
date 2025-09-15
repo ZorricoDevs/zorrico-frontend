@@ -73,8 +73,9 @@ const HomeLoansPage: React.FC = () => {
   // Track Home Loans page view
   useEffect(() => {
     MetaPixelTracker.trackViewContent('Home Loans', 'product_catalog');
-    MetaPixelTracker.trackCustomEvent('HomeLoansPageViewed', {
-      page_type: 'product_listing',
+    MetaPixelTracker.trackCustomEvent('HomeLoansViewed', {
+      content_name: 'Home Loans Page',
+      content_type: 'product_catalog',
       content_category: 'home_loans',
     });
   }, []);
