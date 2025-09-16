@@ -18,6 +18,7 @@ import AuthErrorBoundary from './components/UI/AuthErrorBoundary';
 import Navbar from './components/Layout/Navbar';
 import Footer from './components/Layout/Footer';
 import ScrollToTop from './components/UI/ScrollToTop';
+import RouteTracker from './components/RouteTracker';
 import ISO270012022Page from './pages/ISO270012022Page';
 import BuilderLoginPage from './pages/BuilderLoginPage';
 
@@ -85,6 +86,8 @@ const SecurityDisclosurePage = lazyWithRetry(() => import('./pages/SecurityDiscl
 const NewsroomPage = lazyWithRetry(() => import('./pages/NewsroomPage'));
 const HomeLoansPage = lazyWithRetry(() => import('./pages/HomeLoansPage'));
 const LandingPageStandalone = lazyWithRetry(() => import('./pages/LandingPageTailwind'));
+const LeadCaptureLandingPage = lazyWithRetry(() => import('./pages/LeadCaptureLandingPage'));
+const AdminBypassPage = lazyWithRetry(() => import('./pages/AdminBypassPage'));
 
 // Create a query client for React Query
 const queryClient = new QueryClient({
@@ -167,6 +170,7 @@ const AppContent: React.FC = () => {
         <AuthErrorBoundary>
           <AuthProvider>
             <Router>
+              <RouteTracker />
               <ScrollToTop />
               <div className='App'>
                 <Navbar />
@@ -178,10 +182,16 @@ const AppContent: React.FC = () => {
                       <Route path='/home' element={<HomePage />} />
                       <Route path='/loans' element={<HomePage />} />
 
-                      {/* Landing Page for Ads - Standalone */}
-                      <Route path='/apply-instant' element={<LandingPageStandalone />} />
-                      <Route path='/instant-approval' element={<LandingPageStandalone />} />
-                      <Route path='/quick-apply' element={<LandingPageStandalone />} />
+                      {/* Landing Page for Ads - With Lead Capture Gate */}
+                      <Route path='/apply-instant' element={<LeadCaptureLandingPage />} />
+                      <Route path='/instant-approval' element={<LeadCaptureLandingPage />} />
+                      <Route path='/quick-apply' element={<LeadCaptureLandingPage />} />
+                      <Route path='/apply-now' element={<LeadCaptureLandingPage />} />
+                      <Route path='/get-loan' element={<LeadCaptureLandingPage />} />
+                      <Route path='/loan-application' element={<LeadCaptureLandingPage />} />
+
+                      {/* Regular Landing Page - No Lead Capture */}
+                      <Route path='/landing' element={<LandingPageStandalone />} />
 
                       {/* Calculator Routes - Multiple paths for flexibility */}
                       <Route path='/calculator/emi' element={<EMICalculator />} />
@@ -194,6 +204,10 @@ const AppContent: React.FC = () => {
                       <Route path='/support' element={<ContactPage />} />
                       <Route path='/about' element={<AboutUsPage />} />
                       <Route path='/contact' element={<ContactPage />} />
+
+                      {/* Development Admin Routes */}
+                      <Route path='/admin/bypass' element={<AdminBypassPage />} />
+                      <Route path='/dev/access-control' element={<AdminBypassPage />} />
 
                       {/* Footer Company Links */}
                       <Route path='/aboutus' element={<AboutUsPage />} />

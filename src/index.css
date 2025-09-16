@@ -176,3 +176,31 @@ select:focus {
   outline: 2px solid #304ffe;
   outline-offset: 2px;
 }
+
+/* Hide header and footer for lead capture pages */
+body[data-route*='apply-instant'] .MuiAppBar-root,
+body[data-route*='instant-approval'] .MuiAppBar-root,
+body[data-route*='quick-apply'] .MuiAppBar-root,
+body[data-route*='apply-now'] .MuiAppBar-root,
+body[data-route*='get-loan'] .MuiAppBar-root,
+body[data-route*='loan-application'] .MuiAppBar-root,
+body[data-route*='apply-instant'] footer,
+body[data-route*='instant-approval'] footer,
+body[data-route*='quick-apply'] footer,
+body[data-route*='apply-now'] footer,
+body[data-route*='get-loan'] footer,
+body[data-route*='loan-application'] footer {
+  display: none !important;
+}
+
+/* Adjust main content for lead capture pages */
+body[data-route*='apply-instant'] main,
+body[data-route*='instant-approval'] main,
+body[data-route*='quick-apply'] main,
+body[data-route*='apply-now'] main,
+body[data-route*='get-loan'] main,
+body[data-route*='loan-application'] main {
+  min-height: 100vh !important;
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
