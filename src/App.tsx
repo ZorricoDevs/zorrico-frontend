@@ -88,6 +88,7 @@ const HomeLoansPage = lazyWithRetry(() => import('./pages/HomeLoansPage'));
 const LandingPageStandalone = lazyWithRetry(() => import('./pages/LandingPageTailwind'));
 const LeadCaptureLandingPage = lazyWithRetry(() => import('./pages/LeadCaptureLandingPage'));
 const AdminBypassPage = lazyWithRetry(() => import('./pages/AdminBypassPage'));
+const ZorricoBlogPage = lazyWithRetry(() => import('./pages/ZorricoBlogPage'));
 
 // Create a query client for React Query
 const queryClient = new QueryClient({
@@ -204,6 +205,7 @@ const AppContent: React.FC = () => {
                       <Route path='/support' element={<ContactPage />} />
                       <Route path='/about' element={<AboutUsPage />} />
                       <Route path='/contact' element={<ContactPage />} />
+                      <Route path='/blog' element={<ZorricoBlogPage />} />
 
                       {/* Development Admin Routes */}
                       <Route path='/admin/bypass' element={<AdminBypassPage />} />

@@ -8,7 +8,7 @@
   <!-- Homepage - Zorrico Home Loans -->
   <url>
     <loc>https://zorrico.com/</loc>
-    <lastmod>2025-09-10</lastmod>
+    <lastmod>2025-09-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -16,16 +16,32 @@
   <!-- High Priority Calculator Pages - Core Business Features -->
   <url>
     <loc>https://zorrico.com/eligibility-checker</loc>
-    <lastmod>2025-09-10</lastmod>
+    <lastmod>2025-09-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
 
   <url>
     <loc>https://zorrico.com/emi-calculator</loc>
-    <lastmod>2025-09-10</lastmod>
+    <lastmod>2025-09-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
+  </url>
+
+  <!-- Lead Capture Gate -->
+  <url>
+    <loc>https://zorrico.com/apply-instant</loc>
+    <lastmod>2025-09-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <!-- Blog & Content Pages -->
+  <url>
+    <loc>https://zorrico.com/blog</loc>
+    <lastmod>2025-09-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.80</priority>
   </url>
 
   <!-- Product & Service Pages -->
