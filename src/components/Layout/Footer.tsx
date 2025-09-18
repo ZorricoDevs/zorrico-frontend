@@ -225,10 +225,17 @@ const Footer: React.FC = () => {
               Company
             </Typography>
             <Stack spacing={1} alignItems={{ xs: 'center', sm: 'flex-start' }}>
-              {['About Us', 'Careers', 'Contact', 'Newsroom'].map(item => (
+              {[
+                { name: 'About Us', path: '/aboutus' },
+                { name: 'Blog', path: '/blog' },
+                { name: 'Careers', path: '/careers' },
+                { name: 'Contact', path: '/contact' },
+                { name: 'Newsroom', path: '/newsroom' },
+              ].map(item => (
                 <Link
-                  key={item}
-                  href={`/${item.toLowerCase().replace(' ', '')}`}
+                  key={item.name}
+                  component={RouterLink}
+                  to={item.path}
                   sx={{
                     color: isDark ? '#94a3b8' : '#6c757d',
                     textDecoration: 'none',
@@ -239,7 +246,7 @@ const Footer: React.FC = () => {
                     },
                   }}
                 >
-                  {item}
+                  {item.name}
                 </Link>
               ))}
             </Stack>
